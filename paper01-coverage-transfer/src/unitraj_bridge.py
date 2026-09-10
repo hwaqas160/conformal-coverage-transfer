@@ -70,6 +70,7 @@ def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
                  max_data_num: int | None = None, is_validation: bool = True):
     """Dataset + DataLoader over a ScenarioNet-converted DB directory."""
     from torch.utils.data import DataLoader
+    db_path = Path(db_path).resolve().as_posix()
     cwd = os.getcwd()
     os.chdir(UNITRAJ_PKG)
     try:

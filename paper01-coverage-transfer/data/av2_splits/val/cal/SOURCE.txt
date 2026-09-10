@@ -1,0 +1,3 @@
+split of F:\CLAUDE\AI1\paper01-coverage-transfer\data\av2_scenarionet\val
+salt=av2v1
+n=4971

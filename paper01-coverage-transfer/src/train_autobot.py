@@ -29,15 +29,22 @@ def main():
     ap.add_argument("--train_db", required=True)
     ap.add_argument("--val_db", required=True)
     ap.add_argument("--exp", required=True, help="experiment name (ckpt dir)")
-    ap.add_argument("--epochs", type=int, default=40)
-    ap.add_argument("--batch", type=int, default=16)
-    ap.add_argument("--accum", type=int, default=2, help="grad accumulation")
+    ap.add_argument("--epochs", type=int, default=25)
+    ap.add_argument("--batch", type=int, default=32)   # P2000: 16.3 samp/s, 2.5GB; 48 regresses
+    ap.add_argument("--accum", type=int, default=1, help="grad accumulation")
+    ap.add_argument("--val_every", type=int, default=2, help="check_val_every_n_epoch")
+    ap.add_argument("--val_subset", type=int, default=None, help="cap val scenes for speed")
     ap.add_argument("--lr", type=float, default=7.5e-4)
     ap.add_argument("--limit_train", type=int, default=None, help="cap # train scenes")
     ap.add_argument("--num_workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", default=None)
     a = ap.parse_args()
+    # resolve to absolute BEFORE any chdir
+    a.train_db = Path(a.train_db).resolve().as_posix()
+    a.val_db = Path(a.val_db).resolve().as_posix()
+    if a.resume:
+        a.resume = Path(a.resume).resolve().as_posix()
 
     os.environ.setdefault("WANDB_MODE", "disabled")
     torch.set_float32_matmul_precision("medium")
@@ -45,6 +52,7 @@ def main():
     os.chdir(UNITRAJ_PKG)
     import pytorch_lightning as pl
     from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
+    from pytorch_lightning.loggers import CSVLogger
     from torch.utils.data import DataLoader
     from unitraj.models import build_model
     from unitraj.datasets import build_dataset
@@ -57,8 +65,8 @@ def main():
     cfg.debug = False
     cfg.load_num_workers = a.num_workers
     cfg.cache_path = str(SRC.parent / "data" / "unitraj_cache")
-    cfg.train_data_path = [str(a.train_db)]
-    cfg.val_data_path = [str(a.val_db)]
+    cfg.train_data_path = [a.train_db]
+    cfg.val_data_path = [a.val_db]
     cfg.max_data_num = [a.limit_train]
     cfg.starting_frame = [0]
     cfg.method.train_batch_size = a.batch
@@ -69,6 +77,12 @@ def main():
     model = build_model(cfg)
     train_set = build_dataset(cfg, val=False)
     val_set = build_dataset(cfg, val=True)
+    if a.val_subset and len(val_set) > a.val_subset:
+        from torch.utils.data import Subset
+        import numpy as _np
+        idx = _np.random.default_rng(0).choice(len(val_set), a.val_subset, replace=False)
+        val_set = Subset(val_set, idx.tolist())
+        val_set.collate_fn = train_set.collate_fn
     print(f"[train] train={len(train_set)}  val={len(val_set)}")
 
     train_loader = DataLoader(train_set, batch_size=a.batch, shuffle=True, drop_last=True,
@@ -89,8 +103,9 @@ def main():
         precision=32,
         accumulate_grad_batches=a.accum,
         gradient_clip_val=cfg.method.grad_clip_norm,
+        check_val_every_n_epoch=a.val_every,
         callbacks=[ckpt_cb, LearningRateMonitor(logging_interval="epoch")],
-        logger=False,
+        logger=CSVLogger(str(SRC.parent / "results" / "logs"), name=a.exp),
         log_every_n_steps=50,
         enable_progress_bar=True,
     )
