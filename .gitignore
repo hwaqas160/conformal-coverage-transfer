@@ -1,23 +1,45 @@
-# data — never commit
+# ============ DATA — never commit (huge, re-downloadable) ============
 */data/argoverse2/
+*/data/av2_scenarionet/
+*/data/av2_scenarionet_TEST/
 */data/boreas/
 */data/nuscenes/
 */data/waymo/
+*/data/nuplan/
 */data/*.log
-# cloned upstream repos — re-clone, don't vendor
+**/*.parquet
+**/*.pkl
+**/*.h5
+
+# ============ cloned upstream repos — re-clone, don't vendor ============
 */code/UniTraj/
 */code/scenarionet/
 */code/metadrive/
 */code/pyboreas/
-# env
-shared/envs/unitraj/
+
+# ============ environment / tools ============
+shared/envs/
 shared/tools/
-# reference PDFs — large, re-downloadable
+
+# ============ reference PDFs — large, re-downloadable ============
 */papers/*.pdf
-# caches / outputs
+
+# ============ caches / run outputs ============
 **/cache/
 **/tmp/
 **/outputs/
 **/unitraj_ckpt/
-**/__pycache__/
 **/wandb/
+**/__pycache__/
+**/*.pyc
+**/.ipynb_checkpoints/
+
+# ============ keep these (belt-and-braces un-ignore) ============
+!*/PLAN.md
+!*/INSTALL_STATUS.md
+!*/notes/*.md
+!*/src/*
+!*/configs/*
+!*/code/requirements*.txt
+!*/code/requirements.lock
+!*/code/constraints.txt
