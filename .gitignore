@@ -1,0 +1,23 @@
+# data — never commit
+*/data/argoverse2/
+*/data/boreas/
+*/data/nuscenes/
+*/data/waymo/
+*/data/*.log
+# cloned upstream repos — re-clone, don't vendor
+*/code/UniTraj/
+*/code/scenarionet/
+*/code/metadrive/
+*/code/pyboreas/
+# env
+shared/envs/unitraj/
+shared/tools/
+# reference PDFs — large, re-downloadable
+*/papers/*.pdf
+# caches / outputs
+**/cache/
+**/tmp/
+**/outputs/
+**/unitraj_ckpt/
+**/__pycache__/
+**/wandb/

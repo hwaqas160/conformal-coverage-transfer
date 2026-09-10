@@ -1,0 +1,19 @@
+# UniTraj deps for Quadro P2000 (SM 6.1) / Python 3.10 venv
+# torch/torchvision installed SEPARATELY from the cu118 index — do NOT list them here
+# or pip will pull the CPU build and clobber the CUDA one.
+#
+# Differences from UniTraj/requirements.txt:
+#   - torch            : removed (installed via cu118 index first)
+#   - natten           : removed (CUDA ext, no Windows wheel, only SMART/fmae need it — AutoBot does not)
+#
+wandb
+pytorch-lightning
+hydra-core
+scikit-learn
+einops
+easydict
+panda3d-simplepbr==0.10
+h5py
+av2
+timm
+omegaconf

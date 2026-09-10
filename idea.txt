@@ -1,0 +1,816 @@
+I want you to act as my senior research scientist and Q1-journal research supervisor in the fields of:
+
+* Medical Artificial Intelligence
+* Computer Vision
+* Medical Imaging
+* Multimodal Large Language Models (MLLMs)
+* Vision-Language Models (VLMs)
+* Large Language Models (LLMs)
+* Retrieval-Augmented Generation (RAG)
+* Medical Knowledge Graphs
+* Explainable AI
+* Medical diagnosis and clinical decision support
+
+I am starting a NEW research paper and my goal is to develop a genuinely novel, technically strong, reproducible paper suitable for a high-quality Q1 journal in 2026/2027.
+
+Do NOT simply help me write a paper around an old idea. First help me identify a genuinely current research gap.
+
+IMPORTANT:
+I need a research project that can realistically be implemented by a researcher using publicly available datasets, open-source models/code, and reasonable GPU resources. I do NOT want to train a giant LLM from scratch.
+
+==================================================
+
+1. INITIAL RESEARCH OBJECTIVE
+   ==================================================
+
+My initial research direction is:
+
+"Evidence-Grounded Multimodal Medical Diagnosis using Medical Vision-Language Models, Visual Grounding, Medical RAG/Knowledge Graphs, and LLM-based reasoning."
+
+The conceptual pipeline is:
+
+Medical image
++
+Clinical/patient information
+↓
+Medical Vision-Language Model
+↓
+Visual findings
+↓
+Visual/region grounding
++
+Medical knowledge retrieval / RAG / Knowledge Graph
+↓
+Medical LLM reasoning
+↓
+Differential diagnosis
+↓
+Final diagnosis
++
+Confidence
++
+Retrieved evidence
++
+Visual evidence/localization
++
+Explainable reasoning
+
+However, DO NOT assume that this exact architecture is sufficiently novel.
+
+First perform a rigorous 2025-2026 literature/novelty analysis and determine whether this idea is already substantially covered.
+
+If it is already saturated, propose a better and more novel variation.
+
+==================================================
+2. LATEST LITERATURE SEARCH
+===========================
+
+Search the latest literature from 2025 and 2026.
+
+Prioritize:
+
+* Medical Image Analysis
+* IEEE Transactions on Medical Imaging
+* IEEE Journal of Biomedical and Health Informatics
+* Artificial Intelligence in Medicine
+* Computerized Medical Imaging and Graphics
+* Journal of Biomedical Informatics
+* Computer Methods and Programs in Biomedicine
+* Pattern Recognition
+* Neural Networks
+* Radiology: Artificial Intelligence
+* Nature Medicine
+* Nature Machine Intelligence
+* npj Digital Medicine
+* MICCAI
+* CVPR
+* ICCV
+* ECCV
+* NeurIPS
+* AAAI
+* ICLR
+* ACL
+* EMNLP
+* IJCAI
+
+Also search arXiv and official GitHub repositories, but clearly distinguish:
+
+1. peer-reviewed papers
+2. accepted conference papers
+3. preprints
+4. datasets
+5. repositories/projects
+
+Focus especially on recent work involving:
+
+* Medical VLMs
+* Medical MLLMs
+* Medical LLMs
+* Multimodal diagnosis
+* Medical RAG
+* Medical knowledge graphs
+* Agentic medical AI
+* Explainable diagnosis
+* Visual grounding
+* Pixel-level grounding
+* Medical hallucination
+* Evidence-grounded reasoning
+* Diagnostic reasoning
+* Multimodal clinical decision support
+* Medical VQA
+* Multi-image reasoning
+* Longitudinal medical reasoning
+* Foundation models for medical imaging
+* Medical AI safety/reliability
+* Uncertainty/calibration
+* External validation
+* Cross-dataset generalization
+
+==================================================
+3. VERY IMPORTANT — NOVELTY ANALYSIS
+====================================
+
+I do NOT want a paper that merely combines:
+
+"VLM + RAG + LLM"
+
+and calls that novel.
+
+Determine exactly what has already been done.
+
+Create a research-gap table:
+
+Paper | Year | Venue | Image modality | VLM/MLLM | LLM | RAG | Knowledge Graph | Grounding | Diagnosis | Dataset | Code | Main limitation
+
+Then identify at least 3-5 genuine research gaps.
+
+For each gap explain:
+
+* What existing papers do
+* What they do NOT do
+* Why that limitation matters clinically/technically
+* Why solving it is scientifically meaningful
+* Whether it can realistically become a Q1 contribution
+* What experiment would prove the contribution
+
+Reject weak or artificial gaps.
+
+==================================================
+4. BASE PAPERS
+==============
+
+Start by investigating these projects/papers, but do NOT assume they are the final basis:
+
+A. PulseMind
+"PulseMind: A Multi-Modal Medical Model for Real-World Clinical Diagnosis"
+
+B. MedSIGHT
+"MedSIGHT: Towards Grounded Visual Comprehension in Medical Large Vision-Language Models"
+
+C. RE-MCDF
+"RE-MCDF: Closed-Loop Multi-Expert LLM Reasoning for Knowledge-Grounded Clinical Diagnosis"
+
+D. GMAI-VL
+"GMAI-VL: General Medical AI Vision-Language Model"
+
+E. MedThinkVQA
+"Medical Thinking with Multiple Images"
+
+F. MedPLIB
+"Towards a Multimodal Large Language Model with Pixel-Level Insight for Biomedicine"
+
+Also investigate newer 2026 work, including:
+
+* MedREAL / reasoning-to-pixels
+* MedUAG
+* MedVRAG
+* CARE
+* HalluCXR
+* IMCBench
+* RESPClinBench
+* other 2026 medical VLM/RAG/reasoning benchmarks
+
+For every important paper, provide:
+
+* official paper link
+* DOI if available
+* official GitHub
+* dataset link
+* Hugging Face link if available
+* license
+* whether code is complete
+* whether dataset is actually downloadable
+* GPU/resource requirements if available
+* exact research contribution
+* weaknesses
+* what we can build on top of it
+
+Do not invent GitHub or dataset links.
+
+==================================================
+5. DATASET SELECTION
+====================
+
+I need a dataset that is:
+
+* publicly accessible
+* legally usable for academic research
+* sufficiently large
+* medically meaningful
+* suitable for multimodal AI
+* preferably contains images + clinical/question/diagnostic information
+* preferably has localization/segmentation information OR can be combined with a grounding dataset
+* reproducible
+* suitable for Q1-level experiments
+
+Investigate possible datasets such as:
+
+* MIMIC-CXR
+* CheXpert
+* ChestX-ray14
+* LIDC-IDRI
+* BraTS
+* ISIC
+* VQA-RAD
+* SLAKE
+* MedThinkVQA
+* GMAI-VL resources
+* MedPLIB/MeCoVQA
+* MedSIGHT/DiagSeg
+* other recent 2025/2026 datasets
+
+Do NOT simply list datasets.
+
+Rank them according to:
+
+1. Research suitability
+2. Dataset size
+3. Diagnostic labels
+4. Clinical information
+5. Image availability
+6. Grounding/localization
+7. Licensing/access restrictions
+8. Reproducibility
+9. Suitability for multimodal LLM research
+10. Q1 publication potential
+11. Computational feasibility
+
+Then recommend ONE primary dataset and ONE or TWO secondary evaluation datasets.
+
+==================================================
+6. CHOOSE THE MEDICAL DOMAIN
+============================
+
+Compare:
+
+* chest X-ray / pulmonary disease
+* CT / lung cancer
+* brain MRI / brain tumor
+* retinal imaging / diabetic retinopathy
+* skin imaging / skin cancer
+* pathology
+* cardiac imaging
+
+Rank them according to:
+
+* research novelty
+* available datasets
+* available code
+* medical importance
+* multimodal suitability
+* visual grounding potential
+* LLM reasoning potential
+* Q1 journal suitability
+* computational cost
+* difficulty of obtaining reliable evaluation
+
+Then recommend ONE domain.
+
+Do not choose a domain merely because it is popular.
+
+==================================================
+7. FINAL RESEARCH IDEA
+======================
+
+After the literature review, formulate ONE final research idea.
+
+Give:
+
+* proposed title
+* research problem
+* research question
+* hypothesis
+* motivation
+* exact novelty
+* methodology
+* expected contribution
+* datasets
+* baseline models
+* experiments
+* evaluation metrics
+* expected limitations
+
+The final idea must be more specific than:
+
+"Medical VLM + RAG."
+
+It should contain a clear scientific contribution.
+
+==================================================
+8. PROPOSED MODEL
+=================
+
+Design the complete architecture.
+
+For example, consider:
+
+Medical Image
++
+Clinical Context
+↓
+Medical Vision Encoder / VLM
+↓
+Visual Findings
+↓
+Visual Grounding
+↓
+Medical Knowledge Retrieval
+↓
+RAG / Knowledge Graph
+↓
+LLM Reasoning
+↓
+Evidence Verification
+↓
+Diagnosis + Confidence + Evidence + Localization
+
+But improve this architecture if the literature shows a better approach.
+
+Explain every component.
+
+For each component specify:
+
+* open-source model
+* repository
+* pretrained weights
+* input
+* output
+* training requirement
+* whether fine-tuning is needed
+* approximate GPU requirement
+
+==================================================
+9. COMPUTATIONAL FEASIBILITY
+============================
+
+I am NOT trying to train a huge foundation model from scratch.
+
+Design a realistic research plan using:
+
+* LoRA / QLoRA where appropriate
+* parameter-efficient fine-tuning
+* pretrained medical VLMs
+* frozen vision encoders where appropriate
+* RAG
+* external knowledge
+* retrieval
+* lightweight trainable modules
+
+Give three versions:
+
+A. Minimum GPU version
+B. Recommended GPU version
+C. High-resource version
+
+Explain what can realistically be done with 16 GB, 24 GB, 48 GB and 80 GB GPU memory.
+
+==================================================
+10. BASELINE IMPLEMENTATION
+===========================
+
+Give me exact repositories from which I can start.
+
+For each:
+
+* GitHub URL
+* paper
+* model
+* dataset
+* installation
+* main training command
+* inference command
+* evaluation command
+* expected output
+* dependencies
+* CUDA/PyTorch requirements if available
+
+Do NOT fabricate commands.
+
+If the repository does not provide a command, say so.
+
+I want to first reproduce an existing baseline before adding my own contribution.
+
+==================================================
+11. EXPERIMENTAL DESIGN
+=======================
+
+Design a Q1-level experimental plan.
+
+At minimum include:
+
+Experiment 1:
+Baseline comparison
+
+Experiment 2:
+Ablation study
+
+Experiment 3:
+Effect of RAG
+
+Experiment 4:
+Effect of visual grounding
+
+Experiment 5:
+Effect of clinical information
+
+Experiment 6:
+Cross-dataset generalization
+
+Experiment 7:
+External validation
+
+Experiment 8:
+Hallucination analysis
+
+Experiment 9:
+Uncertainty/calibration
+
+Experiment 10:
+Qualitative clinical case studies
+
+Explain exactly what each experiment proves.
+
+==================================================
+12. ABLATION STUDY
+==================
+
+Create a table like:
+
+Model | Vision | Clinical Context | RAG | KG | Grounding | Verification
+
+Baseline VLM
+VLM + Clinical
+VLM + RAG
+VLM + Grounding
+VLM + RAG + Grounding
+Full Proposed Model
+
+Explain which comparisons are scientifically necessary.
+
+==================================================
+13. EVALUATION METRICS
+======================
+
+Do NOT rely only on accuracy.
+
+For diagnosis include:
+
+* Accuracy
+* Precision
+* Recall/Sensitivity
+* Specificity
+* F1
+* AUROC
+* AUPRC
+
+For localization:
+
+* Dice
+* IoU
+* localization accuracy
+* pointing accuracy where appropriate
+
+For evidence grounding:
+
+* evidence precision
+* evidence recall
+* factual consistency
+* citation/evidence correctness
+
+For reliability:
+
+* Expected Calibration Error
+* Brier score
+* confidence vs correctness
+
+For hallucination:
+
+* unsupported claim rate
+* hallucination rate
+* contradiction rate
+
+Recommend appropriate statistical tests and confidence intervals.
+
+==================================================
+14. DATA SPLIT
+==============
+
+Design proper:
+
+* training
+* validation
+* test
+* external test
+
+splits.
+
+Prevent:
+
+* patient leakage
+* image leakage
+* duplicate leakage
+* metadata leakage
+
+Explain how to perform patient-level splitting.
+
+==================================================
+15. CLINICAL SAFETY
+===================
+
+Because this is medical diagnosis research, explain:
+
+* limitations
+* hallucination
+* dataset bias
+* demographic bias
+* domain shift
+* false negatives
+* false positives
+* uncertainty
+* clinical deployment limitations
+* privacy
+* regulatory considerations
+
+The system must be presented as research/decision support, not an autonomous clinical diagnostic device.
+
+==================================================
+16. Q1 JOURNAL TARGETING
+========================
+
+Rank the best target journals for the final research idea.
+
+Prioritize:
+
+1. Medical Image Analysis
+2. IEEE Transactions on Medical Imaging
+3. IEEE Journal of Biomedical and Health Informatics
+4. Artificial Intelligence in Medicine
+5. Computerized Medical Imaging and Graphics
+6. Computer Methods and Programs in Biomedicine
+7. Journal of Biomedical Informatics
+8. Pattern Recognition
+
+For each provide current:
+
+* JCR quartile
+* Impact Factor
+* CiteScore if available
+* scope
+* suitability for this paper
+* typical novelty expectation
+* standard publication/APC situation
+* whether submission is free
+* whether traditional publication can avoid mandatory OA APC
+* approximate review difficulty if reliable information exists
+
+Do not invent current metrics. Verify them from official publisher/JCR sources where possible.
+
+==================================================
+17. PAPER WRITING PLAN
+======================
+
+After the research design is finalized, create the paper structure:
+
+1. Title
+2. Abstract
+3. Keywords
+4. Introduction
+5. Related Work
+6. Research Gap
+7. Methodology
+8. Dataset
+9. Experimental Setup
+10. Results
+11. Ablation Study
+12. Generalization/External Validation
+13. Error Analysis
+14. Explainability/Case Studies
+15. Discussion
+16. Limitations
+17. Conclusion
+18. Data Availability
+19. Code Availability
+20. Ethics/Clinical considerations
+
+For every section explain what evidence/results must be available before writing it.
+
+==================================================
+18. INTRODUCTION STRATEGY
+=========================
+
+Help me write an introduction that follows this logic:
+
+Paragraph 1:
+Clinical problem
+
+Paragraph 2:
+Current AI/VLM/LLM development
+
+Paragraph 3:
+Limitations of current medical VLMs
+
+Paragraph 4:
+Specific research gap
+
+Paragraph 5:
+Our proposed solution
+
+Paragraph 6:
+Contributions
+
+Do NOT make generic claims such as:
+"AI is revolutionizing healthcare."
+
+Every important claim should have a recent citation.
+
+==================================================
+19. CONTRIBUTIONS
+=================
+
+Propose 3-4 strong contributions.
+
+They must be methodological or scientifically meaningful.
+
+Avoid weak claims like:
+
+* "We achieved high accuracy."
+* "We used a new dataset."
+* "We combined several models."
+
+Instead formulate contributions such as:
+
+* a new evidence-grounded multimodal reasoning mechanism
+* a new visual-evidence/clinical-evidence alignment mechanism
+* a new diagnostic reliability or hallucination reduction method
+* a rigorous cross-dataset validation framework
+
+Only claim something if the experiments can actually prove it.
+
+==================================================
+20. REPRODUCIBILITY
+===================
+
+Design the project so that I can release:
+
+* source code
+* configuration files
+* preprocessing scripts
+* model checkpoints/adapters where licenses permit
+* dataset preparation scripts
+* evaluation scripts
+* prompts
+* RAG database construction scripts
+* experiment logs
+* random seeds
+* environment.yml / requirements.txt
+
+Give me a proposed GitHub repository structure.
+
+==================================================
+21. RESEARCH TIMELINE
+=====================
+
+Give me a realistic 12-week plan:
+
+Weeks 1-2:
+Literature and baseline
+
+Weeks 3-4:
+Dataset/preprocessing
+
+Weeks 5-6:
+Baseline reproduction
+
+Weeks 7-8:
+Proposed method
+
+Weeks 9-10:
+Experiments
+
+Week 11:
+Analysis
+
+Week 12:
+Paper preparation
+
+Adjust this if unrealistic.
+
+==================================================
+22. MOST IMPORTANT — DO NOT WRITE THE PAPER TOO EARLY
+=====================================================
+
+I want to avoid writing a paper first and discovering later that the experiments are insufficient.
+
+Therefore:
+
+FIRST:
+Research gap
+
+SECOND:
+Dataset
+
+THIRD:
+Baseline
+
+FOURTH:
+Proposed method
+
+FIFTH:
+Experiments
+
+SIXTH:
+Results
+
+SEVENTH:
+Paper writing
+
+Clearly tell me which claims cannot be made until experimental evidence exists.
+
+==================================================
+23. FINAL OUTPUT I WANT FROM YOU
+================================
+
+At the end, give me a single comprehensive research blueprint containing:
+
+A. Final research title
+
+B. One-paragraph research idea
+
+C. Exact novelty
+
+D. Research gap
+
+E. Base papers
+
+F. Official paper links
+
+G. Official GitHub/code links
+
+H. Dataset links
+
+I. Recommended primary dataset
+
+J. Recommended secondary datasets
+
+K. Recommended open-source base model
+
+L. Complete architecture
+
+M. Training strategy
+
+N. GPU requirements
+
+O. Baselines
+
+P. Experiments
+
+Q. Ablations
+
+R. Evaluation metrics
+
+S. Expected tables
+
+T. Expected figures
+
+U. Target Q1 journals
+
+V. Journal ranking and suitability
+
+W. 12-week research plan
+
+X. Paper outline
+
+Y. Reproducibility plan
+
+Z. Risks that could cause rejection
+
+Finally, give me a section called:
+
+"WHAT I SHOULD DO TOMORROW"
+
+with the first 5 concrete tasks I should perform.
+
+Be critical. If my proposed idea is not sufficiently novel for a Q1 journal, tell me directly and redesign it before I start coding or writing.
+
+Do not optimize for making the idea sound impressive. Optimize for:
+NOVELTY + TECHNICAL RIGOR + CLINICAL RELEVANCE + REPRODUCIBILITY + Q1 PUBLICATION POTENTIAL.
