@@ -31,16 +31,22 @@ computed `val/brier_fde`. **The full training pipeline works on the P2000.**
 
 Local patches to make this work: see `notes/unitraj_patches.md` (all reversible, `*.orig` kept).
 
-## ⏳ IN PROGRESS — Argoverse 2 Motion Forecasting
+## ✅ DONE — Argoverse 2 Motion Forecasting (raw)
 
-- Tool: `F:\CLAUDE\AI1\shared\tools\s5cmd.exe` (no AWS account)
-- Target: `data/argoverse2/`
-- Command running: `s5cmd --no-sign-request sync "s3://argoverse/datasets/av2/motion-forecasting/*" .`
-- Progress at last check: **~42 GB**, test split complete (24,984), train ~157k/199,908, val not started
-- Full size expected ~50–55 GB
-- Log: `data/av2_sync.log`
+- `data/argoverse2/` — **59 GB, all 3 splits complete and integrity-verified**
+  - train 199,908 · val 24,988 · test 24,984 (each dir has scenario.parquet + log_map_archive.json)
+- Downloaded with `F:\CLAUDE\AI1\shared\tools\s5cmd.exe --no-sign-request` (no AWS account)
+- av2 devkit 0.3.6 installed in the venv; a scenario loads correctly via `scenario_serialization`
 
-**If it stops:** just re-run the same `sync` command — it skips files already downloaded.
+## ⏳ IN PROGRESS — AV2 → ScenarioNet conversion
+
+- Script: `src/run_convert_av2.sh <split>` · details + gotchas: `src/convert_av2.md`
+- **val** split converting now → `data/av2_scenarionet/val/` (8 workers, ~15 min)
+- Then run **test**, then **train** (train is ~200k scenarios — run overnight)
+- **Converter dies if the launching shell is killed.** Launch it detached:
+  `powershell Start-Process ... -WindowStyle Hidden` (see how it was started, or just
+  re-run `src/run_convert_av2.sh` — `--overwrite` makes it restartable, no resume needed
+  for val/test; for train, move completed raw dirs aside to resume).
 
 ## ❌ CANNOT AUTOMATE — you must do these
 
