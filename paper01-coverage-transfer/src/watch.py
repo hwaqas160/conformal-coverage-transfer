@@ -37,10 +37,15 @@ HB_LOG = LOGS / "heartbeat.log"
 HB_JSONL = LOGS / "heartbeat.jsonl"
 PY = ROOT.parents[0] / "shared" / "envs" / "unitraj" / "Scripts" / "python.exe"
 
-TRAIN_OUT = ROOT / "results" / "train_av2_valsplit_v1.out"
-TRAIN_ERR = ROOT / "results" / "train_av2_valsplit_v1.err"
-CKPT_DIR = ROOT / "results" / "ckpts" / "av2_valsplit_v1"
-METRICS_CSV = ROOT / "results" / "logs" / "av2_valsplit_v1" / "version_0" / "metrics.csv"
+EXP = "av2_full_v1"  # bump this + reset watch_state.json's training_done_handled to
+                     # track a new training run (av2_valsplit_v1's pipeline-validation
+                     # run finished 2026-09-11, minADE6=1.347 -- missed the ~0.85 kill
+                     # condition because it only saw 13,770 scenes; av2_full_v1 trains
+                     # on the complete 199,908-scene AV2 train set now that it's converted)
+TRAIN_OUT = ROOT / "results" / f"train_{EXP}.out"
+TRAIN_ERR = ROOT / "results" / f"train_{EXP}.err"
+CKPT_DIR = ROOT / "results" / "ckpts" / EXP
+METRICS_CSV = ROOT / "results" / "logs" / EXP / "version_0" / "metrics.csv"
 
 CONV_TRAIN_DIR = ROOT / "data" / "av2_scenarionet" / "train"
 CONV_TRAIN_LOG = ROOT / "data" / "convert_train.log"
@@ -154,11 +159,21 @@ def _log_milestone(msg: str):
 
 
 def _run_post_training(ckpt: Path):
-    """Predict on cal+test of the val-split, then in-domain coverage check."""
+    """
+    Predict on cal+test of the val-split (untouched by av2_full_v1's training data --
+    AV2's own train/val split is disjoint at the source), then in-domain coverage check.
+
+    NOTE on what this in-domain check IS and ISN'T: av2cal/av2test/av2 below are all the
+    SAME underlying distribution (AV2's val split, different halves) -- this confirms SCP
+    holds coverage on REAL model predictions (not just synthetic data), which matters, but
+    it is NOT the cross-dataset H1 result. That needs a genuinely different dataset
+    (nuScenes) predicted with THIS SAME checkpoint, tagged "<other>_from_av2full", dropped
+    into results/preds/, then rerun coverage_matrix.py.
+    """
     src = Path(__file__).resolve().parent
     preds_dir = ROOT / "results" / "preds"
     preds_dir.mkdir(parents=True, exist_ok=True)
-    for split, tag in [("cal", "av2cal_from_av2"), ("test", "av2test_from_av2")]:
+    for split, tag in [("cal", f"av2cal_from_{EXP}"), ("test", f"av2test_from_{EXP}")]:
         db = ROOT / "data" / "av2_splits" / "val" / split
         cmd = [str(PY), str(src / "predict.py"), "--ckpt", str(ckpt), "--db", str(db),
               "--dataset", "av2", "--tag", tag, "--out", str(preds_dir),
@@ -168,22 +183,20 @@ def _run_post_training(ckpt: Path):
         (LOGS / f"predict_{tag}.log").write_text(r.stdout + "\n---STDERR---\n" + r.stderr)
         _log_milestone(f"predict.py {tag} exit={r.returncode}")
 
-    # rename to the coverage_matrix.py convention: <eval>_from_<source>.npz
-    # av2cal is the calibration half of the in-domain source; av2test is held-out.
-    # coverage_transfer() needs a file "<src>_from_<src>.npz" for calibration; use the
-    # combined cal+test as that in-domain reference, matching the falsification note's
-    # 50/50 internal split logic already inside coverage_matrix.coverage_transfer().
+    # coverage_matrix.py needs a "<src>_from_<src>.npz" file for its internal 50/50
+    # cal/test split; use the calibration-half predictions as that in-domain reference.
     import shutil
-    src_file = preds_dir / "av2cal_from_av2.npz"
+    src_file = preds_dir / f"av2cal_from_{EXP}.npz"
     if src_file.exists():
-        shutil.copy(src_file, preds_dir / "av2_from_av2.npz")
+        shutil.copy(src_file, preds_dir / f"{EXP}_from_{EXP}.npz")
 
     cmd = [str(PY), str(src / "coverage_matrix.py"), "--preds", str(preds_dir),
           "--out", str(ROOT / "results"), "--mode", "coverage"]
     r = subprocess.run(cmd, cwd=str(src), capture_output=True, text=True)
-    (LOGS / "coverage_matrix_first_run.log").write_text(r.stdout + "\n---STDERR---\n" + r.stderr)
-    _log_milestone(f"coverage_matrix.py exit={r.returncode} -- see logs/coverage_matrix_first_run.log "
-                   f"and results/coverage_transfer.{{json,csv}}")
+    (LOGS / f"coverage_matrix_{EXP}.log").write_text(r.stdout + "\n---STDERR---\n" + r.stderr)
+    _log_milestone(f"coverage_matrix.py exit={r.returncode} -- see logs/coverage_matrix_{EXP}.log "
+                   f"and results/coverage_transfer.{{json,csv}} (OVERWRITES the previous run's file -- "
+                   f"copy it out first if you need both)")
 
 
 if __name__ == "__main__":

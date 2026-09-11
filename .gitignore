@@ -55,3 +55,6 @@ shared/tools/
 
 # ============ paper01: operational logs (heartbeat, watcher output) ============
 */logs/
+
+# ============ paper01: archived run outputs (large binaries) ============
+*/results/archive*/
