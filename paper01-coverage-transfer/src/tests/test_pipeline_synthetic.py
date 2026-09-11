@@ -21,21 +21,35 @@ SRC = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SRC))
 from conformal import nonconformity_scores  # noqa: E402
 import coverage_matrix as cm  # noqa: E402
+import attribution as attr  # noqa: E402
 
 
-def _fake_npz(path, n, err_scale, feat_shift, seed):
+def _fake_npz(path, n, p_dense, seed):
+    """
+    Genuine COVARIATE shift, not a scale shift: every scene has a discrete density
+    level L in {0,1,2} with a shared conditional error distribution err_scale(L); only
+    the MIXTURE weight p(L) differs between 'datasets' (p_dense). This is exactly what
+    importance-weighted conformal prediction is designed to fix, because the source
+    calibration set already contains high-density scenes -- just underrepresented.
+    """
     rng = np.random.default_rng(seed)
     T, K = 60, 6
+    p = np.array([1 - p_dense - p_dense / 2, p_dense / 2, p_dense])
+    p = np.clip(p, 0.02, None); p /= p.sum()
+    level = rng.choice([0, 1, 2], size=n, p=p)
+    err_scale_by_level = np.array([0.4, 0.9, 1.6])
+    err_scale = err_scale_by_level[level]
+
     gt = np.cumsum(rng.normal(0, 0.3, size=(n, T, 2)), axis=1).astype(np.float32)
-    good = gt + rng.normal(0, err_scale, size=(n, T, 2))
+    good = gt + rng.normal(0, 1, size=(n, T, 2)) * err_scale[:, None, None]
     bad = rng.normal(0, 6, size=(n, K - 1, T, 2))
     pred = np.concatenate([good[:, None], bad], axis=1).astype(np.float32)
     gt_mask = np.ones((n, T), bool)
     scores = nonconformity_scores(pred, gt, gt_mask).astype(np.float32)
-    # 7 shift factors; correlate factor 1 (agent density) & 4 (speed) with err via feat_shift
+
+    # feature 1 (agent density) reveals the level; a touch of noise, no label leakage
     feats = rng.normal(0, 1, size=(n, 7)).astype(np.float32)
-    feats[:, 1] += feat_shift + 0.5 * (scores - scores.mean()) / (scores.std() + 1e-6)
-    feats[:, 4] += 0.7 * feat_shift
+    feats[:, 1] = level.astype(np.float32) + rng.normal(0, 0.3, n)
     np.savez_compressed(
         path, pred_trajs=pred, pred_probs=rng.dirichlet(np.ones(K), n).astype(np.float32),
         gt=gt, gt_mask=gt_mask, final_idx=np.full(n, T - 1, np.int32),
@@ -50,11 +64,12 @@ def main():
     tmp = Path(tempfile.mkdtemp())
     preds = tmp / "preds"
     preds.mkdir()
-    # A: tight errors.  B: 2x errors + shifted features.
-    _fake_npz(preds / "A_from_A.npz", 6000, err_scale=0.5, feat_shift=0.0, seed=1)
-    _fake_npz(preds / "B_from_A.npz", 6000, err_scale=1.1, feat_shift=1.5, seed=2)
-    _fake_npz(preds / "B_from_B.npz", 6000, err_scale=1.1, feat_shift=1.5, seed=3)
-    _fake_npz(preds / "A_from_B.npz", 6000, err_scale=0.5, feat_shift=0.0, seed=4)
+    # A: mostly low-density scenes.  B: mostly high-density scenes.  SAME conditional
+    # error-given-density relationship in both -- a covariate shift, not a scale shift.
+    _fake_npz(preds / "A_from_A.npz", 8000, p_dense=0.10, seed=1)
+    _fake_npz(preds / "B_from_A.npz", 8000, p_dense=0.55, seed=2)
+    _fake_npz(preds / "B_from_B.npz", 8000, p_dense=0.55, seed=3)
+    _fake_npz(preds / "A_from_B.npz", 8000, p_dense=0.10, seed=4)
 
     rows = cm.coverage_transfer(preds, alphas=(0.10,), seeds=(0, 1, 2), out_dir=str(tmp))
     d_in = np.mean([r["delta"] for r in rows if r["kind"] == "in"])
@@ -70,6 +85,9 @@ def main():
     for m, v in by_m.items():
         print(f"  {m:12s} {np.mean(v):.4f}")
 
+    reg, removal_rows = attr.run(preds, str(tmp), alpha=0.10)
+    mean_removal = float(np.nanmean([r["removal_fraction"] for r in removal_rows]))
+
     ok = True
     if abs(d_in) > 0.03:
         print("FAIL: in-domain coverage off nominal -> SCP bug"); ok = False
@@ -78,6 +96,12 @@ def main():
     best_recal = min(np.mean(v) for m, v in by_m.items() if m != "uncorrected")
     if best_recal >= np.mean(by_m["uncorrected"]):
         print("WARN: no recalibration method beat uncorrected on synthetic")
+    if reg["adj_r2"] < 0.05:
+        print(f"FAIL: attribution regression finds ~no signal (adj_R2={reg['adj_r2']:.3f}) "
+             "on synthetic data built to correlate score with feature 1 -> attribution.py bug")
+        ok = False
+    if not (mean_removal > 0):
+        print(f"WARN: reweighting removed 0 or negative coverage gap on synthetic ({mean_removal:.2f})")
     print("\nPIPELINE OK" if ok else "\nPIPELINE FAIL")
     sys.exit(0 if ok else 1)
 
