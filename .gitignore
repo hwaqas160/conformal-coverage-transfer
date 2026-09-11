@@ -44,3 +44,11 @@ shared/tools/
 !*/code/requirements*.txt
 !*/code/requirements.lock
 !*/code/constraints.txt
+
+# ============ paper01: growing training logs / large results ============
+*/results/*.out
+*/results/*.err
+*/results/ckpts/
+*/results/logs/
+*/results/preds/
+*/data/av2_splits/

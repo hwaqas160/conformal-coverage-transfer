@@ -1,14 +1,0 @@
-Cannot import knn_cuda for MTR. Please check the cuda compilation.
-Cannot import attention_cuda for MTR. Please check the cuda compilation.
-Cannot import attention_cuda for MTR. Please check the cuda compilation.
-Loading training data...
-Warning: cache path F:\CLAUDE\AI1\paper01-coverage-transfer\data\unitraj_cache\train\val already exists, skip 
-Loaded 13770 samples from F:/CLAUDE/AI1/paper01-coverage-transfer/data/av2_splits/val/train
-Data loaded
-Loading validation data...
-Warning: cache path F:\CLAUDE\AI1\paper01-coverage-transfer\data\unitraj_cache\cal\val already exists, skip 
-Loaded 4576 samples from F:/CLAUDE/AI1/paper01-coverage-transfer/data/av2_splits/val/cal
-Data loaded
-[train] train=13770  val=2500
-Adjusting learning rate of group 0 to 7.5000e-04.
-Sanity Checking: 0it [00:00, ?it/s]
