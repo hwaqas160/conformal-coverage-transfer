@@ -34,22 +34,34 @@ s5cmd --no-sign-request cp "s3://argoverse/datasets/av2/motion-forecasting/*" F:
 ```
 
 > **Verify the exact bucket path** on the Argoverse user guide before running — bucket layouts
-> change and I could not confirm this path at source. The AWS CLI (`aws s3 sync
-> --no-sign-request`) works as an alternative if s5cmd gives trouble.
+> change and I could not confirm this path at source. The AWS CLI (`aws s3 sync --no-sign-request`) works as an alternative if s5cmd gives trouble.
 
 Take the **motion-forecasting** split only. You do not need sensor data.
 
 ---
 
-## 2. nuScenes
+## 2. nuScenes  ← BLOCKED ON YOU (license required, cannot be automated)
 
 - Register: https://www.nuscenes.org/ (free, non-commercial research use)
 - Download the **full trainval** set, or start with **nuScenes-mini** (~4 GB) to test the
-  conversion pipeline before committing disk.
+  conversion pipeline before committing disk. Also grab the **map expansion pack**.
+- Extract into `data/nuscenes/` with the standard layout: `maps/`, `samples/`, `sweeps/`,
+  `v1.0-mini/` or `v1.0-trainval/`.
 
-For trajectory prediction you need the map expansion pack and the prediction split, not the
-full sensor blobs. Check what ScenarioNet's nuScenes converter actually requires before
-downloading 40 GB you may not use.
+**`nuscenes-devkit` is already installed in the venv** (v1.2.0, verified 2026-09-11 — the
+converter's `-h` runs cleanly). The conversion command is ready to go the moment the data
+lands:
+
+```bash
+bash src/run_convert_nuscenes.sh mini_train    # test the path on nuScenes-mini first
+bash src/run_convert_nuscenes.sh train         # prediction-challenge train split
+bash src/run_convert_nuscenes.sh val           # prediction-challenge val split — the
+                                                # cross-domain test set for Paper 01's H1
+```
+
+Use the **prediction-challenge splits** (`mini_train/mini_val/train/train_val/val`), not
+the full-log planning splits (`v1.0-*`) — the former matches UniTraj's forecasting task
+(6 s future, 2 s past) exactly; see `src/run_convert_nuscenes.sh` for why.
 
 ---
 
