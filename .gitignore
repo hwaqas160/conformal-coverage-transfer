@@ -52,3 +52,6 @@ shared/tools/
 */results/logs/
 */results/preds/
 */data/av2_splits/
+
+# ============ paper01: operational logs (heartbeat, watcher output) ============
+*/logs/

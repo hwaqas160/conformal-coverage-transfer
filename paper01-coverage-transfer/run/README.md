@@ -11,10 +11,32 @@ Tasks run in their own session (verified: `Session 2`, distinct from the interac
 ending. It does NOT survive an actual machine shutdown or sleep — if the user's machine
 is a laptop that sleeps on lid-close, that will still kill these.
 
-## The two jobs
+## The jobs
 
-- `convert_train.cmd` → task `P01_ConvertTrain` — AV2 train split -> ScenarioNet
-- `train_autobot_v1.cmd` → task `P01_TrainAutobotV1` — first AutoBot checkpoint
+- `convert_train.cmd` → task `P01_ConvertTrain` (once) — AV2 train split -> ScenarioNet
+- `train_autobot_v1.cmd` → task `P01_TrainAutobotV1` (once) — first AutoBot checkpoint
+- `watch.cmd` → task `P01_Watch` (**every 5 min**) — logs progress, and on completion
+  automatically runs `predict.py` + `coverage_matrix.py` (in-domain) so the first
+  coverage result appears without anyone needing to check in. See `src/watch.py`.
+
+## Logs (what "make logs" produced)
+
+| File | What |
+|---|---|
+| `logs/heartbeat.log` | human-readable, one line per 5-min tick: conversion %, training epoch/ADE, best ckpt |
+| `logs/heartbeat.jsonl` | same data, one JSON object per line, for plotting/parsing |
+| `logs/watch_state.json` | one-shot action tracker (so predict.py doesn't re-run every 5 min) |
+| `logs/watch_cmd.log` | raw stdout/stderr of the watcher itself (should stay empty = healthy) |
+| `logs/predict_<tag>.log` | stdout/stderr of each auto-triggered predict.py run |
+| `logs/coverage_matrix_first_run.log` | stdout/stderr of the auto-triggered first coverage result |
+| `data/convert_train.{log,err}` | raw AV2 conversion output |
+| `results/train_av2_valsplit_v1.{out,err}` | raw training output |
+| `results/logs/av2_valsplit_v1/version_0/metrics.csv` | per-epoch Lightning metrics (authoritative for ADE/loss) |
+
+Tail the heartbeat to see everything at a glance:
+```powershell
+Get-Content F:\CLAUDE\AI1\paper01-coverage-transfer\logs\heartbeat.log -Tail 20 -Wait
+```
 
 ## Check status
 
