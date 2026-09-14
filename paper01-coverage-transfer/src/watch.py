@@ -37,11 +37,19 @@ HB_LOG = LOGS / "heartbeat.log"
 HB_JSONL = LOGS / "heartbeat.jsonl"
 PY = ROOT.parents[0] / "shared" / "envs" / "unitraj" / "Scripts" / "python.exe"
 
-EXP = "av2_full_v1"  # bump this + reset watch_state.json's training_done_handled to
-                     # track a new training run (av2_valsplit_v1's pipeline-validation
-                     # run finished 2026-09-11, minADE6=1.347 -- missed the ~0.85 kill
-                     # condition because it only saw 13,770 scenes; av2_full_v1 trains
-                     # on the complete 199,908-scene AV2 train set now that it's converted)
+EXP = "av2_cpu_v1"  # bump this + reset watch_state.json's training_done_handled to
+                     # track a new training run. History:
+                     #  av2_valsplit_v1 (done 09-11): 13,770 scenes, minADE6=1.347, missed
+                     #    the ~0.85 kill condition (too little data).
+                     #  av2_full_v1 (killed 09-11): launched on the full 199,908-scene AV2
+                     #    train set, but SupChain2's ablation sweep had the P2000 at ~4.9/5GB
+                     #    and 91-100% util; my job crawled at ~6s/step (would've taken ~6
+                     #    days). Killed after confirming it wasn't hung, just contended.
+                     #  av2_cpu_v1 (started 09-14): user asked to also run on CPU rather
+                     #    than fight for the GPU. Benchmarked 6.2 samp/s @ 16 threads --
+                     #    comparable to the contended GPU rate, but doesn't contend.
+                     #    60,000-scene subsample (of the cached 199,908, no reprocessing
+                     #    needed), 10 epochs, ETA ~25h.
 TRAIN_OUT = ROOT / "results" / f"train_{EXP}.out"
 TRAIN_ERR = ROOT / "results" / f"train_{EXP}.err"
 CKPT_DIR = ROOT / "results" / "ckpts" / EXP
@@ -177,7 +185,7 @@ def _run_post_training(ckpt: Path):
         db = ROOT / "data" / "av2_splits" / "val" / split
         cmd = [str(PY), str(src / "predict.py"), "--ckpt", str(ckpt), "--db", str(db),
               "--dataset", "av2", "--tag", tag, "--out", str(preds_dir),
-              "--device", "cuda", "--batch_size", "32", "--num_workers", "4"]
+              "--device", "cpu", "--batch_size", "32", "--num_workers", "4"]
         _log_milestone(f"running predict.py for {tag} ...")
         r = subprocess.run(cmd, cwd=str(src), capture_output=True, text=True)
         (LOGS / f"predict_{tag}.log").write_text(r.stdout + "\n---STDERR---\n" + r.stderr)

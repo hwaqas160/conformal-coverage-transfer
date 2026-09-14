@@ -39,6 +39,8 @@ def main():
     ap.add_argument("--num_workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--resume", default=None)
+    ap.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
+    ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
     a = ap.parse_args()
     # resolve to absolute BEFORE any chdir
     a.train_db = Path(a.train_db).resolve().as_posix()
@@ -48,6 +50,8 @@ def main():
 
     os.environ.setdefault("WANDB_MODE", "disabled")
     torch.set_float32_matmul_precision("medium")
+    if a.device == "cpu" and a.threads:
+        torch.set_num_threads(a.threads)
 
     os.chdir(UNITRAJ_PKG)
     import pytorch_lightning as pl
@@ -99,7 +103,7 @@ def main():
     )
     trainer = pl.Trainer(
         max_epochs=a.epochs,
-        devices=1, accelerator="gpu", strategy="auto",
+        devices=1, accelerator=a.device, strategy="auto",
         precision=32,
         accumulate_grad_batches=a.accum,
         gradient_clip_val=cfg.method.grad_clip_norm,
