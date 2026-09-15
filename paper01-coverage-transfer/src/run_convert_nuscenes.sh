@@ -36,7 +36,6 @@ echo "[$(date '+%H:%M:%S')] converting nuScenes ${ARG} -> ${OUT}"
   -n "ns_${ARG}" \
   --dataroot "$DATAROOT" \
   --split "$ARG" \
-  --future 6 --past 2 \
   --num_workers 8 \
   --overwrite
 

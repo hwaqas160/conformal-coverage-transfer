@@ -101,6 +101,15 @@ def main():
         filename="epoch{epoch:02d}-minADE{val/minADE6:.3f}", auto_insert_metric_name=False,
         dirpath=str(SRC.parent / "results" / "ckpts" / a.exp),
     )
+    # mid-epoch safety net: a crash used to lose an entire epoch (e.g. a DataLoader
+    # worker dying 32% through epoch 0, discovered a day later with zero checkpoints
+    # to resume from). This saves "last.ckpt" every 200 steps regardless of val/epoch
+    # boundaries, so --resume never loses more than a few minutes of CPU-bound training.
+    step_ckpt_cb = ModelCheckpoint(
+        dirpath=str(SRC.parent / "results" / "ckpts" / a.exp),
+        filename="last", save_last=True, every_n_train_steps=200,
+        save_top_k=0,  # this callback only maintains "last.ckpt"; ckpt_cb tracks the best
+    )
     trainer = pl.Trainer(
         max_epochs=a.epochs,
         devices=1, accelerator=a.device, strategy="auto",
@@ -108,7 +117,7 @@ def main():
         accumulate_grad_batches=a.accum,
         gradient_clip_val=cfg.method.grad_clip_norm,
         check_val_every_n_epoch=a.val_every,
-        callbacks=[ckpt_cb, LearningRateMonitor(logging_interval="epoch")],
+        callbacks=[ckpt_cb, step_ckpt_cb, LearningRateMonitor(logging_interval="epoch")],
         logger=CSVLogger(str(SRC.parent / "results" / "logs"), name=a.exp),
         log_every_n_steps=50,
         enable_progress_bar=True,
