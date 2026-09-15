@@ -36,7 +36,7 @@ echo "[$(date '+%H:%M:%S')] converting nuScenes ${ARG} -> ${OUT}"
   -n "ns_${ARG}" \
   --dataroot "$DATAROOT" \
   --split "$ARG" \
-  --num_workers 8 \
+  --num_workers 3 \
   --overwrite
 
 echo "[$(date '+%H:%M:%S')] verifying..."
