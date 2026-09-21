@@ -85,6 +85,8 @@ def label_budget(src_cal_scores, tgt_scores, ks=(25, 50, 100, 250, 500, 1000, 25
            "q_src": float(q_src), "ks": list(ks), "estimators": {}}
     for nm in names:
         out["estimators"][nm] = {}
+    ks = [k for k in ks if k <= n - 500]         # keep >= 500 evaluation scenes per draw
+    out["ks"] = list(ks)
     for k in ks:
         errs = {nm: np.empty(draws) for nm in names}
         for d in range(draws):
@@ -171,7 +173,7 @@ def audit_power(q_src: float, tgt_scores, ks=(25, 50, 100, 250, 500, 1000, 2500)
     rng = np.random.default_rng(seed)
     out = {"alpha": alpha, "level": level, "q_src": float(q_src), "true_gap": float(alpha - (tgt > q_src).mean()) * -1.0,
            "reject_prob": {}}
-    for k in ks:
+    for k in [k for k in ks if k < len(tgt)]:      # cannot draw more labelled scenes than exist
         rej = 0
         for _ in range(draws):
             m = int((tgt[rng.choice(len(tgt), k, replace=False)] > q_src).sum())
