@@ -158,3 +158,83 @@ AutoBot 1.37 (trained on 8xA100, batch 128, ~5 min/epoch). The "0.85 / +15%" thr
 unverified figure should be treated as unfounded. The base-model gate must be re-defined against a
 verified reference (e.g. nuScenes minADE5 with the challenge protocol) before it is used to accept or
 reject a model.
+
+---
+
+## Addendum A — written 2026-09-21, AFTER Run 1 results were seen, BEFORE any Run 2 analysis
+
+Status of this addendum: hypotheses H4–H9 below are **post-hoc with respect to Run 1** (they were motivated by
+Run 1's outcome) and **pre-registered with respect to every analysis run after this commit**. They are labelled
+*exploratory-motivated*, not confirmatory-from-the-start. H1–H3 above are unchanged.
+
+### A0. Disclosed flaw in Run 1's H2/H3 (found 2026-09-21 while designing the solution)
+`src/shift_factors.py` factors 5–7 (`ego_speed_mean`, `ego_turning_frac_proxy`, `gt_future_curvature`) are computed
+from the **ground-truth future** of the predicted agent. The Run 1 H3 methods (importance weighting, normalisation,
+group conditioning) consumed these factors on the **target** domain, so Run 1's H3 was **not label-free as claimed**:
+it had access to target-label-derived features. Consequence: the negative H3 conclusion is, if anything, *conservative*
+(the methods had extra information and still failed), but the run does not match its own definition and its numbers
+must not be cited as a label-free result. Fix: define **label-free factors** from history/map/agents only and re-run:
+
+| # | label-free factor | definition (per predicted agent) |
+|---|---|---|
+| 1 | native_dt | native sampling period of the source dataset |
+| 2 | n_agents_near_ego | # tracked agents within 50 m at the last observed step |
+| 3 | map_point_density | valid map points per 100 m^2 of the local crop |
+| 4 | n_lanes_near_ego | # polylines with a point within 50 m |
+| 5 | hist_speed_mean | mean speed over the observed history (from history velocity features) |
+| 6 | hist_heading_change | abs. net heading change over the observed history (rad) |
+| 7 | hist_curvature | mean abs. curvature of the observed history path (rad/m) |
+
+H2 is re-reported with BOTH factor sets (GT-derived = "oracle diagnostic", label-free = the operational one); H3 is
+re-run with the label-free set only. Run 1's H2/H3 rows stay in the log, marked "superseded by Run 2".
+
+### A1. Proposition (identifiability; to be stated in the paper with proof)
+Zero-label recalibration cannot in general restore coverage: for any label-free procedure there exist two target
+distributions with identical marginal over inputs X but different conditional score laws P(S|X), on which the procedure
+outputs the same threshold but the required thresholds differ. Hence label-free methods can only fix *covariate* shift;
+coverage repair under *conditional* shift needs either (i) a score that is more invariant to it (H4) or (ii) some target
+labels (H5). This is a statement about what is provable, not a claim that any method fails empirically.
+
+### A2. New hypotheses (primary metric always: coverage gap at alpha = 0.10; secondary alpha in {0.05, 0.20})
+
+**H4 — model-uncertainty-normalised score (label-free).** Score
+`s'_i = min_k max_t ||e_{k,t}|| / u_{i,k}`, `u_{i,k} = mean_t sqrt(bx_{k,t}^2 + by_{k,t}^2)` (the model's own predicted Laplace
+scale for mode k, softplus+0.01). Region = union over modes of balls of radius `q' * u_{i,k}`.
+*Prediction:* target coverage gap |Delta'| <= 0.5 * |Delta| of the raw score, with in-domain |Delta_in| <= 0.02.
+*Efficiency guard:* region-area proxy `A = sum_k pi (q' u_k)^2` is reported relative to the raw-score region
+`K pi q^2`; a "win" that only inflates A by > 25% is not counted as a fix.
+*Refuted if:* |Delta'| > 0.75 * |Delta|, or |Delta_in'| > 0.03.
+
+**H5 — few-label recalibration and the label budget.** Given k labelled target scenes (k in {25, 50, 100, 250, 500,
+1000, 2500}), three estimators, all fixed in advance (no selection among them by target-test coverage):
+ (a) direct: split-conformal on the k target scores only (exact finite-sample validity);
+ (b) pooled: source calibration scores UNION the k target scores, unweighted;
+ (c) shrinkage: `q = (1-w) q_src + w q_tgt(k)`, `w = k/(k+k0)`, reported for the whole family k0 in {100, 500, 2000}.
+Protocol: 200 random draws of the k labelled scenes; evaluate on the remaining target scenes (disjoint).
+*Reported:* mean |coverage error|, and `P(|error| <= 0.02)` per estimator and k; **k\*** = smallest k with
+P(|error| <= 0.02) >= 0.90 for each estimator; and whether any of (b)/(c) reaches k\* smaller than (a).
+*Prediction:* (a) has |error| <= 0.02 with prob >= 0.9 only for k >= 500; (b)/(c) reduce variance vs (a) at k <= 250.
+*Refuted if:* neither (b) nor (c) has lower mean |error| than (a) at k = 100.
+
+**H6 — label-free shift monitor.** Across all ordered city pairs (i -> j, i != j, each city n >= 300) of AV2 with a fixed
+model (calibrate on city i's held-out samples, test on city j): statistic T_ij = cross-validated AUC of a domain classifier
+on label-free features (list in A0) + model-output features (mean predicted scale, mode-probability entropy);
+outcome G_ij = realised |coverage gap| at alpha=0.10.
+*Prediction:* Spearman rho(T, G) >= 0.5 with permutation p < 0.05. *Refuted if* rho < 0.3.
+
+**H7 — marginal coverage hides sub-population miscoverage (descriptive).** Per-city coverage of one common calibrated model
+at alpha = 0.10. *Prediction:* at least one city deviates from nominal by >= 0.05. Reported with binomial CIs; no test.
+
+**H8 — robustness across base models.** H1's under-coverage (gap >= 0.02 at alpha=0.10, zero-shot AV2 -> nuScenes) replicates
+for every checkpoint in the model zoo (av2_cpu_v1 ep08, av2_cpu_v2, av2_valsplit_v1 ep17, plus later models).
+*Refuted if* any well-trained model has gap < 0.
+
+**H9 — reverse direction.** A nuScenes-trained AutoBot, calibrated on nuScenes, evaluated zero-label on AV2 val:
+report the signed gap. *Prediction:* |gap| >= 0.02 (sign not pre-specified: the target here is the *easier* dataset).
+
+### A3. Multiplicity and reporting rules
+Primary confirmatory-style claims: H1 (replicated), H4, H5. Everything else is exploratory and labelled so.
+No claim in the paper may use a number that is not regenerated by `paper/make_results.py` from `results/*.json`.
+Negative results are reported as such. Model selection uses `av2_splits/val/train` only (clean); the av2_cpu_v1 checkpoint
+was selected on a 1,500-sample subset of `av2_splits/val/cal` (minor overlap with the calibration split; disclosed, and
+av2_cpu_v2 removes it).

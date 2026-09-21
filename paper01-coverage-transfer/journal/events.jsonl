@@ -1,0 +1,14 @@
+{"ts": "2026-09-10T11:00:00", "id": "env_build", "event": "done", "detail": "py3.10 venv + torch2.0.1+cu118; P2000 GPU compute verified; requirements.lock", "sha": "backfill"}
+{"ts": "2026-09-11T12:00:00", "id": "av2_raw_download", "event": "done", "detail": "249,880 scenarios, 59GB, integrity-checked (train 199,908 / val 24,988 / test 24,984 unusable: no GT)", "sha": "backfill"}
+{"ts": "2026-09-11T14:00:00", "id": "av2_val_convert", "event": "done", "detail": "24,988 scenarios, 0 errors", "sha": "backfill"}
+{"ts": "2026-09-12T00:00:00", "id": "av2_train_convert", "event": "done", "detail": "199,930 pkl (199,908 scenarios); 117GB UniTraj cache built", "sha": "backfill"}
+{"ts": "2026-09-11T14:24:00", "id": "av2_valsplit_v1", "event": "done", "detail": "13,770 scenes x20ep GPU; best epoch17 minADE6=1.347; archived results/archive_valsplit_v1", "sha": "backfill"}
+{"ts": "2026-09-11T17:00:00", "id": "av2_full_v1", "event": "failed", "detail": "killed: GPU shared with another job, 6.4s/step => ~6 days; not a bug", "sha": "backfill"}
+{"ts": "2026-09-15T11:49:00", "id": "av2_cpu_v1", "event": "attempt_start", "detail": "CPU, 60k scenes, 10ep, batch32, retry wrapper", "sha": "backfill"}
+{"ts": "2026-09-15T14:54:00", "id": "av2_cpu_v1", "event": "attempt_end", "detail": "attempt 1 crashed (DataLoader worker died) at ~3h; retry resumed from last.ckpt", "sha": "backfill"}
+{"ts": "2026-09-16T12:53:00", "id": "av2_cpu_v1", "event": "done", "detail": "best epoch08 minADE6=1.349 (val subset of av2 cal); train ADE 1.30@ep9; LR never decayed; results/ckpts/av2_cpu_v1", "sha": "backfill"}
+{"ts": "2026-09-17T12:58:00", "id": "ns_val_convert", "event": "done", "detail": "9,041 scenarios (after 2 GEOS bad_alloc crashes at 8 workers; 3 workers stable)", "sha": "backfill"}
+{"ts": "2026-09-21T11:25:00", "id": "pair_av2_cpu_v1__ns", "event": "result", "detail": "H1 gap +3.4pt (CI 2.7..4.1) alpha=.10; H2 refuted; H3 not supported; see results/pair_av2_cpu_v1__ns.json", "sha": "backfill"}
+{"ts": "2026-09-21T11:40:00", "id": "confound_sampling_rate", "event": "result", "detail": "gap +3.5/+3.6pt at 2Hz/1Hz scoring => GT interpolation not the cause", "sha": "backfill"}
+{"ts": "2026-09-21T16:19:51", "id": "av2_cpu_v2", "event": "created", "detail": "fine-tune v1 epoch08 w/ LR decay 3.75e-4->1.9e-4->9.4e-5, 4ep x 60k(seed1), clean val=av2_splits/val/train, CPU 12thr", "sha": "f4b94a6"}
+{"ts": "2026-09-21T16:20:00", "id": "av2_cpu_v2", "event": "attempt_start", "detail": "1", "sha": "f4b94a6"}

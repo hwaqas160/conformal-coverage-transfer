@@ -38,7 +38,11 @@ def main():
     ap.add_argument("--limit_train", type=int, default=None, help="cap # train scenes")
     ap.add_argument("--num_workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--resume", default=None)
+    ap.add_argument("--resume", default=None, help="full Lightning resume (optimizer+epoch); wins over --init_ckpt")
+    ap.add_argument("--init_ckpt", default=None, help="initialise WEIGHTS ONLY from this ckpt (fine-tuning)")
+    ap.add_argument("--lr_sched", type=int, nargs="+", default=None,
+                    help="MultiStepLR milestones in epochs (gamma=0.5 inside UniTraj). Default = UniTraj's "
+                         "[10,20,30,40,50], i.e. NO decay inside a <=10-epoch run")
     ap.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
     a = ap.parse_args()
@@ -47,6 +51,8 @@ def main():
     a.val_db = Path(a.val_db).resolve().as_posix()
     if a.resume:
         a.resume = Path(a.resume).resolve().as_posix()
+    if a.init_ckpt:
+        a.init_ckpt = Path(a.init_ckpt).resolve().as_posix()
 
     os.environ.setdefault("WANDB_MODE", "disabled")
     torch.set_float32_matmul_precision("medium")
@@ -76,9 +82,21 @@ def main():
     cfg.method.train_batch_size = a.batch
     cfg.method.eval_batch_size = max(a.batch * 2, 16)
     cfg.method.max_epochs = a.epochs
+    # NOTE: UniTraj's optimizer reads config['learning_rate'] / ['learning_rate_sched'] from the TOP
+    # level. _load_cfg() also stores a nested copy at cfg.method, so writing only cfg.method.* is a
+    # silent no-op (found 2026-09-21: log kept printing lr 7.5e-4 for --lr 3.75e-4). Set both.
     cfg.method.learning_rate = a.lr
+    cfg.learning_rate = a.lr
+    if a.lr_sched:
+        cfg.method.learning_rate_sched = a.lr_sched
+        cfg.learning_rate_sched = a.lr_sched
 
     model = build_model(cfg)
+    if a.init_ckpt and not a.resume:
+        _sd = torch.load(Path(a.init_ckpt).resolve().as_posix(), map_location="cpu")
+        _sd = _sd.get("state_dict", _sd)
+        _miss, _unexp = model.load_state_dict(_sd, strict=False)
+        print(f"[train] initialised weights from {a.init_ckpt} (missing={len(_miss)}, unexpected={len(_unexp)})")
     train_set = build_dataset(cfg, val=False)
     val_set = build_dataset(cfg, val=True)
     if a.val_subset and len(val_set) > a.val_subset:
