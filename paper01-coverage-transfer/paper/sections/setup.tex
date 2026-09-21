@@ -1,0 +1,12 @@
+\section{Experimental Setup}
+\paragraph{Data.} Argoverse~2 \cite{wilson2021argoverse2} and nuScenes \cite{caesar2020nuscenes}, converted with ScenarioNet \cite{li2023scenarionet}
+and loaded through UniTraj \cite{feng2024unitraj}. Each dataset's held-out split is divided by a fixed salted hash into a calibration
+half and a test half, so calibration and test scenes never overlap. The AV2 test split has no labels and is not used.
+\paragraph{Forecasters.} AutoBot-Ego \cite{girgis2022autobots} (1.5M parameters), $K=6$ modes. Because a 5\,GB GPU shared with other work was
+not available, models were trained on CPU by fine-tuning with a decaying learning rate; all models are small and we state this as a limitation. A model zoo of
+independently trained checkpoints (\todo{fill from results: names, epochs, minADE}) is used to test robustness of every conclusion.
+\paragraph{Protocol.} $\alpha=0.1$. Forward direction: calibrate on AV2 calibration half, test on AV2 test half (same-domain control) and on nuScenes (cross-dataset).
+Reverse direction: the swap. Confidence intervals are percentile bootstraps over scenes. Hypotheses H1--H9 and their pass thresholds were
+written before the corresponding runs (\texttt{notes/falsification.md}); those defined after seeing Run~1 are marked post-hoc there and
+are confirmed only on Run~2 data.
+\paragraph{Metrics.} Coverage, coverage gap $\Delta$, region area proxy, label budget $k^\star$, audit power/false-alarm, monitor AUC and Spearman correlation.

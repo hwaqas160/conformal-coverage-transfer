@@ -1,0 +1,25 @@
+\section{Related Work}
+\paragraph{Conformal prediction for trajectories.}
+Split CP turns any predictor into one with marginal coverage guarantees \cite{vovk2005algorithmic,angelopoulos2023gentle}
+and underlies conformal safe planning around predicted agents \cite{lindemann2023safe}. Multi-step and multi-modal
+trajectories have been handled with copula-based intervals \cite{sun2024copula}, and scenario-aware intervals in a Frenet
+frame have been proposed on nuPlan \cite{shu2025scenario} (a preprint evaluated on a single dataset). Locally weighted
+scores that divide the residual by an estimated spread \cite{lei2018distribution} are the classical route to adaptive
+regions; our normalised score uses the forecaster's own predicted scale in that role.
+
+\paragraph{Conformal prediction under shift.}
+Weighted CP handles covariate shift given the likelihood ratio \cite{tibshirani2019covariate}, and the coverage loss under
+general shift can be bounded by a distance between calibration and test distributions \cite{barber2023beyond}. Online
+methods adapt the threshold from realised errors: adaptive conformal inference \cite{gibbs2021adaptive}, conformal PID
+control \cite{angelopoulos2023pid}, its use for trajectories in CUQDS \cite{huang2025cuqds}, and adaptive nonconformity
+scores with a replay buffer \cite{tumu2026adaptnc}. These need a stream of ground-truth labels after deployment. Other
+work conditions on an observable nuisance parameter and generates synthetic data with a diffusion model
+\cite{rahaman2026shift} or treats the shift the ego vehicle itself induces in other agents \cite{binny2025moved}
+(both preprints). We study a different point in this space: no feedback, no generative model, and two real driving
+datasets.
+
+\paragraph{Cross-dataset trajectory prediction.}
+UniTraj harmonises several driving datasets and reports that accuracy drops when models are transferred between them
+\cite{feng2024unitraj}; that study is about point accuracy, not about the validity of an uncertainty guarantee. Beyond
+trajectories, \cite{ovadia2019can} showed that calibration of deep models degrades under dataset shift; our question is the
+conformal analogue for structured, multi-modal forecasts.

@@ -1,0 +1,29 @@
+\IEEEPARstart{A}{utonomous} vehicles plan around forecasts of what nearby road users will do. A forecast is only as
+useful as the statement it makes about its own reliability: a planner that knows a predicted region contains the true
+future with probability at least $1-\alpha$ can keep clear of that region and of nothing larger. Conformal prediction
+(CP) supplies such a statement for any black-box predictor, with a finite-sample guarantee that requires nothing beyond
+exchangeability of calibration and test data \cite{vovk2005algorithmic,angelopoulos2023gentle}, and it has been adopted
+for trajectory prediction and safe planning
+\cite{lindemann2023safe,sun2024copula,huang2025cuqds}.
+
+Exchangeability is exactly what deployment breaks. A forecaster is calibrated on the data at hand---one set of cities,
+one sensor suite, one annotation pipeline---and then driven somewhere else. That accuracy drops when a trajectory
+predictor moves between datasets is documented \cite{feng2024unitraj}, and that predictive uncertainty degrades under
+dataset shift is well known for classifiers \cite{ovadia2019can}. What is not known is what happens to the
+\emph{guarantee itself} when a conformally calibrated forecaster is moved, without any new labels, to a different real
+driving dataset: whether the stated $1-\alpha$ survives, how badly it fails, and whether the standard remedies for shift
+repair it.
+
+The conformal literature offers several remedies, each resting on an assumption. Weighted CP restores validity under
+covariate shift when the likelihood ratio is known or can be estimated \cite{tibshirani2019covariate}; more general
+results bound the coverage loss by a distance between calibration and test distributions
+\cite{barber2023beyond}; online methods track shift by feeding realised errors back into the threshold
+\cite{gibbs2021adaptive,angelopoulos2023pid}, an idea carried to trajectory prediction \cite{huang2025cuqds} and to
+robotic settings more broadly \cite{tumu2026adaptnc}; and a generative-prior approach has been proposed for planning
+under environment shift \cite{rahaman2026shift}. What these do not establish is the \emph{static, label-free,
+dataset-to-dataset} setting in which a forecaster is frozen, calibrated once, and deployed: how large the failure is on
+real data, whether the covariate-shift remedy suffices, and how many labelled target scenes it takes to detect or repair
+the failure.
+
+\paragraph*{Contributions}
+\todo{Finalise after results. Planned, each to be kept ONLY if the pre-registered test supports it: (i) a measurement protocol and the first measurement of zero-label conformal coverage transfer between real driving datasets; (ii) a diagnosis --- covariate reweighting does not repair the loss --- with a proposition explaining why label-free repair is limited; (iii) the solution(s) that worked: model-uncertainty-normalised scores (H4), a label-efficient coverage audit with a closed-form label budget (H5b), a label-free shift monitor (H6); (iv) released code, pre-registration and experiment log.}

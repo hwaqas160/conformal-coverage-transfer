@@ -21,3 +21,4 @@
 {"ts": "2026-09-21T16:38:54", "id": "run2__synth_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 1500/1500/3000", "sha": "da99e93"}
 {"ts": "2026-09-21T16:39:13", "id": "run2__synth_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 1500/1500/3000", "sha": "da99e93"}
 {"ts": "2026-09-21T16:40:52", "id": "run2__synth_forward", "event": "done", "detail": "results\\run2\\_synth__forward.json in 99s; raw gap@.10=+0.3360 norm gap=+0.0047", "sha": "da99e93"}
+{"ts": "2026-09-21T16:45:26", "id": "predict_av2_cpu_v1", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\av2test.npz", "sha": "ae88935"}

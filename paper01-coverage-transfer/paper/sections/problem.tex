@@ -1,0 +1,52 @@
+\section{Problem Setting}
+\subsection{Conformal regions for multi-modal trajectories}
+A forecaster $f$ maps a scene $x$ to $K$ candidate futures $\hat y_1,\dots,\hat y_K\in\mathbb{R}^{T\times 2}$ for a target
+agent whose true future is $y$. We use the nonconformity score
+\begin{equation}
+s(x,y)=\min_{k\le K}\ \max_{t\le T}\ \|\hat y_{k,t}(x)-y_t\|_2 ,
+\end{equation}
+so that $s\le q$ iff $y$ lies inside the union of the $K$ tube-shaped balls of radius $q$ around the candidates. Given $n$
+calibration scenes from a \emph{source} dataset, split CP sets $\hat q=$ the $\lceil (n+1)(1-\alpha)\rceil$-th smallest score,
+and the region $C_{\hat q}(x)=\{y:s(x,y)\le\hat q\}$ has $\Pr[y\in C_{\hat q}(x)]\ge 1-\alpha$ when the test scene is
+exchangeable with the calibration scenes \cite{vovk2005algorithmic,angelopoulos2023gentle}.
+
+\subsection{The transfer problem}
+Let $P_S$, $P_T$ be the source and target scene--future distributions. The \emph{coverage gap} of a source-calibrated
+threshold on the target is
+\begin{equation}
+\Delta=(1-\alpha)-\Pr_{P_T}\!\big[s(x,y)\le \hat q\big],
+\end{equation}
+positive when the guarantee fails (under-coverage). We ask (Q1) how large $\Delta$ is on real data; (Q2) whether
+covariate-shift reweighting \cite{tibshirani2019covariate} removes it; (Q3) whether anything label-free can; and (Q4) how
+many labelled target scenes are needed to audit or to repair it.
+
+\subsection{What label-free repair can and cannot do}
+Covariate reweighting is valid when $P_T(y\mid x)=P_S(y\mid x)$. If the conditional differs---annotation pipelines, sensor
+noise, and agent behaviour all differ across datasets---no reweighting on $x$ repairs the gap. More strongly, without
+restricting the class of shifts nothing label-free can.
+
+\begin{proposition}[Non-identifiability of a label-free threshold]\label{prop:ident}
+Let $S_0$ be a nonconformity score with a continuous distribution on the target, and consider the scale-shift family
+$S=c\,S_0$, $c\ge1$, whose members are all indistinguishable from unlabeled target inputs. Let $\hat q$ be any threshold
+computed without target labels, so its law does not depend on $c$. If $\Pr[cS_0\le\hat q]\ge 1-\alpha$ for every $c\ge1$,
+then $\Pr[\hat q=\infty]\ge 1-\alpha$.
+\end{proposition}
+\begin{proof}
+For fixed $\hat q<\infty$, $\mathbf{1}\{cS_0\le\hat q\}\to 0$ pointwise as $c\to\infty$. By dominated convergence,
+$\mathbb{E}\,\Pr[cS_0\le\hat q\mid \hat q]\to \Pr[\hat q=\infty]$, and the coverage requirement gives
+$\Pr[\hat q=\infty]\ge 1-\alpha$.
+\end{proof}
+\begin{remark}
+The proposition does not say label-free methods are useless; it says any guarantee \emph{for all} scale shifts is vacuous,
+so a useful label-free method must either restrict the shift class (as our normalised score does, Sec.~\ref{sec:norm}) or
+be complemented by a label-based audit (Sec.~\ref{sec:audit}).
+\end{remark}
+
+\subsection{Cost of using target labels}
+If $k$ labelled target scenes are used directly, the resulting coverage has standard deviation about
+$\sqrt{\alpha(1-\alpha)/k}$ around $1-\alpha$, so $\approx 1000$ labels are needed for $\pm 2$ points at $\alpha=0.1$.
+Detecting a shortfall $\delta$ with an exact one-sided binomial test at level $\ell$ and power $1-\beta$ needs
+\begin{equation}\label{eq:budget}
+k\approx\left(\frac{z_{1-\ell}\sqrt{\alpha(1-\alpha)}+z_{1-\beta}\sqrt{(\alpha+\delta)(1-\alpha-\delta)}}{\delta}\right)^{2}.
+\end{equation}
+For $\delta=0.034$, $\alpha=0.1$, $\ell=0.05$, $\beta=0.1$ this gives $k\approx750$.

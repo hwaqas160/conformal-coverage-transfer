@@ -1,0 +1,44 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{amsmath,amssymb,amsthm,booktabs,graphicx,cite,xcolor,url,multirow,array}
+\usepackage[hidelinks]{hyperref}
+
+% ---- draft helpers: every unresolved item is loud in the PDF and counted by build.ps1 ----------------
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\pending}{\textcolor{red}{\textbf{[pending]}}}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% ---- numbers: generated/numbers.tex is written by make_results.py; defaults.tex supplies "[pending]" -
+\InputIfFileExists{generated/numbers.tex}{}{}
+\input{defaults}
+
+\begin{document}
+
+\title{\papertitle}
+\author{Hassan~Waqas%
+\thanks{H.~Waqas is with the Department of Electrical Engineering (AI \& Autonomous Systems). E-mail: h.waqas160@gmail.com}}
+\markboth{Preprint. Draft --- results marked \textit{[pending]} are not yet computed.}{Waqas: Conformal coverage under dataset shift}
+\maketitle
+
+\input{sections/abstract}
+\begin{IEEEkeywords}
+Conformal prediction, trajectory prediction, distribution shift, uncertainty quantification, autonomous driving.
+\end{IEEEkeywords}
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/problem}
+\input{sections/method}
+\input{sections/setup}
+\input{sections/results}
+\input{sections/discussion}
+
+\section*{Reproducibility}
+All code, configuration files, pre-registered hypotheses, and the append-only experiment log are in the project
+repository (\texttt{paper01-coverage-transfer}). Every number and table in this paper is regenerated from the raw
+result files by \texttt{paper/make\_results.py}; no result is typed by hand.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+\end{document}

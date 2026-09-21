@@ -13,3 +13,6 @@ Compute reality: P2000 shared; the user's AI2 project (Paper 02 detection cache)
 
 ### 2026-09-21 16:36 — solution design
 Solution design (post-hoc after Run 1, pre-registered before Run 2): identifiability proposition explains WHY label-free covariate methods cannot fix conditional shift; H4 = normalise scores by the model's own predicted Laplace scale (label-free; Spearman(pred scale, actual score)=0.54 on 192 samples); H5/H5b = label budget + binomial coverage audit; H6 = label-free shift monitor across AV2 cities; H7 city-level coverage. Synthetic tests with known truth: H4 fixes visible shift only (honest negative control), direct estimator needs ~1000 labels for +/-2 pt, pooled/shrink biased, audit matches exact binomial theory.
+
+### 2026-09-21 16:49
+Manuscript scaffold compiles (main.tex + sections; results/abstract/discussion are TODO placeholders pending Run 2). Next: make_results.py once analyze_run2 outputs exist. manuscript

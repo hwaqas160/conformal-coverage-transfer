@@ -1,0 +1,22 @@
+\section{Methods}
+\subsection{Model-normalised score (label-free)}\label{sec:norm}
+The forecaster emits, per mode $k$, a Laplace scale $(b^x_{k,t},b^y_{k,t})$. Let
+$u_k(x)=\tfrac1T\sum_t\sqrt{(b^x_{k,t})^2+(b^y_{k,t})^2}$ and use the score
+$s'(x,y)=\min_k \max_t\|\hat y_{k,t}-y_t\|/u_k(x)$. The region is the union of balls of radius $\hat q'\,u_k(x)$. The premise is that when a
+shift makes scenes harder, the forecaster's own scale widens, so the normalised score is less shift-sensitive. Its
+efficiency is measured by region area $\sum_k\pi(\hat q' u_k)^2$ at matched coverage.
+
+\subsection{Recalibration with $k$ target labels}
+We compare three thresholds computed from $k$ labelled target scenes and $n$ source scenes:
+\emph{direct} (SCP on the $k$ target scores); \emph{pooled} (SCP on the union); and \emph{shrinkage}
+($\hat q=\lambda\hat q_{\text{tgt}}+(1-\lambda)\hat q_{\text{src}}$ with $\lambda=k/(k+k_0)$). We report the label budget $k^\star$ at which
+absolute coverage error falls below $0.02$ in at least 90\% of random label draws.
+
+\subsection{Coverage audit}\label{sec:audit}
+Given a source-calibrated $\hat q$ and $k$ labelled target scenes, an exact one-sided binomial test of
+$H_0$: coverage $\ge1-\alpha$ flags a violation. We report its empirical power and its false-alarm rate on a
+shift-free split, alongside the theoretical budget of Eq.~\eqref{eq:budget}.
+
+\subsection{Label-free shift monitor}
+A domain classifier on label-free scene features (native sampling interval, nearby-agent count, map density, nearby lanes, history speed, heading change, curvature) is trained to separate source and target scenes; its AUC is the monitor.
+Within a dataset, the same classifier is trained per city against the rest. We test whether the AUC predicts the coverage loss (across cities, by Spearman correlation).
