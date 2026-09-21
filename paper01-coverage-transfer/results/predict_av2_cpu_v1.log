@@ -1,0 +1,11 @@
+Cannot import knn_cuda for MTR. Please check the cuda compilation.
+Cannot import attention_cuda for MTR. Please check the cuda compilation.
+Cannot import attention_cuda for MTR. Please check the cuda compilation.
+Loading validation data...
+Warning: cache path F:\CLAUDE\AI1\paper01-coverage-transfer\data\unitraj_cache\cal\val already exists, skip 
+Loaded 4576 samples from F:/CLAUDE/AI1/paper01-coverage-transfer/data/av2_splits/val/cal
+Data loaded
+[predict] av2cal_from_av2_cpu_v1: 4576 samples, ckpt=epoch08-minADE1.349.ckpt
+  batch 0  (32 rows, 22s)
+  batch 50  (1632 rows, 148s)
+  batch 100  (3232 rows, 272s)

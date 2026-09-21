@@ -12,3 +12,8 @@
 {"ts": "2026-09-21T11:40:00", "id": "confound_sampling_rate", "event": "result", "detail": "gap +3.5/+3.6pt at 2Hz/1Hz scoring => GT interpolation not the cause", "sha": "backfill"}
 {"ts": "2026-09-21T16:19:51", "id": "av2_cpu_v2", "event": "created", "detail": "fine-tune v1 epoch08 w/ LR decay 3.75e-4->1.9e-4->9.4e-5, 4ep x 60k(seed1), clean val=av2_splits/val/train, CPU 12thr", "sha": "f4b94a6"}
 {"ts": "2026-09-21T16:20:00", "id": "av2_cpu_v2", "event": "attempt_start", "detail": "1", "sha": "f4b94a6"}
+{"ts": "2026-09-21T16:30:43", "id": "predict_chain1", "event": "created", "detail": "v1 ep08 + valsplit_v1 ep17 -> results/preds2/<model>/{av2cal,av2test,ns}.npz (schema v2)", "sha": "26bb683"}
+{"ts": "2026-09-21T16:31:00", "id": "predict_av2_cpu_v1", "event": "attempt_start", "detail": "ckpt=epoch08-minADE1.349.ckpt sets=['av2cal', 'av2test', 'ns']", "sha": "26bb683"}
+{"ts": "2026-09-21T16:32:00", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "26bb683"}
+{"ts": "2026-09-21T16:34:16", "id": "ns_train_convert", "event": "attempt_start", "detail": "32186 scenarios, 11 chunks of 3000, workers=3", "sha": "26bb683"}
+{"ts": "2026-09-21T16:34:16", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 0/11 start (3000 scenarios)", "sha": "26bb683"}

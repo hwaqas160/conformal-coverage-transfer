@@ -6,10 +6,10 @@ All factors are cheap functions of the model INPUT + ground truth geometry -- th
 use the model prediction, so they can be computed once per dataset and reused.
 
 UniTraj input layout (post-collate, cfg defaults, VEHICLE agents):
-  obj_trajs        (B, A, 21, C)   agent history, ego-centric & rotated; C~=39
-                                   [...,:2]  = (x, y)
-                                   [...,25:27] = (vx, vy)   (velocity NOT masked by default)
-                                   [...,35:37] = one-hot-ish time encoding tail (varies)
+  obj_trajs        (B, A, 21, 39)  agent history, ego-centric & rotated. VERIFIED layout
+                                   (base_dataset.py get_agent_data): [0:2]=xy, [2]=z, [3:6]=size,
+                                   [6:11]=type one-hot, [11:33]=time embedding, [33:35]=heading sin/cos,
+                                   [35:37]=velocity (vx,vy), [37:39]=acceleration
   obj_trajs_mask   (B, A, 21) bool
   track_index_to_predict (B,)      index of ego agent in A
   center_gt_trajs  (B, 60, 4)      future in ego frame [x, y, vx, vy]
@@ -179,3 +179,50 @@ if __name__ == "__main__":
     print("factors shape:", f.shape)
     for n, v in zip(FACTOR_NAMES, f.mean(0)):
         print(f"  {n:24s} {v:.3f}")
+
+
+# ------------------------------------------------------------------------------------------
+# LABEL-FREE factors (Addendum A0).  Factors 5-7 above are derived from the GROUND-TRUTH FUTURE
+# and therefore are NOT available at deployment; anything that claims to be label-free must use
+# these instead.  Inputs used: history (obj_trajs of the predicted agent), other agents, map.
+# ------------------------------------------------------------------------------------------
+FACTOR_NAMES_LF = [
+    "native_dt",
+    "n_agents_near_ego",
+    "map_point_density",
+    "n_lanes_near_ego",
+    "hist_speed_mean",
+    "hist_heading_change",
+    "hist_curvature",
+]
+_XY, _HEAD, _VEL = slice(0, 2), slice(33, 35), slice(35, 37)
+
+
+def compute_factors_lf(batch_np: dict, dataset_key: str, near_radius: float = 50.0) -> np.ndarray:
+    """(B, 7) label-free factors, columns = FACTOR_NAMES_LF. Reuses factors 1-4 from compute_factors."""
+    base = compute_factors(batch_np, dataset_key, near_radius)          # cols 0..3 are label-free
+    obj = batch_np["obj_trajs"]                                         # (B, A, H, 39)
+    objm = batch_np["obj_trajs_mask"].astype(bool)                      # (B, A, H)
+    ego = np.asarray(batch_np["track_index_to_predict"]).astype(int)    # (B,)
+    B = obj.shape[0]
+
+    speed = np.zeros(B, np.float32); dhead = np.zeros(B, np.float32); curv = np.zeros(B, np.float32)
+    for i in range(B):
+        e = ego[i]
+        valid = np.where(objm[i, e])[0]
+        if len(valid) < 3:
+            continue
+        v = obj[i, e, valid][:, _VEL]
+        speed[i] = float(np.linalg.norm(v, axis=1).mean())
+        h = obj[i, e, valid][:, _HEAD]
+        ang = np.arctan2(h[:, 0], h[:, 1])                              # (sin, cos) -> angle
+        dhead[i] = float(np.abs(np.angle(np.exp(1j * (ang[-1] - ang[0])))))
+        pp = obj[i, e, valid][:, _XY]
+        d = np.diff(pp, axis=0)
+        seg = np.linalg.norm(d, axis=1)
+        keep = seg > 0.05          # >=5 cm per 0.1 s step: drops jitter of (near-)stationary agents
+        d, seg = d[keep], seg[keep]
+        if len(d) >= 2:
+            a2 = np.unwrap(np.arctan2(d[:, 1], d[:, 0]))
+            curv[i] = float(np.sum(np.abs(np.diff(a2))) / max(np.sum(0.5 * (seg[:-1] + seg[1:])), 1e-3))
+    return np.column_stack([base[:, :4], speed, dhead, curv]).astype(np.float32)

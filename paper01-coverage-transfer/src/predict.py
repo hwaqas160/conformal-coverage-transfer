@@ -32,29 +32,37 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from unitraj_bridge import build_model, build_loader  # noqa: E402
-from shift_factors import compute_factors, FACTOR_NAMES  # noqa: E402
+from shift_factors import compute_factors, compute_factors_lf, FACTOR_NAMES, FACTOR_NAMES_LF  # noqa: E402
 from conformal import nonconformity_scores  # noqa: E402
 
 
 @torch.no_grad()
 def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
-         batch_size=32, num_workers=8, method="autobot"):
+         batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None):
     os.makedirs(out_dir, exist_ok=True)
     t0 = time.time()
+    if ckpt:                       # build_model() chdirs into UniTraj; relative paths would break
+        ckpt = str(Path(ckpt).resolve())
+    if out_file:
+        out_file = str(Path(out_file).resolve())
     model, cfg = build_model(method, ckpt, device)
     ds, loader = build_loader(db, cfg, batch_size=batch_size,
                               num_workers=num_workers, max_data_num=n)
     print(f"[predict] {tag}: {len(ds)} samples, ckpt={'none' if not ckpt else Path(ckpt).name}")
 
-    PT, PP, G, GM, FI, FE, SID, DN = [], [], [], [], [], [], [], []
+    PT, PP, G, GM, FI, FE, FL, PS, SID, DN = [], [], [], [], [], [], [], [], [], []
     for bi, batch in enumerate(loader):
+        if limit_batches is not None and bi >= limit_batches:   # NB: --n is ignored for val-mode datasets
+            break
         inp = batch["input_dict"]
         for k, v in list(inp.items()):
             if torch.is_tensor(v):
                 inp[k] = v.to(device)
         out = model.predict(batch)
 
-        pt = out["predicted_trajectory"].detach().cpu().numpy()[..., :2]
+        _full = out["predicted_trajectory"].detach().cpu().numpy()       # (B,K,T,5): x,y,bx,by,rho
+        pt = _full[..., :2]
+        ps = np.sqrt(_full[..., 2] ** 2 + _full[..., 3] ** 2).mean(axis=2)  # (B,K) mean-horizon Laplace scale
         pp = out["predicted_probability"].detach().cpu().numpy()
         bn = {k: (v.detach().cpu().numpy() if torch.is_tensor(v) else np.asarray(v))
               for k, v in inp.items()}
@@ -62,11 +70,12 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         gm = bn["center_gt_trajs_mask"].astype(bool)
         fi = bn["center_gt_final_valid_idx"].astype(np.int32)
         fe = compute_factors(bn, dataset_key)
+        fl = compute_factors_lf(bn, dataset_key)
         sid = np.asarray(bn["scenario_id"]).astype("U40")
         dn = np.asarray(bn["dataset_name"]).astype("U16")
 
         PT.append(pt); PP.append(pp); G.append(gt); GM.append(gm)
-        FI.append(fi); FE.append(fe); SID.append(sid); DN.append(dn)
+        FI.append(fi); FE.append(fe); FL.append(fl); PS.append(ps); SID.append(sid); DN.append(dn)
         if bi % 50 == 0:
             print(f"  batch {bi}  ({sum(len(x) for x in PT)} rows, {time.time()-t0:.0f}s)")
 
@@ -75,7 +84,8 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
     gt_mask = np.concatenate(GM)
     scores = nonconformity_scores(pred_trajs, gt, gt_mask).astype(np.float32)
 
-    path = Path(out_dir) / f"{tag}.npz"
+    path = Path(out_file) if out_file else Path(out_dir) / f"{tag}.npz"
+    path.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         path,
         pred_trajs=pred_trajs,
@@ -84,10 +94,14 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         gt_mask=gt_mask,
         final_idx=np.concatenate(FI),
         feats=np.concatenate(FE).astype(np.float32),
+        feats_lf=np.concatenate(FL).astype(np.float32),
+        pred_scale=np.concatenate(PS).astype(np.float32),
         scores=scores,
         scenario_id=np.concatenate(SID),
         dataset_name=np.concatenate(DN),
         factor_names=np.asarray(FACTOR_NAMES),
+        factor_names_lf=np.asarray(FACTOR_NAMES_LF),
+        schema=np.asarray(2),
     )
     print(f"[predict] wrote {path}  ({len(scores)} rows, {time.time()-t0:.0f}s)")
     print(f"          score mean={scores.mean():.2f} p50={np.median(scores):.2f} "
@@ -106,5 +120,7 @@ if __name__ == "__main__":
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--batch_size", type=int, default=32)
     ap.add_argument("--num_workers", type=int, default=8)
+    ap.add_argument("--limit_batches", type=int, default=None, help="quick test: stop after N batches")
+    ap.add_argument("--out_file", default=None, help="exact output .npz path (overrides --out/--tag)")
     a = ap.parse_args()
-    dump(a.ckpt, a.db, a.dataset, a.tag, a.out, a.n, a.device, a.batch_size, a.num_workers)
+    dump(a.ckpt, a.db, a.dataset, a.tag, a.out, a.n, a.device, a.batch_size, a.num_workers, out_file=a.out_file, limit_batches=a.limit_batches)
