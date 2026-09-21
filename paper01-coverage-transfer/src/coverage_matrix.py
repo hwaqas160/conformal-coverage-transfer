@@ -83,7 +83,10 @@ def coverage_transfer(preds_dir, alphas=(0.05, 0.10, 0.20), seeds=(0, 1, 2),
                         continue
                     cross = _load(pairs[(ev, src)])
                     r_x = sc.evaluate(cross["scores"])
-                    rows.append(dict(source=src, eval=ev, kind="cross", alpha=alpha,
+                    # same dataset family (av2_cpu_v1 -> av2cal/av2test) is NOT cross-domain
+                    fam = src.split("_")[0]
+                    kind = "same_domain" if ev.startswith(fam) else "cross"
+                    rows.append(dict(source=src, eval=ev, kind=kind, alpha=alpha,
                                      seed=seed, nominal=1 - alpha, **r_x,
                                      delta=(1 - alpha) - r_x["coverage"]))
 
@@ -152,7 +155,7 @@ def _write_tables(rows, out_dir, name):
     # console summary
     if name == "coverage_transfer" and rows:
         import statistics as st
-        for kind in ("in", "cross"):
+        for kind in ("in", "same_domain", "cross"):
             ds = [r["delta"] for r in rows if r["kind"] == kind and abs(r["alpha"] - 0.1) < 1e-6]
             if ds:
                 print(f"  [{kind}] alpha=0.10  mean delta = {st.mean(ds):+.4f}  "

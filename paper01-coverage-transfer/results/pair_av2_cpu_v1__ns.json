@@ -1,0 +1,145 @@
+{
+  "source": "av2_cpu_v1",
+  "cal": "av2cal",
+  "same": "av2test",
+  "target": "ns",
+  "n": {
+    "cal": 4576,
+    "same": 4633,
+    "target": 9041
+  },
+  "base_model": {
+    "target_minADE5_2Hz_zero_shot": 1.9878208066649927,
+    "target_n": 9041,
+    "same_domain_minADE5_2Hz": 1.7137470829464545,
+    "same_n": 4633,
+    "note": "UniTraj paper nuScenes minADE5: AutoBot-UniTraj 1.26, AutoBot 1.37 (trained ON nuScenes; ours is zero-shot from the source dataset)"
+  },
+  "H1": {
+    "0.05": {
+      "nominal": 0.95,
+      "q_hat_mean": 7.897445201873779,
+      "same_domain_coverage": 0.9498165335635657,
+      "target_coverage": 0.9223205397633005,
+      "target_gap": 0.027679460236699427,
+      "target_gap_95ci_binomial": [
+        0.022161966148676247,
+        0.03319695432472261
+      ],
+      "target_gap_seed_range": [
+        0.020014378940382604,
+        0.038485786970467784
+      ]
+    },
+    "0.10": {
+      "nominal": 0.9,
+      "q_hat_mean": 5.905012798309326,
+      "same_domain_coverage": 0.9020073386574573,
+      "target_coverage": 0.8655458466983742,
+      "target_gap": 0.03445415330162582,
+      "target_gap_95ci_binomial": [
+        0.02742213509987981,
+        0.04148617150337184
+      ],
+      "target_gap_seed_range": [
+        0.0259816391992036,
+        0.04157725915274857
+      ]
+    },
+    "0.20": {
+      "nominal": 0.8,
+      "q_hat_mean": 4.514682292938232,
+      "same_domain_coverage": 0.8079430174832721,
+      "target_coverage": 0.771242119234598,
+      "target_gap": 0.02875788076540209,
+      "target_gap_95ci_binomial": [
+        0.02009960849429973,
+        0.037416153036504446
+      ],
+      "target_gap_seed_range": [
+        0.013471961066253813,
+        0.042340449065368935
+      ]
+    }
+  },
+  "shift_factor_means": {
+    "native_dt": {
+      "source": 0.10000001639127731,
+      "target": 0.5
+    },
+    "n_agents_near_ego": {
+      "source": 9.490172386169434,
+      "target": 11.317221641540527
+    },
+    "map_point_density": {
+      "source": 9.908235549926758,
+      "target": 7.3745222091674805
+    },
+    "n_lanes_near_ego": {
+      "source": 87.12813568115234,
+      "target": 58.25450897216797
+    },
+    "ego_speed_mean": {
+      "source": 6.629720687866211,
+      "target": 5.852388381958008
+    },
+    "ego_turning_frac_proxy": {
+      "source": 0.2662612795829773,
+      "target": 0.2024112343788147
+    },
+    "gt_future_curvature": {
+      "source": 5.661608695983887,
+      "target": 0.08206281810998917
+    }
+  },
+  "score_mean": {
+    "source": 3.421785593032837,
+    "target": 3.9629790782928467
+  },
+  "H2_regression": {
+    "pooled_adj_r2": 0.14719031451164455,
+    "n": 13674,
+    "coef": {
+      "native_dt": 0.5636278976856357,
+      "n_agents_near_ego": -0.23380331202907936,
+      "map_point_density": -0.34358108178821706,
+      "n_lanes_near_ego": 0.5143363893758003,
+      "ego_speed_mean": 1.012437010730804,
+      "ego_turning_frac_proxy": 1.136109834349821,
+      "gt_future_curvature": -0.20122512439843115
+    },
+    "within_source_adj_r2": 0.12101040536401197,
+    "within_target_adj_r2": 0.17042175595442843
+  },
+  "H3": {
+    "uncorrected": {
+      "coverage_mean": 0.8655458466983742,
+      "coverage_std": 0.005529078492875545,
+      "gap": 0.03445415330162582,
+      "radius": 5.905012798309326
+    },
+    "weighted": {
+      "coverage_mean": 0.8469417099878334,
+      "coverage_std": 0.003489583725111988,
+      "gap": 0.053058290012166665,
+      "radius": 5.498790884017945
+    },
+    "normalized": {
+      "coverage_mean": 0.8135383254064816,
+      "coverage_std": 0.00558885119641849,
+      "gap": 0.08646167459351839,
+      "radius": 5.194843077051906
+    },
+    "group": {
+      "coverage_mean": 0.8640194668731336,
+      "coverage_std": 0.004503276773915185,
+      "gap": 0.03598053312686644,
+      "radius": 5.822109277379445
+    }
+  },
+  "H2_reweighting_removal_fraction": {
+    "mean": -0.5734241341827371,
+    "min": -0.9280544912728858,
+    "max": -0.2799650043744526
+  }
+}

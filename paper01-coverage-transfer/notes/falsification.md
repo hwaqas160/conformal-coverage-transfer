@@ -115,14 +115,46 @@ region size > 50% (achieving coverage by making the region uselessly large — n
 
 ## Outcome log (fill AFTER experiments — do not touch above)
 
+### Run 1 — 2026-09-21 — source `av2_cpu_v1` (AutoBot, CPU-trained) -> target nuScenes val
+Reproduce: `python src/analyze_pair.py --src av2_cpu_v1 --cal av2cal --same av2test --target ns`
+(full numbers: `results/pair_av2_cpu_v1__ns.json`). alpha=0.10, calibration = random 50% of the
+AV2 held-out calibration split, 10 seeds. **One source->target pair only. Weak base model (see below).**
+
 | Hypothesis | Metric value | Threshold | Supported? | Notes |
 |---|---|---|---|---|
-| H1 (Δ_in)        |  | <= 0.03 |  |  |
-| H1 (Δ_cross)     |  | >= 0.05 mean |  |  |
-| H2 (adj R^2)     |  | >= 0.35 |  |  |
-| H2 (reweight removes) |  | >= 40% |  |  |
-| H3 (Δ_recal)     |  | <= 0.03 |  |  |
-| H3 (region infl) |  | <= 25% |  |  |
+| H1 (D_in) | +0.005 (same-domain held-out: -0.002) | <= 0.03 | **Yes** | SCP implementation is correct on real predictions. |
+| H1 (D_cross) | **+0.034** (95% CI +0.027..+0.041; seed range +0.026..+0.042) | >= 0.05 mean | **No (magnitude)** | A real, statistically unambiguous under-coverage (86.6% vs 90% nominal, n=9041), in the unsafe direction, at all 3 alphas (+0.023 / +0.034 / +0.031). But BELOW the pre-registered >=0.05, and only one pair exists so the "at least one pair >=0.10" clause cannot be met. Refutation bar (<0.02) NOT hit. |
+| H2 (adj R^2) | **0.147** (within-AV2 0.121, within-nuScenes 0.170) | >= 0.35 (refute < 0.20) | **REFUTED** | The 7 pre-registered factors explain little of score variance. |
+| H2 (reweight removes) | **-57%** (range -93%..-28%) | >= 40% (refute < 25%) | **REFUTED** | Importance weighting made coverage WORSE (84.7% vs 86.6%). |
+| H3 (D_recal) | best label-free method (group) +0.036; uncorrected +0.034 | <= 0.03 | **No** | No method beats doing nothing. Weighted +0.053, normalized +0.086, group +0.036. Literal refutation clause ("no method <= 0.05") is NOT triggered only because the uncorrected baseline (0.034) already sits under 0.05 -- the threshold was set too loosely; the substantive claim (a repair exists) is unsupported. |
+| H3 (region infl) | weighted 0.93x, normalized 0.88x, group 0.99x of uncorrected radius | <= 25% | n/a | Methods did not achieve coverage, so efficiency is moot. Note weighting/normalizing SHRANK the region while coverage was already short. |
+
+**Interpretation (hypotheses, not established):** weighting on observable scene covariates moved
+the calibration quantile the wrong way (radius 5.91 -> 5.50): the factors that distinguish nuScenes
+from AV2 (fewer lanes, lower speed, fewer turns) are ones associated with LOWER error in AV2, yet
+nuScenes errors are HIGHER (mean score 3.96 vs 3.42). That pattern is what conditional (label/concept)
+shift looks like, which covariate reweighting cannot fix by construction. Untested alternatives:
+(a) 2 Hz-native nuScenes ground truth interpolated to 10 Hz vs native 10 Hz AV2 (gt_future_curvature:
+AV2 5.66 vs nuScenes 0.08; native_dt perfectly collinear with dataset) -- TESTED 2026-09-21 by scoring only
+at native 2 Hz / 1 Hz steps: gap +3.5 / +3.6 pts vs +3.4 at 10 Hz, so GT interpolation does NOT explain the
+gap (results/confound_check_sampling_rate.json); the interpolated model INPUT history is still untested; (b) different tracking/annotation noise; (c) map-frame differences.
+
+**Known limits of Run 1:** single source->target pair; single model, single training seed; base model is
+weak (AV2 held-out miss rate ~52%; zero-shot nuScenes minADE5 = 1.99 vs published nuScenes-trained AutoBot
+1.26-1.37 -- not apples-to-apples since ours is zero-shot and under-trained: 10 epochs, batch 32, LR never
+decayed, versus UniTraj's 8xA100 / batch 128); no reverse direction (nuScenes -> AV2).
 
 **Rule:** a refuted hypothesis gets reported as refuted. A clean negative on H2 or H3 is
 still publishable if H1 holds.
+
+---
+
+## Errata (2026-09-21) -- appended, original text above left intact
+
+The kill condition above cites "UniTraj-reported AV2 minADE ... (~0.73)". That figure was written from
+memory and **could not be verified** against the UniTraj paper (papers/UniTraj_ECCV2024.pdf). The only
+AutoBot reference numbers verifiable there are on **nuScenes**, minADE5: AutoBot-UniTraj 1.26, vanilla
+AutoBot 1.37 (trained on 8xA100, batch 128, ~5 min/epoch). The "0.85 / +15%" threshold derived from the
+unverified figure should be treated as unfounded. The base-model gate must be re-defined against a
+verified reference (e.g. nuScenes minADE5 with the challenge protocol) before it is used to accept or
+reject a model.
