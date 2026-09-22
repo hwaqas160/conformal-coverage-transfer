@@ -1,7 +1,7 @@
 # RESUME — start here after a crash, a reboot, or a new session
 
 _Keep this file accurate: update it whenever a job is launched/finished or a decision changes. Last full update:
-2026-09-21 17:00._
+2026-09-22 10:25._
 
 ## 0. One-paragraph state of the project
 Paper 01 asks: **does the conformal-prediction coverage guarantee survive a zero-label change of dataset in
@@ -9,8 +9,14 @@ trajectory prediction, and what repairs it?** Run 1 (AutoBot trained on Argovers
 real under-coverage of **+3.4 pts** at alpha=0.10 (95% CI 2.7–4.1), robust to a sampling-rate control; covariate
 reweighting did **not** repair it (H2/H3 refuted). Since then: a disclosed flaw (H3 used GT-derived features) was
 fixed, hypotheses H4–H9 were pre-registered (`notes/falsification.md` Addendum A), solution code was written and
-validated on synthetic data, and a stronger base model + more dataset pairs are being produced. **Target: a paper
-that covers problem (measurement + diagnosis) and solution (audit + normalised score + label budget).**
+validated on synthetic data, and the manuscript skeleton (`paper/`) was written and compiles. **REAL Run-2 numbers
+now exist for 2 models (forward direction, av2_cpu_v1 and av2_valsplit_v1)**: the Run-1 gap replicates
+(+3.3pt CI[2.1,4.5] on v1) but is much bigger on the other model (+8.0pt CI[6.4,9.4] on valsplit_v1) — same
+direction, model-dependent magnitude, will be reported as such. The normalised score (H4) cuts the gap ~49% on v1
+but only ~12% on valsplit_v1 — a mixed result, not a clean win. The audit (H5b) passes cleanly on both: power
+>=0.95 and false-alarm <=0.024 at k=1000 labels, matching the pre-registered budget. **Target: a paper that covers
+problem (measurement + diagnosis) and solution (audit + normalised score + label budget), reporting all of this
+honestly including the mixed H4 result.**
 
 ## 1. Machine facts (do not re-derive)
 * Windows 10, i9-10980XE (18C/36T), 64 GB RAM, **Quadro P2000 5 GB (Pascal, no tensor cores)**.
@@ -34,19 +40,21 @@ Get-Content journal\JOURNAL.md -Tail 60                                         
 Raw logs: `results/train_<exp>.{out,err}`, `results/predict_<model>.log`, `data/convert_ns_train.log`.
 
 ## 3. Jobs and how to relaunch each (all are idempotent/resumable)
-| Job (task) | What | Done when | Relaunch if dead |
+| Job (task) | What | Status (2026-09-22 10:25) | Relaunch if dead |
 |---|---|---|---|
-| `av2_cpu_v2` (P01_TrainCpuV2) | fine-tune v1-ep08 with LR decay; 4 epochs x 60k scenes, CPU; ~10 h | journal `av2_cpu_v2 done`; `results/ckpts/av2_cpu_v2/epoch*.ckpt` | `powershell -File run\schedule.ps1 -Name P01_TrainCpuV2 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_cpu_v2.cmd` (auto-resumes from `last.ckpt`) |
-| `predict_chain1` (P01_PredictChain1) | schema-v2 predictions, models av2_cpu_v1 + av2_valsplit_v1 on av2cal/av2test/ns | `results/preds2/<model>/{av2cal,av2test,ns}.npz` exist | rerun `run\predict_chain1.cmd` via schedule.ps1 (skips existing) |
-| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | all 11 `train_cNN/dataset_summary.pkl` exist | rerun `run\convert_ns_train.cmd` (skips finished chunks) |
+| `av2_cpu_v2` (P01_TrainCpuV2) | fine-tune v1-ep08 with LR decay; 4 epochs x 60k scenes, CPU | **DONE** — `results/ckpts/av2_cpu_v2/epoch03-minADE1.092.ckpt` | n/a |
+| `predict_chain1` (P01_PredictChain1) | schema-v2 predictions, models av2_cpu_v1 + av2_valsplit_v1 on av2cal/av2test/ns | **DONE** — all 6 npz exist | n/a |
+| `predict_v2` (P01_PredictV2) | schema-v2 predictions for av2_cpu_v2 on av2cal/av2test/ns | **running**, started ~10:20, CPU (~140s/batch) | `powershell -File run\schedule.ps1 -Name P01_PredictV2 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\predict_v2.cmd` |
+| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | chunks 0-6 done; chunk 7 crashed once (native exit -1073741205, exhausted 12 retries), cleaned + relaunched at 10:16, **running**, chunks 7-10 remain | `powershell -File run\schedule.ps1 -Name P01_ConvertNsTrain -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\convert_ns_train.cmd` (skips finished chunks) |
+| `run2_real` (manual) | `analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1` on **real** preds2 data | **DONE** — `results/run2/{av2_cpu_v1,av2_valsplit_v1}__forward.json` | rerun same command; ~7 min (city map load is the slow part, cached after first run) |
 
-**Next launches (not started yet), in order:**
-1. After `av2_cpu_v2` finishes: `run\predict_model.cmd av2_cpu_v2 auto av2cal av2test ns` (model-zoo entry + main model).
-2. After ns chunks finish: train ns-source model (`src/train_autobot.py --train_db data/nuscenes_scenarionet/train_c00 ...`;
+**Next launches, in order:**
+1. When `predict_v2` finishes: `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` (adds the 3rd model to H8 model-zoo).
+2. When ns chunks finish: train ns-source model (`src/train_autobot.py --train_db data/nuscenes_scenarionet/train_c00 ...`;
    `train_data_path` accepts a list -> extend `train_autobot.py` for multiple DBs), then predict on ns (val halves)
    and av2 -> reverse-direction pair (H9). Split nuScenes val into cal/test first:
    `python src/split_db.py --db data/nuscenes_scenarionet/val --out data/nuscenes_splits/val --fractions 0.5 0.5 --names cal test --salt nsv1`.
-3. Analyses: `python src/analyze_run2.py` (see §5), then `python paper/make_results.py`, then compile the paper.
+3. Write `paper/make_results.py` against `results/run2/*.json`, fill `paper/sections/results.tex` + abstract, recompile.
 
 ## 4. Key files
 * `notes/falsification.md` — **pre-registration**, Run-1 outcome log, erratum (unverified 0.73 yardstick),
