@@ -34,8 +34,18 @@ rather than the more favourable one.
 At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with
 probability \auditPowerK\ on the primary model, against a false-alarm rate of \auditFalseAlarmK\% on a shift-free
 control split --- matching the pre-registered budget of Eq.~\eqref{eq:budget} ($k\approx750$ for the analogous
-$\delta=0.034$ case) to the same order of magnitude. \todo{Add label-budget-curve figure (direct/pooled/shrinkage
-estimators vs.\ $k$) once finalised; report $k^\star$ per model.}
+$\delta=0.034$ case) to the same order of magnitude. Figure~\ref{fig:budget} shows direct recalibration on the
+primary model reaches 90\% probability of being within 2 coverage points of nominal at $k^\star\approx\kStarDirect$
+labelled target scenes; pooling target labels with the (mismatched) source calibration set is markedly less
+efficient, consistent with H2/H3's conclusion that the shift is not a simple reweighting.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{generated/fig_label_budget_av2_cpu_v1.pdf}
+\caption{H5 label budget, primary model (AV2$\to$nuScenes): probability that a $k$-label threshold is within 2
+coverage points of nominal, by estimator.}
+\label{fig:budget}
+\end{figure}
 
 \subsection{H6/H7: label-free monitor and per-city coverage}
 Within-dataset, a domain classifier trained on label-free scene features to separate one AV2 city from the rest gives

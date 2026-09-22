@@ -23,6 +23,13 @@ try:
 except ImportError:  # pragma: no cover
     spearmanr = None
 
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 ROOT = Path(__file__).resolve().parent.parent
 RUN2 = ROOT / "results" / "run2"
 OUT = Path(__file__).resolve().parent / "generated"
@@ -67,6 +74,45 @@ def h6_rho(cities_json):
     return rho, pval
 
 
+ESTIMATOR_LABELS = {
+    "source_only": "source-only (no target labels)",
+    "direct": "direct (target-only SCP)",
+    "pooled": "pooled",
+    "shrink_k0=100": r"shrinkage ($k_0{=}100$)",
+    "shrink_k0=500": r"shrinkage ($k_0{=}500$)",
+    "shrink_k0=2000": r"shrinkage ($k_0{=}2000$)",
+}
+PLOT_ESTIMATORS = ["source_only", "direct", "pooled", "shrink_k0=500"]
+
+
+def make_label_budget_figure(model, direction="forward"):
+    """H5: p(|coverage error| < tol) vs k, one line per estimator. Returns k* for 'direct', or None."""
+    dj = load(model, direction)
+    if dj is None or plt is None:
+        return None
+    lb = dj["label_budget"].get(ALPHA_KEY)
+    if lb is None:
+        return None
+    ks = lb["ks"]
+    fig, ax = plt.subplots(figsize=(4.3, 3.0))
+    for est in PLOT_ESTIMATORS:
+        if est not in lb["estimators"]:
+            continue
+        ys = [lb["estimators"][est][str(k)]["p_within_tol"] for k in ks]
+        ax.plot(ks, ys, marker="o", markersize=3, label=ESTIMATOR_LABELS[est])
+    ax.axhline(0.9, color="gray", linestyle="--", linewidth=0.8)
+    ax.set_xscale("log")
+    ax.set_xlabel(r"target-labelled scenes $k$")
+    ax.set_ylabel(f"P(|coverage err| < {lb['tol']})")
+    ax.set_ylim(-0.02, 1.02)
+    ax.legend(fontsize=7, loc="lower right")
+    ax.set_title(model.replace("_", r"\_"), fontsize=9)
+    fig.tight_layout()
+    fig.savefig(OUT / f"fig_label_budget_{model}.pdf")
+    plt.close(fig)
+    return lb["k_star"].get("direct")
+
+
 def main():
     present, missing = [], []
     for m in ALL_MODELS:
@@ -108,6 +154,9 @@ def main():
     lines.append(r"\newcommand{\nModelsDone}{%d}" % len([m for m in ALL_MODELS if load(m, "forward")]))
     lines.append(r"\newcommand{\nModelsTotal}{%d}" % len(ALL_MODELS))
     lines.append(r"\newcommand{\nReverseDone}{%d}" % len([m for m in REVERSE_MODELS if load(m, "reverse")]))
+    k_star = make_label_budget_figure(MAIN_MODEL, MAIN_DIRECTION)
+    if k_star is not None:
+        lines.append(r"\newcommand{\kStarDirect}{%d}" % k_star)
     (OUT / "numbers.tex").write_text("\n".join(lines) + "\n")
 
     # ---- per-model table (H8 robustness), forward + reverse rows whenever present ------------
