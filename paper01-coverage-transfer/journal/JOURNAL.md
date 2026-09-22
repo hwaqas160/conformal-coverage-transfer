@@ -43,3 +43,6 @@ setup.tex model-zoo paragraph filled with real checkpoint details (epochs, minAD
 
 ### 2026-09-22 10:45
 Appended Run 2 outcome log to notes/falsification.md (pre-registration discipline: append-only, dated entry) checking H2-H6/H8 against their exact pre-registered support/refute thresholds per model. Key finding: H5b (labelled audit) is the only hypothesis cleanly supported on BOTH models; H4/H6 are marginal-to-refuted depending on model; H2/H3 (reweighting) REFUTED on both, replicating Run 1. results.tex tightened to state exact pre-registered verdicts (marginal/refuted) rather than just 'mixed'. Paper compiles clean. manuscript
+
+### 2026-09-22 10:45
+Caught a rendering bug by reading the compiled PDF: fig_label_budget's title showed literal backslash-underscore ('av2\_cpu\_v1') because matplotlib doesn't interpret LaTeX escaping by default. Fixed (plain model name, no escaping) and rebuilt. Read the full 5-page PDF end to end -- structure, tables, figure, refs all look right. manuscript

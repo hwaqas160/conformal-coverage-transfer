@@ -106,7 +106,7 @@ def make_label_budget_figure(model, direction="forward"):
     ax.set_ylabel(f"P(|coverage err| < {lb['tol']})")
     ax.set_ylim(-0.02, 1.02)
     ax.legend(fontsize=7, loc="lower right")
-    ax.set_title(model.replace("_", r"\_"), fontsize=9)
+    ax.set_title(model, fontsize=9)  # plain text (matplotlib, not TeX) -- no LaTeX escaping here
     fig.tight_layout()
     fig.savefig(OUT / f"fig_label_budget_{model}.pdf")
     plt.close(fig)
