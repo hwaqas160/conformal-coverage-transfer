@@ -52,3 +52,6 @@ Checked pre-registered kill-condition #2 (AutoBot within 15% of UniTraj's publis
 
 ### 2026-09-22 11:06
 Added H4's efficiency guard result (region-area inflation, pre-registered part of H4 that I'd computed but not yet written up): +15.4%/+7.2% on the two models, both well under the 25% not-cheating threshold. Added to results.tex and falsification.md outcome table for completeness. manuscript
+
+### 2026-09-22 11:33
+Forward-direction H8 model zoo complete (3/3). Manuscript fully updated: results.tex, discussion.tex, falsification.md all rewritten to cover 3 models honestly (H4 ratio 0.51/0.88/0.69; H6 rho 0.37/0.10/0.39; H2 removal -64/-27/-22%; H5b power 0.95/1.00/1.00, FA 2.4/1.0/6.2%). Paper compiles clean, down to 4 TODOs, all genuinely blocked on H9 (reverse direction, awaiting ns_train_convert). Next: monitor ns_train_convert (chunk 7 of 11 in progress), then train ns_cpu_v1. manuscript

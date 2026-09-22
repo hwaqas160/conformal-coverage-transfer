@@ -316,3 +316,34 @@ gap to UniTraj's 8xA100 setup within this project's timeline; a Kaggle/Colab-tra
 considered (see RESUME.md) and remains a possible follow-up, not done. **This is now stated as a quantified,
 verified limitation in the paper (setup.tex) rather than an estimated one** -- the prior draft said "below published
 state of the art" without a number; it now says +28% to +59% on minADE6, sourced to the UniTraj table directly.
+
+---
+
+## Outcome log — Run 2, 3rd model (av2_cpu_v2) added — 2026-09-22
+Reproduce: `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` (full numbers:
+`results/run2/av2_cpu_v2__forward.json`, `results/run2/cities__av2_cpu_v2.json`). **Forward-direction model zoo
+(H8) is now complete: all 3 planned models analysed. Reverse direction (H9) still pending.**
+
+av2\_cpu\_v2 (the most accurate of the three by val minADE6, see kill-condition entry above) has gap +0.1054
+(CI [0.0939, 0.1217]) at alpha=0.10, same-domain +0.0034 -- the **largest** gap of the three models, despite having
+the **best** point-accuracy. Point accuracy and coverage-gap magnitude are not simply related here; if anything the
+direction is opposite across our 3 points (n=3, exploratory, not a claim of a general trend).
+
+| Hypothesis | av2\_cpu\_v1 | av2\_valsplit\_v1 | av2\_cpu\_v2 | Threshold | Supported? |
+|---|---|---|---|---|---|
+| H4 ratio \|Delta'\|/\|Delta\| | 0.512 | 0.877 | 0.690 | <=0.5 support / >0.75 refute | v1: marginal; valsplit: **REFUTED**; v2: **inconclusive** (between the two bars) |
+| H4 efficiency guard | +15.4% | +7.2% | +15.0% | not >25% | All 3 **pass** |
+| H5 refute clause (shrink beats direct @k=100) | shrink wins | direct wins | direct wins (0.0245 < shrink100 0.0271) | — | 2/3 models: direct beats shrinkage; v1 is the exception, not the rule |
+| H5 pooled k\* | never reaches 90% | never reaches 90% | never reaches 90% | — | Pooled is dominated by bias on **all 3** models |
+| H5b power @ k=1000 | 0.952 | 1.000 | 1.000 | >=0.90 | All 3 **pass** |
+| H5b false-alarm @ k=1000 | 0.024 | 0.010 | 0.062 | (report only) | All well under typical 0.05-0.10 tolerance; H5b remains the one hypothesis with zero exceptions across the zoo |
+| H6 rho(AUC, \|gap\|) | 0.372 (p=.043) | 0.098 (p=.606) | 0.387 (p=.035) | >=0.5 support / <0.3 refute | v1, v2: inconclusive (significant, below support bar); valsplit: **REFUTED**. **Never once reaches the support bar across 3 models.** |
+| H2 (reweighting removal) | -64% | -27% | -22% | >=40% / <25% refute | All 3 **REFUTED**, all negative |
+| H8 (gap>=0.02, sign consistent) | +0.033 | +0.080 | +0.105 | gap>=0.02 | All 3 **pass**; magnitude ranges 3.2x (3.3 to 10.5 pt) across the zoo -- H8's real finding is this spread, not just the pass |
+
+**Updated interpretation with n=3:** H5b (audit) and the H2/H3 reweighting-fails finding are now the two results
+with zero exceptions across the full model zoo -- these are the load-bearing claims of the paper. H4 and H6 are
+each supported-ish on one model, refuted on another, and inconclusive on the third: neither is a reliable repair,
+and this is now a 3-model pattern, not a 2-model coincidence. H5's shrinkage variant helped only on the model it
+was originally seen to help on (v1) and lost to plain direct recalibration on the other two -- we no longer
+recommend shrinkage as anything but a candidate to test, not a default.

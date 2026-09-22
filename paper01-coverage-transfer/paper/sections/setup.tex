@@ -1,4 +1,4 @@
-\section{Experimental Setup}
+\section{Experimental Setup}\label{sec:setup}
 \paragraph{Data.} Argoverse~2 \cite{wilson2021argoverse2} and nuScenes \cite{caesar2020nuscenes}, converted with ScenarioNet \cite{li2023scenarionet}
 and loaded through UniTraj \cite{feng2024unitraj}. Each dataset's held-out split is divided by a fixed salted hash into a calibration
 half and a test half, so calibration and test scenes never overlap. The AV2 test split has no labels and is not used.
@@ -16,9 +16,8 @@ so far: \textbf{av2\_cpu\_v1}, trained from scratch on 60k AV2 scenes for 10 epo
 val minADE\textsubscript{6} 1.349); \textbf{av2\_valsplit\_v1}, trained from scratch on a smaller, disjoint 13.7k-scene
 split for 20 epochs (epoch 17, val minADE\textsubscript{6} 1.347); \textbf{av2\_cpu\_v2}, fine-tuned from
 av2\_cpu\_v1's checkpoint with a decaying learning rate for 4 further epochs (epoch 3, val minADE\textsubscript{6}
-1.092). \todo{Add av2\_cpu\_v2 to the model-zoo results table once results/run2/av2\_cpu\_v2\_\_forward.json exists
-(prediction in progress); add the reverse-direction model ns\_cpu\_v1 (nuScenes-source, architecture-matched) once
-trained.}
+1.092). \todo{Add the reverse-direction model ns\_cpu\_v1 (nuScenes-source, architecture-matched) once trained ---
+data conversion in progress.}
 \paragraph{Protocol.} $\alpha=0.1$. Forward direction: calibrate on AV2 calibration half, test on AV2 test half (same-domain control) and on nuScenes (cross-dataset).
 Reverse direction: the swap. Confidence intervals are percentile bootstraps over scenes. Hypotheses H1--H9 and their pass thresholds were
 written before the corresponding runs (\texttt{notes/falsification.md}); those defined after seeing Run~1 are marked post-hoc there and

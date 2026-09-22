@@ -71,3 +71,14 @@
 {"ts": "2026-09-22T10:23:20", "id": "predict_av2_cpu_v2", "event": "attempt_start", "detail": "launched via P01_PredictV2 task, av2cal/av2test/ns, running on CPU", "sha": "2716da0"}
 {"ts": "2026-09-22T10:25:56", "id": "predict_av2_cpu_v2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\av2cal.npz", "sha": "3045cab"}
 {"ts": "2026-09-22T10:31:01", "id": "predict_av2_cpu_v2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\av2test.npz", "sha": "3045cab"}
+{"ts": "2026-09-22T11:28:55", "id": "predict_av2_cpu_v2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\ns.npz", "sha": "bb95774"}
+{"ts": "2026-09-22T11:28:55", "id": "predict_av2_cpu_v2", "event": "done", "detail": "model=av2_cpu_v2 ckpt=epoch03-minADE1.092.ckpt -> results\\preds2\\av2_cpu_v2", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:11", "id": "run2_real", "event": "attempt_start", "detail": "adding av2_cpu_v2 to forward-direction analysis (3rd model, H8)", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:15", "id": "run2_av2_cpu_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:29", "id": "run2_av2_cpu_v1_forward", "event": "done", "detail": "results\\run2\\av2_cpu_v1__forward.json in 14s; raw gap@.10=+0.0334 norm gap=+0.0171", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:32", "id": "run2_av2_valsplit_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:43", "id": "run2_av2_valsplit_v1_forward", "event": "done", "detail": "results\\run2\\av2_valsplit_v1__forward.json in 11s; raw gap@.10=+0.0796 norm gap=+0.0698", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:46", "id": "run2_av2_cpu_v2_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "bb95774"}
+{"ts": "2026-09-22T11:29:58", "id": "run2_av2_cpu_v2_forward", "event": "done", "detail": "results\\run2\\av2_cpu_v2__forward.json in 12s; raw gap@.10=+0.1054 norm gap=+0.0728", "sha": "bb95774"}
+{"ts": "2026-09-22T11:33:11", "id": "predict_av2_cpu_v2", "event": "done", "detail": "confirmed: all 3 sets in results/preds2/av2_cpu_v2/", "sha": "bb95774"}
+{"ts": "2026-09-22T11:33:11", "id": "run2_real", "event": "done", "detail": "3rd model (av2_cpu_v2) added to forward analysis: gap +10.5pt CI[9.4,12.2] -- LARGEST of 3 models despite BEST minADE. H8 model zoo now complete (3/3 forward). Notable: H5b (audit) and H2/H3 (reweighting fails) now have ZERO exceptions across all 3 models -- these are the paper's load-bearing findings. H4/H6 remain mixed across all 3.", "sha": "bb95774"}

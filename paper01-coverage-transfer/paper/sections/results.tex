@@ -7,32 +7,36 @@ models. Table~\ref{tab:models} and the numbers below are regenerated automatical
 Calibrated on Argoverse~2 at $\alpha=0.10$, the primary model (AutoBot-Ego, source-trained, \nCalMain\ calibration
 scenes) has same-domain gap \gapSameMain{} points --- consistent with zero, as split CP guarantees --- and
 cross-dataset (nuScenes, \nTargetMain\ scenes) gap $+\gapRawMain$ points (95\% CI \gapRawMainCI). This replicates the
-preliminary Run~1 measurement (+3.4pt) on an independent calibration/test split. Table~\ref{tab:models} shows a second,
-more heavily trained model with a substantially \emph{larger} gap ($+8.0$pt) in the same direction: the failure is
-reproducible, but its magnitude is not a fixed property of the dataset pair --- it depends on the source model. We
-report this without averaging it away.
+preliminary Run~1 measurement (+3.4pt) on an independent calibration/test split. Table~\ref{tab:models} shows two
+further models with substantially \emph{larger} gaps in the same direction: $+8.0$pt (av2\_valsplit\_v1, trained on
+less data) and $+10.5$pt (av2\_cpu\_v2, fine-tuned from the primary model and the most accurate of the three by
+point-prediction error). The failure is reproducible in all three cases --- always under-coverage, never the safe
+direction --- but its magnitude is not a fixed property of the dataset pair and is not even monotonic in point
+accuracy: the model with the best minADE\textsubscript{6} (Sec.~\ref{sec:setup}) has the worst coverage gap of the
+three. We report this without averaging it away.
 
 \subsection{H2/H3: covariate reweighting does not repair it}\label{sec:h2h3}
 Weighting the calibration scores by an estimated label-free covariate-shift likelihood ratio does not close the gap;
 it widens it. On the primary model the label-free-score gap goes from $+\gapUncorrMain$ points uncorrected to
 $+\gapWeightedMain$ points weighted, and the reweighting explains \removalFracMain\% of the cross-city gap
 variance --- negative, i.e.\ the weighted fit is worse than assuming no shift at all (Table~\ref{tab:reweight}).
-This is consistent across both models analysed so far and matches the Run~1 finding: it is evidence for conditional,
-not purely covariate, shift, and is the empirical motivation for Proposition~\ref{prop:ident} (no label-free method
-can be expected to repair an unrestricted shift).
+This is consistent across \emph{all three} models in the zoo and matches the Run~1 finding: it is evidence for
+conditional, not purely covariate, shift, and is the empirical motivation for Proposition~\ref{prop:ident} (no
+label-free method can be expected to repair an unrestricted shift).
 
 \input{generated/table_reweight}
 
 \subsection{H4: the normalised score (label-free)}
 The model-uncertainty-normalised score (Sec.~\ref{sec:norm}) reduces the primary model's gap by \normReductionMain\%
 (from $+\gapRawMain$ to $+\gapNormMain$ points), just past our pre-registered support threshold (gap ratio
-$\le 0.5$) and far from the pre-registered refutation threshold ($>0.75$). On the second model it reduces the gap by
-only 12\% (ratio $0.877$), which \emph{is} past the pre-registered refutation threshold. H4 is therefore not
-confirmed as a general repair --- marginal support on one model, refuted on another --- and we report both rather
-than the more favourable one. The pre-registered efficiency guard (a fix that only works by inflating the region by
-$>25\%$ does not count) is not triggered on either model: the normalised region is at most $15.4\%$ larger than the
-raw one at matched coverage (av2\_cpu\_v1) and $7.2\%$ larger (av2\_valsplit\_v1), so where H4 does help it is not
-merely trading coverage for a much bigger region.
+$\le 0.5$) and far from the pre-registered refutation threshold ($>0.75$). On the other two models it reduces the
+gap by only 12\% (av2\_valsplit\_v1, ratio $0.877$, \emph{past} the refutation threshold) and 31\%
+(av2\_cpu\_v2, ratio $0.691$, in between --- neither supported nor refuted). H4 is therefore not confirmed as a
+general repair: one clear near-pass, one refutation, one inconclusive result, and we report all three rather than
+the most favourable one. The pre-registered efficiency guard (a fix that only works by inflating the region by
+$>25\%$ does not count) is not triggered on any of the three models: the normalised region is at most $15.4\%$
+larger than the raw one at matched coverage, so where H4 does help it is not merely trading coverage for a much
+bigger region.
 
 \subsection{H5/H5b: recalibration and the coverage audit}
 At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with
@@ -41,10 +45,12 @@ control split --- matching the pre-registered budget of Eq.~\eqref{eq:budget} ($
 $\delta=0.034$ case) to the same order of magnitude. Figure~\ref{fig:budget} shows direct recalibration on the
 primary model reaches 90\% probability of being within 2 coverage points of nominal at $k^\star\approx\kStarDirect$
 labelled target scenes; pooling target labels with the (mismatched) source calibration set never reaches that bar on
-either model tested, consistent with H2/H3's conclusion that the shift is not a simple reweighting. Shrinkage toward
-the source threshold beats direct recalibration at small $k$ on the primary model but not on the second, so we do
-not recommend it as a universal default --- direct recalibration once $k^\star$ labels are available, audited by
-H5b before that, is the protocol we can actually stand behind.
+\emph{any} of the three models, consistent with H2/H3's conclusion that the shift is not a simple reweighting.
+Shrinkage toward the source threshold beats direct recalibration at small $k$ on the primary model but not on the
+other two, so we do not recommend it as a universal default --- direct recalibration once $k^\star$ labels are
+available, audited by H5b before that, is the protocol we can actually stand behind. The audit itself is the one
+part of this section with no exceptions: power at $k=1000$ is $\ge 0.95$ and false-alarm is $\le 6.2\%$ on all three
+models.
 
 \begin{figure}[t]
 \centering
@@ -56,17 +62,21 @@ coverage points of nominal, by estimator.}
 
 \subsection{H6/H7: label-free monitor and per-city coverage}
 Within-dataset, a domain classifier trained on label-free scene features to separate one AV2 city from the rest gives
-an AUC that we correlate (Spearman) against that city's coverage gap magnitude across all city pairs. On the primary
-model $\rho=0.37$ ($p=0.04$, significant but below the $\rho\ge0.5$ support bar and above the $\rho<0.3$ refutation
-bar --- inconclusive by our own pre-registered rule); on the second model $\rho=0.10$ ($p=0.61$, not significant, and
-below the refutation bar). \textbf{H6 is not supported on either model, and refuted on the second.} We report this as
-a negative result --- the label-free monitor tracks shift only weakly, and not reliably enough to substitute for the
+an AUC that we correlate (Spearman) against that city's coverage gap magnitude across all city pairs. Across the
+three models: $\rho=0.37$ ($p=0.04$), $\rho=0.10$ ($p=0.61$), $\rho=0.39$ ($p=0.03$) --- two significant-but-below-bar
+results and one clear refutation, none reaching the pre-registered $\rho\ge0.5$ support threshold on any model.
+\textbf{H6 is not supported on any of the three models, and refuted on one.} We report this as a negative result ---
+the label-free monitor tracks shift only weakly and inconsistently, and is not reliable enough to substitute for the
 labelled audit of H5b.
 
 \subsection{H8: robustness across a model zoo}
-Table~\ref{tab:models} is the model-zoo comparison; \todo{expand once av2\_cpu\_v2 (retrained/fine-tuned model) is
-analysed --- currently \nModelsDone\ of \nModelsTotal\ models}. The gap direction (under-coverage) is consistent so
-far; magnitude is not, which is itself the H8 finding.
+Table~\ref{tab:models} is the full forward-direction model-zoo comparison: all \nModelsDone\ of \nModelsTotal\ planned
+models. The under-coverage direction is consistent across all three (gap $\ge 0.02$ at $\alpha=0.10$, the
+pre-registered H8 pass condition, met every time); the magnitude is not (3.3 to 10.5 points, a $3.2\times$ range), and
+neither is the effect size of any repair attempted on it (H4's gap reduction ranges 12--49\%; H6's $\rho$ ranges
+0.10--0.39). H8 is therefore supported on the narrow pre-registered clause (gap replicates, sign never flips) and
+is itself the source of the paper's main qualification: solution effect sizes measured on one model should not be
+assumed to transfer to another, even within the same architecture and training recipe family.
 
 \subsection{H9: reverse direction (nuScenes $\to$ Argoverse~2)}
 \todo{Pending: nuScenes-source model training is queued behind the train-split conversion (in progress). Fill in
