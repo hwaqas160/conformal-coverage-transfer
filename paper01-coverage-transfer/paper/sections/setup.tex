@@ -3,8 +3,15 @@
 and loaded through UniTraj \cite{feng2024unitraj}. Each dataset's held-out split is divided by a fixed salted hash into a calibration
 half and a test half, so calibration and test scenes never overlap. The AV2 test split has no labels and is not used.
 \paragraph{Forecasters.} AutoBot-Ego \cite{girgis2022autobots} (1.5M parameters), $K=6$ modes, all trained on CPU (a 5\,GB
-GPU shared with other work was not consistently available); all models are small relative to published state of the
-art and we state this as a limitation. The forward-direction (AV2-source) model zoo used for the H8 robustness check
+GPU shared with other work was not consistently available). This matters quantitatively, not just qualitatively:
+UniTraj's own AutoBot-on-AV2 baseline (8$\times$A100, batch 128, full 180k-scene training set) reaches
+minADE\textsubscript{6} $0.85$ \cite{feng2024unitraj}; our checkpoints reach $1.349$ (av2\_cpu\_v1, $+59\%$) and
+$1.092$ (av2\_cpu\_v2, $+28\%$) on our own held-out subset. Both exceed the $15\%$ tolerance we pre-registered for
+treating the base model as competitive, so we report this as a triggered, disclosed limitation rather than
+understating it: our models are not competitive point predictors, and the coverage-transfer magnitude and repair
+effect sizes we measure should not be assumed to hold for a properly-resourced SOTA model without further study.
+The same-domain coverage check (H1) still validates that our conformal implementation is correct for whatever
+predictor is actually used. The forward-direction (AV2-source) model zoo used for the H8 robustness check
 so far: \textbf{av2\_cpu\_v1}, trained from scratch on 60k AV2 scenes for 10 epochs (selected checkpoint: epoch 8,
 val minADE\textsubscript{6} 1.349); \textbf{av2\_valsplit\_v1}, trained from scratch on a smaller, disjoint 13.7k-scene
 split for 20 epochs (epoch 17, val minADE\textsubscript{6} 1.347); \textbf{av2\_cpu\_v2}, fine-tuned from

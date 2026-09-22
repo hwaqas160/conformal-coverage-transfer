@@ -17,7 +17,7 @@ else matched what was already written and needed no change.
 | angelopoulos2023pid | V 2026-09-22 | proceedings.neurips.cc/paper_files/paper/2023 |
 | lei2018distribution | V 2026-09-22 | tandfonline.com, JASA 113(523):1094-1111, 2018 |
 | ovadia2019can | V 2026-09-22 | proceedings.neurips.cc/paper/2019, full 9-author list confirmed |
-| feng2024unitraj | V 2026-09-21 | Springer ECCV 2024 chapter 10.1007/978-3-031-73254-6_7 |
+| feng2024unitraj | V 2026-09-21; **numeric claim re-verified 2026-09-22** | Springer ECCV 2024 chapter 10.1007/978-3-031-73254-6_7. The specific number cited in `setup.tex` (AutoBot-on-AV2 minADE6 = 0.85) was read directly from the paper's supplementary Table 8 (arxiv.org/pdf/2403.15098 main paper + ecva.net supp PDF), not from memory -- see `notes/falsification.md` "Kill condition #2 checked" entry |
 | huang2025cuqds | V 2026-09-21 | arXiv 2406.12100 + AAAI OJS page, AAAI 2025 |
 | wilson2021argoverse2 | V 2026-09-22 | neurips.cc/virtual/2021/29837 + datasets-benchmarks-proceedings.neurips.cc; **year confirmed 2021** (arXiv id 2301.00493 is just the posting date, not the venue year) |
 | li2023scenarionet | V 2026-09-22 | proceedings.neurips.cc/paper_files/paper/2023, NeurIPS 2023 D&B track confirmed |

@@ -46,3 +46,6 @@ Appended Run 2 outcome log to notes/falsification.md (pre-registration disciplin
 
 ### 2026-09-22 10:45
 Caught a rendering bug by reading the compiled PDF: fig_label_budget's title showed literal backslash-underscore ('av2\_cpu\_v1') because matplotlib doesn't interpret LaTeX escaping by default. Fixed (plain model name, no escaping) and rebuilt. Read the full 5-page PDF end to end -- structure, tables, figure, refs all look right. manuscript
+
+### 2026-09-22 11:05
+Checked pre-registered kill-condition #2 (AutoBot within 15% of UniTraj's published AV2 minADE) against the actual UniTraj paper (web-fetched supplementary Table 8: AutoBot-on-AV2 minADE6=0.85, their 8xA100/full-data setup). Our checkpoints: av2_cpu_v1 1.349 (+59%), av2_cpu_v2 1.092 (+28%). Both EXCEED the 15% threshold -- kill condition triggered. Disposition: not a silent drop -- disclosed with exact numbers in setup.tex and falsification.md, reasoned about why the coverage-transfer measurement itself still holds (H1 same-domain check validates the SCP implementation for whatever model is used) but repair effect-size generalization to SOTA models is now an explicit caveat. This is the kind of number I would previously have estimated as 'small CPU model, below SOTA' -- now it's a verified, cited, quantified limitation. manuscript

@@ -290,3 +290,28 @@ model-dependent partial results, not as uniform wins.
 
 **Rule (restated):** nothing here is rewritten when av2\_cpu\_v2 or the reverse direction land; a new dated entry is
 appended and this one stands as the record of what 2 models showed.
+
+---
+
+## Kill condition #2 checked against a verified source — 2026-09-22
+The second kill condition ("AutoBot within ~15% of the UniTraj-reported AV2 minADE") was written before any
+number was looked up. Checked today by reading the UniTraj paper's own tables (web-fetched primary source, not
+memory): UniTraj's supplementary Table 8 reports AutoBot trained AND evaluated on Argoverse 2, minADE6 = **0.85**
+(their setup: 8xA100, batch 128, full 180k-trajectory AV2 training set, checkpoint selected on best brier-minFDE).
+
+Our checkpoints (val minADE6, selected checkpoint, on a 1500-2000-scene subset of our own val split -- not
+identical protocol, noted below): av2\_cpu\_v1 = 1.349 (**+59% worse**), av2\_cpu\_v2 = 1.092 (**+28% worse**).
+**Both exceed the pre-registered 15% kill-condition threshold.** This condition IS triggered.
+
+**Disposition (reassess, per the pre-registered rule, not silently drop):** the coverage-transfer measurement
+itself does not require SOTA point-accuracy -- split CP gives a valid, well-defined region for any predictor,
+including a mediocre one, and the same-domain gap (H1, -0.2 to -0.24pt) shows the region IS correctly calibrated for
+what this model actually produces. What a weak model DOES put at risk is generalising the *magnitude* of the
+cross-dataset gap and the solutions' effect sizes to a stronger, properly-trained model -- exactly the caveat H8
+(model zoo) was already designed to probe, and exactly why av2\_cpu\_v1 vs av2\_cpu\_v2 (a 60-minADE6-point
+difference between them, 1.349 vs 1.092) already shows the gap magnitude and H4's effect size are NOT stable
+across model quality within our own zoo. We do not have the compute (single P2000, much of it shared) to close this
+gap to UniTraj's 8xA100 setup within this project's timeline; a Kaggle/Colab-trained stronger checkpoint was
+considered (see RESUME.md) and remains a possible follow-up, not done. **This is now stated as a quantified,
+verified limitation in the paper (setup.tex) rather than an estimated one** -- the prior draft said "below published
+state of the art" without a number; it now says +28% to +59% on minADE6, sourced to the UniTraj table directly.
