@@ -49,12 +49,17 @@ Raw logs: `results/train_<exp>.{out,err}`, `results/predict_<model>.log`, `data/
 | `run2_real` (manual) | `analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1` on **real** preds2 data | **DONE** — `results/run2/{av2_cpu_v1,av2_valsplit_v1}__forward.json` | rerun same command; ~7 min (city map load is the slow part, cached after first run) |
 
 **Next launches, in order:**
-1. When `predict_v2` finishes: `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` (adds the 3rd model to H8 model-zoo).
-2. When ns chunks finish: train ns-source model (`src/train_autobot.py --train_db data/nuscenes_scenarionet/train_c00 ...`;
-   `train_data_path` accepts a list -> extend `train_autobot.py` for multiple DBs), then predict on ns (val halves)
-   and av2 -> reverse-direction pair (H9). Split nuScenes val into cal/test first:
-   `python src/split_db.py --db data/nuscenes_scenarionet/val --out data/nuscenes_splits/val --fractions 0.5 0.5 --names cal test --salt nsv1`.
-3. Write `paper/make_results.py` against `results/run2/*.json`, fill `paper/sections/results.tex` + abstract, recompile.
+1. When `predict_v2` finishes (av2cal/av2test done; ns in progress): `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2`
+   (adds the 3rd model to H8 model-zoo, writes `results/run2/av2_cpu_v2__forward.json`), then `powershell -File paper\build.ps1`.
+2. When ns chunks finish (0-7 done, 8-10 remain): train ns-source model via `run\train_ns_cpu_v1.cmd` (already written,
+   lists all 11 `train_cNN` dirs; schedule with `run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd ...\run\train_ns_cpu_v1.cmd`),
+   then `run\predict_model.cmd ns_cpu_v1 auto nscal nstest av2cal av2test` (need `nscal`/`nstest` sets in `predict_all.py` —
+   they already exist, pointed at `data/nuscenes_splits/val/{cal,test}` which is **already split**), then
+   `python src\analyze_run2.py --models ns_cpu_v1 --direction reverse` (H9).
+3. `paper/make_results.py` is written and real (§H1–H6 filled from actual data). **Every rebuild is one command:**
+   `cd paper; powershell -File build.ps1` — regenerates `generated/*.tex`+figure from `results/run2/*.json`, compiles,
+   and reports undefined refs + a `\todo{}` count per file. Currently 5 `\todo`s left: abstract (write last, by design),
+   intro contributions list (finalise after H8/H9), results (H2/H3 numeric insert — mostly done, 1 stray, and H8/H9 stubs).
 
 ## 4. Key files
 * `notes/falsification.md` — **pre-registration**, Run-1 outcome log, erratum (unverified 0.73 yardstick),

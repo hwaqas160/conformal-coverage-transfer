@@ -28,3 +28,6 @@ H5 label-budget figure added (real data, direct recalibration reaches 90% within
 
 ### 2026-09-22 10:34
 Discussion section filled with real interpretation: practical recommendation (budget ~1k target labels, don't trust reweighting/normalization alone), open question on why effect size varies by model (H8 territory). Paper compiles clean, 5 pages, no undefined refs/citations. manuscript
+
+### 2026-09-22 10:36
+Added paper/build.ps1: one-command rebuild (make_results.py -> pdflatex/bibtex x3 -> report undefined refs + todo count per file). Verified end to end: compiles clean, 5 todos left (abstract by design, intro contributions, 2 in results for H8/H9 stubs). RESUME.md updated with exact next commands for predict_v2 completion and ns_cpu_v1 reverse training. manuscript
