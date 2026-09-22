@@ -1,22 +1,23 @@
 # RESUME — start here after a crash, a reboot, or a new session
 
 _Keep this file accurate: update it whenever a job is launched/finished or a decision changes. Last full update:
-2026-09-22 10:25._
+2026-09-22 11:35._
 
 ## 0. One-paragraph state of the project
 Paper 01 asks: **does the conformal-prediction coverage guarantee survive a zero-label change of dataset in
-trajectory prediction, and what repairs it?** Run 1 (AutoBot trained on Argoverse 2 -> nuScenes, zero labels) showed a
-real under-coverage of **+3.4 pts** at alpha=0.10 (95% CI 2.7–4.1), robust to a sampling-rate control; covariate
-reweighting did **not** repair it (H2/H3 refuted). Since then: a disclosed flaw (H3 used GT-derived features) was
-fixed, hypotheses H4–H9 were pre-registered (`notes/falsification.md` Addendum A), solution code was written and
-validated on synthetic data, and the manuscript skeleton (`paper/`) was written and compiles. **REAL Run-2 numbers
-now exist for 2 models (forward direction, av2_cpu_v1 and av2_valsplit_v1)**: the Run-1 gap replicates
-(+3.3pt CI[2.1,4.5] on v1) but is much bigger on the other model (+8.0pt CI[6.4,9.4] on valsplit_v1) — same
-direction, model-dependent magnitude, will be reported as such. The normalised score (H4) cuts the gap ~49% on v1
-but only ~12% on valsplit_v1 — a mixed result, not a clean win. The audit (H5b) passes cleanly on both: power
->=0.95 and false-alarm <=0.024 at k=1000 labels, matching the pre-registered budget. **Target: a paper that covers
-problem (measurement + diagnosis) and solution (audit + normalised score + label budget), reporting all of this
-honestly including the mixed H4 result.**
+trajectory prediction, and what repairs it?** **The forward-direction (AV2->nuScenes) H8 model zoo is now COMPLETE:
+3/3 models analysed on real data.** Gaps at alpha=0.10: av2\_cpu\_v1 +3.3pt CI[2.1,4.5], av2\_valsplit\_v1 +8.0pt
+CI[6.4,9.4], av2\_cpu\_v2 +10.5pt CI[9.4,12.2] — always under-coverage, magnitude ranges 3.2x and is NOT monotonic in
+point-accuracy (the most accurate model has the worst gap). **The two rock-solid findings, with zero exceptions
+across all 3 models:** covariate reweighting makes the gap worse, not better (H2/H3 refuted every time); the
+labelled coverage audit (H5b) reliably detects the violation at k=1000 (power >=0.95, false-alarm <=6.2%) every
+time. The normalised score (H4) and label-free monitor (H6) are genuinely mixed — supported-ish on one model,
+refuted on another, inconclusive on the third — reported as such, not cherry-picked. A pre-registered kill condition
+(base model within 15% of UniTraj's published AV2 minADE) was checked against the actual UniTraj paper and found
+**triggered** (+28% to +59% worse) — disclosed as a quantified limitation, reasoned about, not hidden.
+**Remaining: H9 (reverse direction, nuScenes->AV2) — blocked on nuScenes train-data conversion (in progress).**
+**Target: a paper that covers problem (measurement + diagnosis) and solution (audit + normalised score + label
+budget), reporting all of this honestly including the mixed H4/H6 results and the kill-condition disclosure.**
 
 ## 1. Machine facts (do not re-derive)
 * Windows 10, i9-10980XE (18C/36T), 64 GB RAM, **Quadro P2000 5 GB (Pascal, no tensor cores)**.
@@ -40,26 +41,29 @@ Get-Content journal\JOURNAL.md -Tail 60                                         
 Raw logs: `results/train_<exp>.{out,err}`, `results/predict_<model>.log`, `data/convert_ns_train.log`.
 
 ## 3. Jobs and how to relaunch each (all are idempotent/resumable)
-| Job (task) | What | Status (2026-09-22 10:25) | Relaunch if dead |
+| Job (task) | What | Status (2026-09-22 11:35) | Relaunch if dead |
 |---|---|---|---|
 | `av2_cpu_v2` (P01_TrainCpuV2) | fine-tune v1-ep08 with LR decay; 4 epochs x 60k scenes, CPU | **DONE** — `results/ckpts/av2_cpu_v2/epoch03-minADE1.092.ckpt` | n/a |
 | `predict_chain1` (P01_PredictChain1) | schema-v2 predictions, models av2_cpu_v1 + av2_valsplit_v1 on av2cal/av2test/ns | **DONE** — all 6 npz exist | n/a |
-| `predict_v2` (P01_PredictV2) | schema-v2 predictions for av2_cpu_v2 on av2cal/av2test/ns | **running**, started ~10:20, CPU (~140s/batch) | `powershell -File run\schedule.ps1 -Name P01_PredictV2 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\predict_v2.cmd` |
-| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | chunks 0-6 done; chunk 7 crashed once (native exit -1073741205, exhausted 12 retries), cleaned + relaunched at 10:16, **running**, chunks 7-10 remain | `powershell -File run\schedule.ps1 -Name P01_ConvertNsTrain -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\convert_ns_train.cmd` (skips finished chunks) |
-| `run2_real` (manual) | `analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1` on **real** preds2 data | **DONE** — `results/run2/{av2_cpu_v1,av2_valsplit_v1}__forward.json` | rerun same command; ~7 min (city map load is the slow part, cached after first run) |
+| `predict_v2` (P01_PredictV2) | schema-v2 predictions for av2_cpu_v2 on av2cal/av2test/ns | **DONE** — all 3 npz exist (ns.npz landed 11:29, slowed by AI2 CPU contention) | n/a |
+| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | chunks 0-6 done (0: 3.3h, 1: 6.2h, 2-5: ~26min each, 6: 3.0h — 3 of 7 hit heavy AI2 CPU contention, very high variance); **chunk 7 in progress since 10:19 (not yet done as of 11:35, 75+ min elapsed)**; 8, 9, 10 still to come | `powershell -File run\schedule.ps1 -Name P01_ConvertNsTrain -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\convert_ns_train.cmd` (skips finished chunks) |
+| `run2_real` (manual) | `analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` on **real** preds2 data | **DONE, all 3 models** — `results/run2/{av2_cpu_v1,av2_valsplit_v1,av2_cpu_v2}__forward.json`. **H8 model zoo (forward) is complete.** | rerun same command if a 4th model is added; ~5 min |
+| `ns_cpu_v1` training (not yet launched) | reverse-direction source model, `run\train_ns_cpu_v1.cmd` (already written, all 11 chunk paths listed, 10 epochs like av2\_cpu\_v1) | **blocked on `ns_train_convert` finishing** (needs chunks 00-10 all present) | `powershell -File run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_ns_cpu_v1.cmd` |
 
-**Next launches, in order:**
-1. When `predict_v2` finishes (av2cal/av2test done; ns in progress): `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2`
-   (adds the 3rd model to H8 model-zoo, writes `results/run2/av2_cpu_v2__forward.json`), then `powershell -File paper\build.ps1`.
-2. When ns chunks finish (0-7 done, 8-10 remain): train ns-source model via `run\train_ns_cpu_v1.cmd` (already written,
-   lists all 11 `train_cNN` dirs; schedule with `run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd ...\run\train_ns_cpu_v1.cmd`),
-   then `run\predict_model.cmd ns_cpu_v1 auto nscal nstest av2cal av2test` (need `nscal`/`nstest` sets in `predict_all.py` —
-   they already exist, pointed at `data/nuscenes_splits/val/{cal,test}` which is **already split**), then
-   `python src\analyze_run2.py --models ns_cpu_v1 --direction reverse` (H9).
-3. `paper/make_results.py` is written and real (§H1–H6 filled from actual data). **Every rebuild is one command:**
-   `cd paper; powershell -File build.ps1` — regenerates `generated/*.tex`+figure from `results/run2/*.json`, compiles,
-   and reports undefined refs + a `\todo{}` count per file. Currently 5 `\todo`s left: abstract (write last, by design),
-   intro contributions list (finalise after H8/H9), results (H2/H3 numeric insert — mostly done, 1 stray, and H8/H9 stubs).
+**Next launches, in order — H8 (forward model zoo) is DONE, everything left is H9 (reverse direction):**
+1. When `ns_train_convert` finishes all 11 chunks: launch `run\train_ns_cpu_v1.cmd` via
+   `powershell -File run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_ns_cpu_v1.cmd`
+   (already written, lists all 11 `train_cNN` dirs, mirrors av2\_cpu\_v1's settings: 10 epochs, batch 32, CPU).
+2. When that finishes: `run\predict_model.cmd ns_cpu_v1 auto nscal nstest av2cal av2test` (the `nscal`/`nstest` sets
+   already exist in `predict_all.py`, pointed at `data/nuscenes_splits/val/{cal,test}` which is **already split**).
+3. Then `python src\analyze_run2.py --models ns_cpu_v1 --direction reverse` (H9), then `cd paper; powershell -File build.ps1`
+   to regenerate the manuscript. `analyze_run2.py`'s reverse-direction code path is written but has not yet been
+   run on real data — smoke-test it on a small `--limit` first if unsure, or just run it and check the printed gap
+   is a sane number (roughly 0-15pt, not negative-huge or >50pt) before trusting the JSON.
+4. `paper/make_results.py` already picks up `ns_cpu_v1__reverse.json` automatically (`REVERSE_MODELS` list) — no
+   code change needed, just rerun `build.ps1`. Then fill the H9 `\todo` in `results.tex`, the model-zoo `\todo` in
+   `setup.tex`, the contributions list in `intro.tex`, and write the abstract last, from the final numbers.
+   Currently 4 `\todo`s left, all blocked on this chain.
 
 ## 4. Key files
 * `notes/falsification.md` — **pre-registration**, Run-1 outcome log, erratum (unverified 0.73 yardstick),
