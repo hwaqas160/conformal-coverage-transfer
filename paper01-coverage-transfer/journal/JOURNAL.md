@@ -34,3 +34,9 @@ Added paper/build.ps1: one-command rebuild (make_results.py -> pdflatex/bibtex x
 
 ### 2026-09-22 10:39
 Verified all 19 refs.bib citations via web search against primary proceedings/arXiv pages (2026-09-22): all matched except lindemann2023safe was missing pages (fixed, 5116-5123) and the Vovk-2012 Beta-coverage fact in problem.tex had no citation (added vovk2012conditional, PMLR 25:475-490). refs_status.md rewritten, all 20 entries now V. Paper compiles clean. manuscript
+
+### 2026-09-22 10:42
+Repo hygiene: extended .gitignore (results/preds2/, results/*.log, data/nuscenes_splits/, data/nuscenes_scenarionet/) and untracked a stray 24MB npz + a growing log file that had been accidentally committed. results/run2/*.json (the actual source of truth for the paper) stay tracked. Keeps future commits/pushes fast. repo_hygiene
+
+### 2026-09-22 10:43
+setup.tex model-zoo paragraph filled with real checkpoint details (epochs, minADE per model). Paper compiles clean. manuscript
