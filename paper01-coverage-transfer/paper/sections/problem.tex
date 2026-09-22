@@ -43,8 +43,9 @@ be complemented by a label-based audit (Sec.~\ref{sec:audit}).
 \end{remark}
 
 \subsection{Cost of using target labels}
-If $k$ labelled target scenes are used directly, the resulting coverage has standard deviation about
-$\sqrt{\alpha(1-\alpha)/k}$ around $1-\alpha$, so $\approx 1000$ labels are needed for $\pm 2$ points at $\alpha=0.1$.
+If $k$ labelled target scenes are used directly, the resulting empirical coverage is Beta-distributed around
+$1-\alpha$ \cite{vovk2012conditional}, with standard deviation about $\sqrt{\alpha(1-\alpha)/k}$, so $\approx 1000$
+labels are needed for $\pm 2$ points at $\alpha=0.1$.
 Detecting a shortfall $\delta$ with an exact one-sided binomial test at level $\ell$ and power $1-\beta$ needs
 \begin{equation}\label{eq:budget}
 k\approx\left(\frac{z_{1-\ell}\sqrt{\alpha(1-\alpha)}+z_{1-\beta}\sqrt{(\alpha+\delta)(1-\alpha-\delta)}}{\delta}\right)^{2}.

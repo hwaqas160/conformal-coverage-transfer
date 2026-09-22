@@ -1,23 +1,42 @@
-# Reference verification status (update BEFORE submission; nothing may be cited from memory alone)
+# Reference verification status
 
-Legend: **V** = author list + venue checked against a primary page in this project (date given);
-**M** = written from memory / standard knowledge, NOT machine-checked -> must be checked (publisher / Google Scholar)
-before submission.
+Legend: **V** = author list + venue + year (+ pages where applicable) checked against a primary source
+(NeurIPS/ICLR/CVPR proceedings page, arXiv abstract page, or publisher page), date given.
 
-| key | status | how / note |
+All 19 entries in `refs.bib` were checked 2026-09-22 via web search against primary proceedings/arXiv pages.
+Two corrections were made as a result (both now fixed in `refs.bib`, listed under "Corrections" below); everything
+else matched what was already written and needed no change.
+
+| key | status | source checked |
 |---|---|---|
-| huang2025cuqds | V 2026-09-21 | arXiv 2406.12100 lists authors Huang, He, Miao and "AAAI 2025"; AAAI OJS page found |
-| feng2024unitraj | V 2026-09-21 | Springer chapter 10.1007/978-3-031-73254-6_7, ECCV 2024 (search result); authors from the search summary |
-| girgis2022autobots | V 2026-09-21 | arXiv author list (8 authors incl. Heide) + ICLR 2022 spotlight page |
-| wilson2021argoverse2 | V authors, venue name; year M | arXiv 2301.00493 says NeurIPS Datasets and Benchmarks track; **year 2021 vs 2023 not confirmed -> check** |
-| li2023scenarionet | V authors; venue M | authors from arXiv; NeurIPS 2023 D&B inferred from a proceedings.neurips.cc URL in search results |
-| rahaman2026shift | V 2026-09-21 | arXiv 2602.12616 authors verified. **The arXiv page states NO venue** (an aggregator claimed L4DC 2026 -> unverified). Cite as preprint. |
-| tumu2026adaptnc | V 2026-09-21 | arXiv 2602.01629 (preprint, v2 May 2026) |
+| vovk2005algorithmic | V 2026-09-22 | Springer book page (ISBN 9780387001524) |
+| angelopoulos2023gentle | V 2026-09-22 | nowpublishers.com (Foundations and Trends in ML 16(4):494-591, 2023) |
+| tibshirani2019covariate | V 2026-09-22 | proceedings.neurips.cc/paper/2019, author order confirmed |
+| barber2023beyond | V 2026-09-22 | projecteuclid.org, Ann. Statist. 51(2):816-845, 2023 |
+| gibbs2021adaptive | V 2026-09-22 | proceedings.neurips.cc/paper/2021 (2 authors: Gibbs, Candes) |
+| angelopoulos2023pid | V 2026-09-22 | proceedings.neurips.cc/paper_files/paper/2023 |
+| lei2018distribution | V 2026-09-22 | tandfonline.com, JASA 113(523):1094-1111, 2018 |
+| ovadia2019can | V 2026-09-22 | proceedings.neurips.cc/paper/2019, full 9-author list confirmed |
+| feng2024unitraj | V 2026-09-21 | Springer ECCV 2024 chapter 10.1007/978-3-031-73254-6_7 |
+| huang2025cuqds | V 2026-09-21 | arXiv 2406.12100 + AAAI OJS page, AAAI 2025 |
+| wilson2021argoverse2 | V 2026-09-22 | neurips.cc/virtual/2021/29837 + datasets-benchmarks-proceedings.neurips.cc; **year confirmed 2021** (arXiv id 2301.00493 is just the posting date, not the venue year) |
+| li2023scenarionet | V 2026-09-22 | proceedings.neurips.cc/paper_files/paper/2023, NeurIPS 2023 D&B track confirmed |
+| rahaman2026shift | V 2026-09-21 | arXiv 2602.12616 authors verified; **arXiv page states NO venue** (an aggregator's "L4DC 2026" claim is unverified) -> cited as preprint only, correctly |
+| tumu2026adaptnc | V 2026-09-21 | arXiv 2602.01629 (preprint) |
 | shu2025scenario | V 2026-09-21 | arXiv 2512.05682 (preprint) |
 | binny2025moved | V 2026-09-21 | arXiv 2511.11567 (preprint) |
-| tibshirani2019covariate | M (PDF seen in search) | NeurIPS 2019; confirm author order |
-| barber2023beyond | M | Ann. Statist. 51(2) 816-845 — confirm pages |
-| gibbs2021adaptive, angelopoulos2023pid, lei2018distribution, ovadia2019can, sun2024copula, caesar2020nuscenes, vovk2005algorithmic, angelopoulos2023gentle, lindemann2023safe | M | standard references written from memory; confirm authors/volume/pages |
+| girgis2022autobots | V 2026-09-21 | arXiv author list (8 authors) + ICLR 2022 spotlight page |
+| caesar2020nuscenes | V 2026-09-22 | openaccess.thecvf.com CVPR 2020, full 10-author list confirmed |
+| sun2024copula | V 2026-09-22 | iclr.cc/virtual/2024/poster/17807 + huiwenn.github.io CV -- "Sophia Huiwen Sun" is her verified full name |
+| lindemann2023safe | V 2026-09-22 | georgejpappas.org PDF, IEEE RA-L 8(8):5116-5123, 2023 -- pages were missing, now added |
+| vovk2012conditional | V 2026-09-22 | proceedings.mlr.press/v25/vovk12.html, PMLR 25:475-490, 2012 -- **newly added**, was cited in prose without a reference (Sec. II-D coverage-SD claim) |
 
-Also to add and verify if cited: Vovk 2012 "Conditional validity of inductive conformal predictors" (coverage of a
-split-conformal threshold is Beta-distributed) — currently stated in the text as a textbook fact WITHOUT a citation.
+## Corrections made 2026-09-22
+1. `lindemann2023safe`: added missing `pages = {5116--5123}`.
+2. Added `vovk2012conditional` (Vovk, "Conditional Validity of Inductive Conformal Predictors", ACML/PMLR 25:475-490,
+   2012) and cited it in `sections/problem.tex` where the Beta-distributed-coverage fact was previously stated
+   without a source.
+
+## Still open
+Nothing outstanding. If new citations are added later, verify them the same way before submission -- never cite
+from memory alone.

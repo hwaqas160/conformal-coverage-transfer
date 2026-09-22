@@ -31,3 +31,6 @@ Discussion section filled with real interpretation: practical recommendation (bu
 
 ### 2026-09-22 10:36
 Added paper/build.ps1: one-command rebuild (make_results.py -> pdflatex/bibtex x3 -> report undefined refs + todo count per file). Verified end to end: compiles clean, 5 todos left (abstract by design, intro contributions, 2 in results for H8/H9 stubs). RESUME.md updated with exact next commands for predict_v2 completion and ns_cpu_v1 reverse training. manuscript
+
+### 2026-09-22 10:39
+Verified all 19 refs.bib citations via web search against primary proceedings/arXiv pages (2026-09-22): all matched except lindemann2023safe was missing pages (fixed, 5116-5123) and the Vovk-2012 Beta-coverage fact in problem.tex had no citation (added vovk2012conditional, PMLR 25:475-490). refs_status.md rewritten, all 20 entries now V. Paper compiles clean. manuscript
