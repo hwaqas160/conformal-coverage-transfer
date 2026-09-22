@@ -12,7 +12,7 @@ more heavily trained model with a substantially \emph{larger} gap ($+8.0$pt) in 
 reproducible, but its magnitude is not a fixed property of the dataset pair --- it depends on the source model. We
 report this without averaging it away.
 
-\subsection{H2/H3: covariate reweighting does not repair it}
+\subsection{H2/H3: covariate reweighting does not repair it}\label{sec:h2h3}
 Weighting the calibration scores by an estimated label-free covariate-shift likelihood ratio does not close the gap;
 it widens it. On the primary model the label-free-score gap goes from $+\gapUncorrMain$ points uncorrected to
 $+\gapWeightedMain$ points weighted, and the reweighting explains \removalFracMain\% of the cross-city gap

@@ -1,5 +1,24 @@
 \section{Discussion and Limitations}
-\todo{Discuss after results: what the guarantee loss means for a planner; when the normalised score helps and when it does not; practical protocol (audit, then recalibrate).}
+A planner that trusts a source-calibrated region on unseen deployment data is, on this evidence, trusting a region
+that is too small: at $\alpha=0.10$ the true miscoverage is $\alpha+0.03$ to $\alpha+0.08$ depending on the source
+model, not $\alpha$. That gap is silent --- nothing in the deployed system signals it --- which is precisely why we
+treat measurement and audit as first-class contributions and not a prelude to the ``real'' fix. Three results bear
+directly on practice. First, covariate reweighting is not a safe default here: it made the gap worse on both models
+tested (Sec.~\ref{sec:h2h3}), so a practitioner who reweights and stops is worse off than one who does nothing. Second, the
+label-free normalised score (H4) is not a substitute for labels either --- it repaired about half the gap on one
+model and about a tenth on another, and nothing observed at deployment time (without target labels) currently tells
+you which regime you are in. Third, the coverage audit (H5b) is the one method that behaved as pre-registered on
+both models: with on the order of $10^3$ labelled target scenes it reliably detects a violation of this size at a low
+false-alarm rate. The practical recommendation this supports is modest but concrete: budget for a few hundred to
+one thousand labelled target-domain scenes before trusting a transferred conformal region, and treat covariate
+reweighting and the normalised score as diagnostics to try, not guarantees to rely on.
+
+\paragraph{Why the effect size varies by model.}
+The second model (Table~\ref{tab:models}) was trained on more data with a different schedule and has a substantially
+larger gap and a normalised score that helps far less. We do not have a causal explanation for this from two data
+points; it is exactly the kind of claim H8 (a larger model zoo) is designed to either firm up or refute, and we report
+it as an open question rather than adjudicate it on $n=2$.
+
 \paragraph{Limitations (fixed).}
 (i) Two datasets and one architecture family; (ii) small CPU-trained models, so absolute accuracy is below published state of the art; (iii) the observed gap
 is an association---its cause (annotation, sampling, agent mix) is not isolated, only a sampling-rate confound was tested; (iv) marginal, not conditional, coverage;
