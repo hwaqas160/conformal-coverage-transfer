@@ -48,10 +48,14 @@ shared/tools/
 # ============ paper01: growing training logs / large results ============
 */results/*.out
 */results/*.err
+*/results/*.log
 */results/ckpts/
 */results/logs/
 */results/preds/
+*/results/preds2/
 */data/av2_splits/
+*/data/nuscenes_splits/
+*/data/nuscenes_scenarionet/
 
 # ============ paper01: operational logs (heartbeat, watcher output) ============
 */logs/
