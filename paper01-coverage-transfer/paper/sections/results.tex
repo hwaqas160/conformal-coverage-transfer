@@ -29,7 +29,10 @@ The model-uncertainty-normalised score (Sec.~\ref{sec:norm}) reduces the primary
 $\le 0.5$) and far from the pre-registered refutation threshold ($>0.75$). On the second model it reduces the gap by
 only 12\% (ratio $0.877$), which \emph{is} past the pre-registered refutation threshold. H4 is therefore not
 confirmed as a general repair --- marginal support on one model, refuted on another --- and we report both rather
-than the more favourable one.
+than the more favourable one. The pre-registered efficiency guard (a fix that only works by inflating the region by
+$>25\%$ does not count) is not triggered on either model: the normalised region is at most $15.4\%$ larger than the
+raw one at matched coverage (av2\_cpu\_v1) and $7.2\%$ larger (av2\_valsplit\_v1), so where H4 does help it is not
+merely trading coverage for a much bigger region.
 
 \subsection{H5/H5b: recalibration and the coverage audit}
 At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with

@@ -272,6 +272,7 @@ larger: +0.0796 (CI [0.0644,0.0936]), same-domain -0.0024.
 |---|---|---|---|---|
 | H4 ratio \|Delta'\|/\|Delta\| | 0.512 | 0.877 | <=0.5 support / >0.75 refute | v1: **marginal** (just above the support bar, nowhere near refuted); valsplit\_v1: **REFUTED** |
 | H4 in-domain \|Delta\_in'\| | 0.0048 | 0.0010 | <=0.02 | Both **pass** |
+| H4 efficiency guard (region-area inflation at matched coverage) | +15.4% | +7.2% | not >25% | Both **pass** -- not triggered, so where H4 helps it is not by ballooning the region |
 | H5 refute clause (min(pooled,shrink) mean\|err\| @k=100 < direct) | shrink\_k0=100: 0.0163 < direct 0.0269 -> **not refuted, shrinkage wins** | shrink\_k0=100: 0.0243 > direct 0.0227 (and pooled/shrink500 both worse too) -> **REFUTED, direct wins** | — | model-dependent, opposite verdicts |
 | H5 pooled k\* | never reaches 90% (any k tested) | never reaches 90% (any k tested) | — | pooled is dominated by bias on both models, as the synthetic study anticipated |
 | H5b power @ k=1000 | 0.952 | 1.000 | >=0.90 | Both **pass** |
