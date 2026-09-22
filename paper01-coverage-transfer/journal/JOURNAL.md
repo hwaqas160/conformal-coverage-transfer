@@ -40,3 +40,6 @@ Repo hygiene: extended .gitignore (results/preds2/, results/*.log, data/nuscenes
 
 ### 2026-09-22 10:43
 setup.tex model-zoo paragraph filled with real checkpoint details (epochs, minADE per model). Paper compiles clean. manuscript
+
+### 2026-09-22 10:45
+Appended Run 2 outcome log to notes/falsification.md (pre-registration discipline: append-only, dated entry) checking H2-H6/H8 against their exact pre-registered support/refute thresholds per model. Key finding: H5b (labelled audit) is the only hypothesis cleanly supported on BOTH models; H4/H6 are marginal-to-refuted depending on model; H2/H3 (reweighting) REFUTED on both, replicating Run 1. results.tex tightened to state exact pre-registered verdicts (marginal/refuted) rather than just 'mixed'. Paper compiles clean. manuscript

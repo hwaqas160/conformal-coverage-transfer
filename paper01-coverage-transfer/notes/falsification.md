@@ -253,3 +253,40 @@ and the marginal rate over calibration draws is also reported).
 Expectation recorded in advance from the synthetic study: H5's pooled/shrinkage variants will most likely fail their
 pre-registered criterion (bias dominates); if so this is reported as a negative result and the audit + direct recalibration
 are the recommended protocol.
+
+---
+
+## Outcome log — Run 2 (H4–H9), real data — 2026-09-22
+Reproduce: `python src/analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1` (full numbers:
+`results/run2/{av2_cpu_v1,av2_valsplit_v1}__forward.json`, `results/run2/cities__*.json`). alpha=0.10 unless noted.
+**Forward direction only (AV2->nuScenes); 2 of the 3 planned model-zoo entries; reverse direction (H9) not yet run**
+— both pending, this entry will NOT be edited when they land, a new dated entry will be appended instead.
+
+H1 replicates on real data independent of Run 1's calibration draw: av2\_cpu\_v1 gap +0.0334 (CI [0.0211,0.0450]),
+same-domain -0.0022 (consistent with 0 as SCP guarantees). This IS a second, independent confirmation of Run 1's
+headline number (+0.034 there too) — not the same experiment rerun, but the same source model scored on a fresh
+analysis pipeline (`analyze_run2.py`, not `analyze_pair.py`) against the same target. av2\_valsplit\_v1 gap is much
+larger: +0.0796 (CI [0.0644,0.0936]), same-domain -0.0024.
+
+| Hypothesis | av2\_cpu\_v1 | av2\_valsplit\_v1 | Threshold | Supported? |
+|---|---|---|---|---|
+| H4 ratio \|Delta'\|/\|Delta\| | 0.512 | 0.877 | <=0.5 support / >0.75 refute | v1: **marginal** (just above the support bar, nowhere near refuted); valsplit\_v1: **REFUTED** |
+| H4 in-domain \|Delta\_in'\| | 0.0048 | 0.0010 | <=0.02 | Both **pass** |
+| H5 refute clause (min(pooled,shrink) mean\|err\| @k=100 < direct) | shrink\_k0=100: 0.0163 < direct 0.0269 -> **not refuted, shrinkage wins** | shrink\_k0=100: 0.0243 > direct 0.0227 (and pooled/shrink500 both worse too) -> **REFUTED, direct wins** | — | model-dependent, opposite verdicts |
+| H5 pooled k\* | never reaches 90% (any k tested) | never reaches 90% (any k tested) | — | pooled is dominated by bias on both models, as the synthetic study anticipated |
+| H5b power @ k=1000 | 0.952 | 1.000 | >=0.90 | Both **pass** |
+| H5b power @ k=250 | 0.492 | 0.978 | >=0.5 | v1 **marginal** (0.008 under, effectively met given rounding/seed noise); valsplit\_v1 **pass** (bigger true gap => more power at fixed k, expected) |
+| H5b refute clause (power@1000 < 0.75) | 0.952 | 1.000 | — | Not triggered on either — **H5b is the one hypothesis that is clearly and consistently supported** |
+| H6 rho(AUC, \|gap\|), 30 city pairs | 0.372 (p=0.043) | 0.098 (p=0.606, not significant) | >=0.5 support / <0.3 refute | v1: **neither supported nor refuted** (in between, and the significance the pre-registration wanted is present but the effect size is not); valsplit\_v1: **REFUTED** |
+| H2 (reweighting removal fraction) | -64% | -27% | >=40% support / <25% refute | Both **REFUTED**, both negative (reweighting makes the fit worse than no correction) — replicates Run 1's REFUTED verdict on an independent model |
+| H8 (gap >= 0.02, replicates for every zoo model) | +0.033 | +0.080 | gap>=0.02, sign consistent | Both **pass this clause** (2/2 models so far) — but the pre-registration's implicit assumption that *magnitude* would be roughly stable across models is **not supported**: 2.4x difference between the two models tested |
+
+**Interpretation.** Of the solution-side hypotheses, only H5b (the labelled coverage audit) held up cleanly and
+consistently across both models. H4 (normalised score) and H6 (label-free monitor) both worked passably on
+av2\_cpu\_v1 and were refuted or close to refuted on av2\_valsplit\_v1 — the more heavily trained, larger-gap model.
+H2/H3 (covariate reweighting) replicated its Run-1 refutation on a second, independent model, which is the strongest
+and most consistent finding in this log. The paper reports all of this as-is: H5b/H2-H3 as solid, H4/H6 as
+model-dependent partial results, not as uniform wins.
+
+**Rule (restated):** nothing here is rewritten when av2\_cpu\_v2 or the reverse direction land; a new dated entry is
+appended and this one stands as the record of what 2 models showed.

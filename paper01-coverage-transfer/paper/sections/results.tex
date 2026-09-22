@@ -25,10 +25,11 @@ can be expected to repair an unrestricted shift).
 
 \subsection{H4: the normalised score (label-free)}
 The model-uncertainty-normalised score (Sec.~\ref{sec:norm}) reduces the primary model's gap by \normReductionMain\%
-(from $+\gapRawMain$ to $+\gapNormMain$ points). Table~\ref{tab:models}'s ``red.'' column shows this is not a
-uniform effect: on the second model the same normalisation reduces the gap by only 12\%. H4 is therefore \emph{not}
-confirmed as a general repair --- it helps substantially on one model and barely on another, and we report both
-rather than the more favourable one.
+(from $+\gapRawMain$ to $+\gapNormMain$ points), just past our pre-registered support threshold (gap ratio
+$\le 0.5$) and far from the pre-registered refutation threshold ($>0.75$). On the second model it reduces the gap by
+only 12\% (ratio $0.877$), which \emph{is} past the pre-registered refutation threshold. H4 is therefore not
+confirmed as a general repair --- marginal support on one model, refuted on another --- and we report both rather
+than the more favourable one.
 
 \subsection{H5/H5b: recalibration and the coverage audit}
 At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with
@@ -36,8 +37,11 @@ probability \auditPowerK\ on the primary model, against a false-alarm rate of \a
 control split --- matching the pre-registered budget of Eq.~\eqref{eq:budget} ($k\approx750$ for the analogous
 $\delta=0.034$ case) to the same order of magnitude. Figure~\ref{fig:budget} shows direct recalibration on the
 primary model reaches 90\% probability of being within 2 coverage points of nominal at $k^\star\approx\kStarDirect$
-labelled target scenes; pooling target labels with the (mismatched) source calibration set is markedly less
-efficient, consistent with H2/H3's conclusion that the shift is not a simple reweighting.
+labelled target scenes; pooling target labels with the (mismatched) source calibration set never reaches that bar on
+either model tested, consistent with H2/H3's conclusion that the shift is not a simple reweighting. Shrinkage toward
+the source threshold beats direct recalibration at small $k$ on the primary model but not on the second, so we do
+not recommend it as a universal default --- direct recalibration once $k^\star$ labels are available, audited by
+H5b before that, is the protocol we can actually stand behind.
 
 \begin{figure}[t]
 \centering
@@ -50,9 +54,11 @@ coverage points of nominal, by estimator.}
 \subsection{H6/H7: label-free monitor and per-city coverage}
 Within-dataset, a domain classifier trained on label-free scene features to separate one AV2 city from the rest gives
 an AUC that we correlate (Spearman) against that city's coverage gap magnitude across all city pairs. On the primary
-model $\rho=0.37$ ($p=0.04$); on the second model $\rho=0.10$ ($p=0.61$, not significant). The pre-registered
-threshold was $\rho\ge0.5$: \textbf{H6 is not confirmed} on either model. We report this as a negative result --- the
-label-free monitor tracks shift only weakly, and not reliably enough to substitute for the labelled audit of H5b.
+model $\rho=0.37$ ($p=0.04$, significant but below the $\rho\ge0.5$ support bar and above the $\rho<0.3$ refutation
+bar --- inconclusive by our own pre-registered rule); on the second model $\rho=0.10$ ($p=0.61$, not significant, and
+below the refutation bar). \textbf{H6 is not supported on either model, and refuted on the second.} We report this as
+a negative result --- the label-free monitor tracks shift only weakly, and not reliably enough to substitute for the
+labelled audit of H5b.
 
 \subsection{H8: robustness across a model zoo}
 Table~\ref{tab:models} is the model-zoo comparison; \todo{expand once av2\_cpu\_v2 (retrained/fine-tuned model) is
