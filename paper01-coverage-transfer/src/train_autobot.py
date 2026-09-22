@@ -26,7 +26,8 @@ from unitraj_bridge import UNITRAJ_PKG, _load_cfg  # noqa: E402
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--train_db", required=True)
+    ap.add_argument("--train_db", required=True, nargs="+",
+                    help="one or more ScenarioNet DB dirs, e.g. the 11 chunked nuscenes_scenarionet/train_cNN dirs")
     ap.add_argument("--val_db", required=True)
     ap.add_argument("--exp", required=True, help="experiment name (ckpt dir)")
     ap.add_argument("--epochs", type=int, default=25)
@@ -47,7 +48,7 @@ def main():
     ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
     a = ap.parse_args()
     # resolve to absolute BEFORE any chdir
-    a.train_db = Path(a.train_db).resolve().as_posix()
+    a.train_db = [Path(p).resolve().as_posix() for p in a.train_db]
     a.val_db = Path(a.val_db).resolve().as_posix()
     if a.resume:
         a.resume = Path(a.resume).resolve().as_posix()
@@ -75,10 +76,10 @@ def main():
     cfg.debug = False
     cfg.load_num_workers = a.num_workers
     cfg.cache_path = str(SRC.parent / "data" / "unitraj_cache")
-    cfg.train_data_path = [a.train_db]
+    cfg.train_data_path = a.train_db
     cfg.val_data_path = [a.val_db]
-    cfg.max_data_num = [a.limit_train]
-    cfg.starting_frame = [0]
+    cfg.max_data_num = [a.limit_train] * len(a.train_db)
+    cfg.starting_frame = [0] * len(a.train_db)
     cfg.method.train_batch_size = a.batch
     cfg.method.eval_batch_size = max(a.batch * 2, 16)
     cfg.method.max_epochs = a.epochs

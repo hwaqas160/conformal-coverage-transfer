@@ -1,0 +1,13 @@
+\begin{table}[t]
+\centering
+\caption{Does covariate-shift reweighting repair the gap? ``uncorr.'' / ``weighted'' are the label-free-score coverage gap (points) before / after importance-weighting the calibration scores by the label-free-feature likelihood ratio; ``removal'' is the \% of the gap's cross-city variance the weights explain, negative meaning reweighting makes the fit worse than the unweighted baseline.}
+\label{tab:reweight}
+\begin{tabular}{llrrr}
+\toprule
+Model & Dir. & uncorr.\ & weighted & removal (\%) \\
+\midrule
+av2\_cpu\_v1 & forward & 3.2 & 5.2 & -64 \\
+av2\_valsplit\_v1 & forward & 7.9 & 10.0 & -27 \\
+\bottomrule
+\end{tabular}
+\end{table}

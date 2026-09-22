@@ -69,3 +69,5 @@
 {"ts": "2026-09-22T10:23:20", "id": "run2_real", "event": "done", "detail": "av2_cpu_v1 fwd: raw gap +3.3pt CI[2.1,4.5] alpha=.1, norm gap +1.7pt (49% reduction), audit power@1000=.95 falsealarm=.024, k*~1000. av2_valsplit_v1 fwd: raw gap +8.0pt CI[6.4,9.4], norm gap +7.0pt (12% reduction only), audit power@1000=1.0. Real Run1 finding replicates on 2nd model; H4 normalization helps a lot on v1, barely on valsplit_v1 -> effect is model-dependent, report honestly.", "sha": "2716da0"}
 {"ts": "2026-09-22T10:23:20", "id": "av2_cpu_v2_train", "event": "done", "detail": "training finished: DONE_EXIT_0, best ckpt epoch03-minADE1.092.ckpt", "sha": "2716da0"}
 {"ts": "2026-09-22T10:23:20", "id": "predict_av2_cpu_v2", "event": "attempt_start", "detail": "launched via P01_PredictV2 task, av2cal/av2test/ns, running on CPU", "sha": "2716da0"}
+{"ts": "2026-09-22T10:25:56", "id": "predict_av2_cpu_v2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\av2cal.npz", "sha": "3045cab"}
+{"ts": "2026-09-22T10:31:01", "id": "predict_av2_cpu_v2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\av2test.npz", "sha": "3045cab"}

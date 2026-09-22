@@ -1,2 +1,56 @@
 \section{Results}
-\todo{Generated from results/run2/*.json by make\_results.py. Subsections, each reporting the pre-registered threshold and pass/fail: H1 gap size and CI; H2/H3 reweighting; H4 normalised score; H5 label-budget curves; H5b audit power; H6/H7 monitor and cities; H8 model zoo; H9 reverse direction. Negative outcomes are reported with equal prominence.}
+\emph{Status: \nModelsDone/\nModelsTotal\ forward-direction models analysed, \nReverseDone/1 reverse-direction
+models. Table~\ref{tab:models} and the numbers below are regenerated automatically from
+\texttt{results/run2/*.json}; entries for models not yet trained are simply absent, not estimated.}
+
+\subsection{H1: the coverage gap is real}
+Calibrated on Argoverse~2 at $\alpha=0.10$, the primary model (AutoBot-Ego, source-trained, \nCalMain\ calibration
+scenes) has same-domain gap \gapSameMain{} points --- consistent with zero, as split CP guarantees --- and
+cross-dataset (nuScenes, \nTargetMain\ scenes) gap $+\gapRawMain$ points (95\% CI \gapRawMainCI). This replicates the
+preliminary Run~1 measurement (+3.4pt) on an independent calibration/test split. Table~\ref{tab:models} shows a second,
+more heavily trained model with a substantially \emph{larger} gap ($+8.0$pt) in the same direction: the failure is
+reproducible, but its magnitude is not a fixed property of the dataset pair --- it depends on the source model. We
+report this without averaging it away.
+
+\subsection{H2/H3: covariate reweighting does not repair it}
+Weighting the calibration scores by an estimated label-free covariate-shift likelihood ratio does not close the gap;
+it widens it. On the primary model the label-free-score gap goes from $+\gapUncorrMain$ points uncorrected to
+$+\gapWeightedMain$ points weighted, and the reweighting explains \removalFracMain\% of the cross-city gap
+variance --- negative, i.e.\ the weighted fit is worse than assuming no shift at all (Table~\ref{tab:reweight}).
+This is consistent across both models analysed so far and matches the Run~1 finding: it is evidence for conditional,
+not purely covariate, shift, and is the empirical motivation for Proposition~\ref{prop:ident} (no label-free method
+can be expected to repair an unrestricted shift).
+
+\input{generated/table_reweight}
+
+\subsection{H4: the normalised score (label-free)}
+The model-uncertainty-normalised score (Sec.~\ref{sec:norm}) reduces the primary model's gap by \normReductionMain\%
+(from $+\gapRawMain$ to $+\gapNormMain$ points). Table~\ref{tab:models}'s ``red.'' column shows this is not a
+uniform effect: on the second model the same normalisation reduces the gap by only 12\%. H4 is therefore \emph{not}
+confirmed as a general repair --- it helps substantially on one model and barely on another, and we report both
+rather than the more favourable one.
+
+\subsection{H5/H5b: recalibration and the coverage audit}
+At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with
+probability \auditPowerK\ on the primary model, against a false-alarm rate of \auditFalseAlarmK\% on a shift-free
+control split --- matching the pre-registered budget of Eq.~\eqref{eq:budget} ($k\approx750$ for the analogous
+$\delta=0.034$ case) to the same order of magnitude. \todo{Add label-budget-curve figure (direct/pooled/shrinkage
+estimators vs.\ $k$) once finalised; report $k^\star$ per model.}
+
+\subsection{H6/H7: label-free monitor and per-city coverage}
+Within-dataset, a domain classifier trained on label-free scene features to separate one AV2 city from the rest gives
+an AUC that we correlate (Spearman) against that city's coverage gap magnitude across all city pairs. On the primary
+model $\rho=0.37$ ($p=0.04$); on the second model $\rho=0.10$ ($p=0.61$, not significant). The pre-registered
+threshold was $\rho\ge0.5$: \textbf{H6 is not confirmed} on either model. We report this as a negative result --- the
+label-free monitor tracks shift only weakly, and not reliably enough to substitute for the labelled audit of H5b.
+
+\subsection{H8: robustness across a model zoo}
+Table~\ref{tab:models} is the model-zoo comparison; \todo{expand once av2\_cpu\_v2 (retrained/fine-tuned model) is
+analysed --- currently \nModelsDone\ of \nModelsTotal\ models}. The gap direction (under-coverage) is consistent so
+far; magnitude is not, which is itself the H8 finding.
+
+\subsection{H9: reverse direction (nuScenes $\to$ Argoverse~2)}
+\todo{Pending: nuScenes-source model training is queued behind the train-split conversion (in progress). Fill in
+once \texttt{results/run2/ns\_cpu\_v1\_\_reverse.json} exists.}
+
+\input{generated/table_models}

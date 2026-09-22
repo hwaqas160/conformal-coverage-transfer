@@ -1,0 +1,13 @@
+\begin{table*}[t]
+\centering
+\caption{Coverage transfer by model and direction, $\alpha=0.10$. ``red.'' = \% reduction in gap from the label-free normalised score (H4); ``power/FA'' = audit reject probability at $k=1000$ target labels on the shifted / same-domain split (H5b); $\rho$ = Spearman correlation between the label-free domain-monitor AUC and the per-city miscoverage (H6).}
+\label{tab:models}
+\begin{tabular}{llrrrrrrrr}
+\toprule
+Model & Dir. & $n_\text{cal}$ & $n_\text{tgt}$ & gap (pt) & 95\% CI & norm.\ gap & red.\ (\%) & power/FA @1000 & $\rho$ \\
+\midrule
+av2\_cpu\_v1 & forward & 4576 & 9041 & 3.3 & [2.1, 4.5] & 1.7 & 49 & 0.95/2.4 & 0.37 \\
+av2\_valsplit\_v1 & forward & 4576 & 9041 & 8.0 & [6.4, 9.4] & 7.0 & 12 & 1.00/1.0 & 0.10 \\
+\bottomrule
+\end{tabular}
+\end{table*}
