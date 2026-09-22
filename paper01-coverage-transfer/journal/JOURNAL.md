@@ -16,3 +16,6 @@ Solution design (post-hoc after Run 1, pre-registered before Run 2): identifiabi
 
 ### 2026-09-21 16:49
 Manuscript scaffold compiles (main.tex + sections; results/abstract/discussion are TODO placeholders pending Run 2). Next: make_results.py once analyze_run2 outputs exist. manuscript
+
+### 2026-09-22 10:23
+Real Run 2 numbers exist for av2_cpu_v1 and av2_valsplit_v1 (forward AV2->nuScenes). Gap replicates Run 1 (+3.3pt) on v1 but is much larger on valsplit_v1 (+8.0pt) -- same direction, different magnitude: gap size is model/training-dependent, will report as such. H4 (normalized score) cuts the gap ~49% on v1 but only ~12% on valsplit_v1 -- mixed, not a clean win, will report honestly rather than cherry-pick. H5b audit power >=0.95 at k=1000 on both, false-alarm well under 5% -- clean pass. ns_train_convert hit a native crash on chunk7 (exit -1073741205, likely transient/native GEOS, cleaned+relaunched, resumed correctly from chunk7). av2_cpu_v2 training finished (DONE_EXIT_0), prediction launched. manuscript

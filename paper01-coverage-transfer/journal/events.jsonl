@@ -22,3 +22,50 @@
 {"ts": "2026-09-21T16:39:13", "id": "run2__synth_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 1500/1500/3000", "sha": "da99e93"}
 {"ts": "2026-09-21T16:40:52", "id": "run2__synth_forward", "event": "done", "detail": "results\\run2\\_synth__forward.json in 99s; raw gap@.10=+0.3360 norm gap=+0.0047", "sha": "da99e93"}
 {"ts": "2026-09-21T16:45:26", "id": "predict_av2_cpu_v1", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\av2test.npz", "sha": "ae88935"}
+{"ts": "2026-09-21T16:57:46", "id": "predict_av2_cpu_v1", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\ns.npz", "sha": "2716da0"}
+{"ts": "2026-09-21T16:57:46", "id": "predict_av2_cpu_v1", "event": "done", "detail": "model=av2_cpu_v1 ckpt=epoch08-minADE1.349.ckpt -> results\\preds2\\av2_cpu_v1", "sha": "2716da0"}
+{"ts": "2026-09-21T16:57:50", "id": "predict_av2_valsplit_v1", "event": "attempt_start", "detail": "ckpt=epoch17-minADE1.347.ckpt sets=['av2cal', 'av2test', 'ns']", "sha": "2716da0"}
+{"ts": "2026-09-21T17:04:16", "id": "predict_av2_valsplit_v1", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\av2cal.npz", "sha": "2716da0"}
+{"ts": "2026-09-21T17:10:36", "id": "predict_av2_valsplit_v1", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\av2test.npz", "sha": "2716da0"}
+{"ts": "2026-09-21T17:22:35", "id": "predict_av2_valsplit_v1", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\ns.npz", "sha": "2716da0"}
+{"ts": "2026-09-21T17:22:35", "id": "predict_av2_valsplit_v1", "event": "done", "detail": "model=av2_valsplit_v1 ckpt=epoch17-minADE1.347.ckpt -> results\\preds2\\av2_valsplit_v1", "sha": "2716da0"}
+{"ts": "2026-09-21T19:53:56", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 0 done in 11980s -> data\\nuscenes_scenarionet\\train_c00", "sha": "2716da0"}
+{"ts": "2026-09-21T19:53:56", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 1/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T01:08:33", "id": "av2_cpu_v2", "event": "attempt_end", "detail": "attempt 1 exit 0", "sha": "2716da0"}
+{"ts": "2026-09-22T01:08:33", "id": "av2_cpu_v2", "event": "done", "detail": "training finished; see results/ckpts/av2_cpu_v2", "sha": "2716da0"}
+{"ts": "2026-09-22T02:03:53", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 1 done in 22197s -> data\\nuscenes_scenarionet\\train_c01", "sha": "2716da0"}
+{"ts": "2026-09-22T02:03:53", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 2/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T02:29:35", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 2 done in 1542s -> data\\nuscenes_scenarionet\\train_c02", "sha": "2716da0"}
+{"ts": "2026-09-22T02:29:35", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 3/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T02:55:40", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 3 done in 1565s -> data\\nuscenes_scenarionet\\train_c03", "sha": "2716da0"}
+{"ts": "2026-09-22T02:55:40", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 4/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T03:22:14", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 4 done in 1594s -> data\\nuscenes_scenarionet\\train_c04", "sha": "2716da0"}
+{"ts": "2026-09-22T03:22:14", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 5/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T03:49:38", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 5 done in 1644s -> data\\nuscenes_scenarionet\\train_c05", "sha": "2716da0"}
+{"ts": "2026-09-22T03:49:38", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 6/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T06:46:46", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 6 done in 10628s -> data\\nuscenes_scenarionet\\train_c06", "sha": "2716da0"}
+{"ts": "2026-09-22T06:46:46", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 7/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 2", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 3", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 4", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 5", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 6", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 7", "sha": ""}
+{"ts": "2026-09-22T10:10:41", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 8", "sha": ""}
+{"ts": "2026-09-22T10:10:42", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 9", "sha": ""}
+{"ts": "2026-09-22T10:10:42", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 10", "sha": ""}
+{"ts": "2026-09-22T10:10:42", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 11", "sha": ""}
+{"ts": "2026-09-22T10:10:42", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 12", "sha": ""}
+{"ts": "2026-09-22T10:16:54", "id": "ns_train_convert", "event": "attempt_end", "detail": "wrapper exhausted 12 attempts on chunk7, exit -1073741205 (native access-violation-class crash), 1 log line total => crashed near-instantly on every retry; cleaned corrupt train_c07 dir, relaunching", "sha": "2716da0"}
+{"ts": "2026-09-22T10:16:59", "id": "ns_train_convert", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "2716da0"}
+{"ts": "2026-09-22T10:17:44", "id": "run2_real", "event": "attempt_start", "detail": "analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 (real preds2 data, forward direction)", "sha": "2716da0"}
+{"ts": "2026-09-22T10:17:45", "id": "run2_av2_cpu_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "2716da0"}
+{"ts": "2026-09-22T10:18:00", "id": "predict_av2_cpu_v2", "event": "attempt_start", "detail": "ckpt=epoch03-minADE1.092.ckpt sets=['av2cal', 'av2test', 'ns']", "sha": "2716da0"}
+{"ts": "2026-09-22T10:19:24", "id": "ns_train_convert", "event": "attempt_start", "detail": "32186 scenarios, 11 chunks of 3000, workers=3", "sha": "2716da0"}
+{"ts": "2026-09-22T10:19:24", "id": "ns_train_convert", "event": "artifact", "detail": "chunk 7/11 start (3000 scenarios)", "sha": "2716da0"}
+{"ts": "2026-09-22T10:22:07", "id": "run2_av2_cpu_v1_forward", "event": "done", "detail": "results\\run2\\av2_cpu_v1__forward.json in 262s; raw gap@.10=+0.0334 norm gap=+0.0171", "sha": "2716da0"}
+{"ts": "2026-09-22T10:22:08", "id": "run2_av2_valsplit_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "2716da0"}
+{"ts": "2026-09-22T10:22:20", "id": "run2_av2_valsplit_v1_forward", "event": "done", "detail": "results\\run2\\av2_valsplit_v1__forward.json in 12s; raw gap@.10=+0.0796 norm gap=+0.0698", "sha": "2716da0"}
+{"ts": "2026-09-22T10:23:20", "id": "run2_real", "event": "done", "detail": "av2_cpu_v1 fwd: raw gap +3.3pt CI[2.1,4.5] alpha=.1, norm gap +1.7pt (49% reduction), audit power@1000=.95 falsealarm=.024, k*~1000. av2_valsplit_v1 fwd: raw gap +8.0pt CI[6.4,9.4], norm gap +7.0pt (12% reduction only), audit power@1000=1.0. Real Run1 finding replicates on 2nd model; H4 normalization helps a lot on v1, barely on valsplit_v1 -> effect is model-dependent, report honestly.", "sha": "2716da0"}
+{"ts": "2026-09-22T10:23:20", "id": "av2_cpu_v2_train", "event": "done", "detail": "training finished: DONE_EXIT_0, best ckpt epoch03-minADE1.092.ckpt", "sha": "2716da0"}
+{"ts": "2026-09-22T10:23:20", "id": "predict_av2_cpu_v2", "event": "attempt_start", "detail": "launched via P01_PredictV2 task, av2cal/av2test/ns, running on CPU", "sha": "2716da0"}
