@@ -55,3 +55,18 @@ Added H4's efficiency guard result (region-area inflation, pre-registered part o
 
 ### 2026-09-22 11:33
 Forward-direction H8 model zoo complete (3/3). Manuscript fully updated: results.tex, discussion.tex, falsification.md all rewritten to cover 3 models honestly (H4 ratio 0.51/0.88/0.69; H6 rho 0.37/0.10/0.39; H2 removal -64/-27/-22%; H5b power 0.95/1.00/1.00, FA 2.4/1.0/6.2%). Paper compiles clean, down to 4 TODOs, all genuinely blocked on H9 (reverse direction, awaiting ns_train_convert). Next: monitor ns_train_convert (chunk 7 of 11 in progress), then train ns_cpu_v1. manuscript
+
+### 2026-09-22 15:37
+15:37 status check: chunk 7 still running after 5h18m (started 10:19), way beyond the ~25min normal case. Diagnosed via process CPU-time inspection (not just wall-clock): one of my 3 workers (PID 39052) has used 18679s CPU out of ~19100s wall (98% util -- genuinely crunching, not hung). AI2 has 2 processes independently near-100% CPU (PID 2736 cumulative 95864s CPU!, PID 12976 92% util) competing for the same 18C/36T machine. Confirmed: this is real CPU contention with AI2's job, not a bug/hang in my code. Not touching AI2's processes per standing instruction. Revised ETA is worse than earlier estimate if this contention persists. status_check
+
+### 2026-09-22 17:02
+chunk 7 finally finished after 24123s (~6.7h, worst chunk yet due to AI2 CPU contention + worker imbalance). chunk 8/11 started 17:01:27. 3 chunks remain (8,9,10). Cumulative slow-chunk pattern: 0=3.3h,1=6.2h,6=3.0h,7=6.7h vs fast chunks ~26min -- roughly half the chunks are hitting heavy contention. status_check
+
+### 2026-09-22 21:41
+chunk 8 done (16752s ~4.65h). chunk 9/11 started 21:40:39. Only 2 chunks left (9,10). All 4 recent chunks (0,1,6,7,8) hit heavy contention; the pattern suggests contention may just be the steady-state now rather than intermittent. status_check
+
+### 2026-09-23 04:25
+chunk 9 done (24176s ~6.7h). FINAL chunk 10/11 started 04:23:35 (only 2186 scenarios, smaller than the 3000-scenario chunks -- should finish faster even under contention). Once this lands, monitor auto-launches ns_cpu_v1 training via P01_TrainNsCpuV1. status_check
+
+### 2026-09-23 06:17
+ns_train_convert DONE - all 11 chunks present (finished 06:15:48). Chunk 10 (final) took 6733s (~1.9h). Auto-launch inside the monitor's powershell.exe -Command call FAILED (execution-policy error: 'running scripts is disabled') -- my monitor script printed 'LAUNCHED' unconditionally without checking the exit code, a bug. Caught by reading the monitor's raw output, not the summary. Manually relaunched correctly via the PowerShell tool (same pattern used successfully all session): P01_TrainNsCpuV1 scheduled for 06:18. status_check

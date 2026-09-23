@@ -1,7 +1,7 @@
 # RESUME — start here after a crash, a reboot, or a new session
 
 _Keep this file accurate: update it whenever a job is launched/finished or a decision changes. Last full update:
-2026-09-22 11:35._
+2026-09-23 06:20._
 
 ## 0. One-paragraph state of the project
 Paper 01 asks: **does the conformal-prediction coverage guarantee survive a zero-label change of dataset in
@@ -15,7 +15,9 @@ time. The normalised score (H4) and label-free monitor (H6) are genuinely mixed 
 refuted on another, inconclusive on the third — reported as such, not cherry-picked. A pre-registered kill condition
 (base model within 15% of UniTraj's published AV2 minADE) was checked against the actual UniTraj paper and found
 **triggered** (+28% to +59% worse) — disclosed as a quantified limitation, reasoned about, not hidden.
-**Remaining: H9 (reverse direction, nuScenes->AV2) — blocked on nuScenes train-data conversion (in progress).**
+**nuScenes train-data conversion is DONE (all 11 chunks, ~40h wall time due to persistent CPU contention with AI2).
+`ns_cpu_v1` training is now RUNNING (launched 2026-09-23 06:18).** Remaining: H9 (reverse direction) needs this
+training to finish, then predict + analyze.
 **Target: a paper that covers problem (measurement + diagnosis) and solution (audit + normalised score + label
 budget), reporting all of this honestly including the mixed H4/H6 results and the kill-condition disclosure.**
 
@@ -41,19 +43,18 @@ Get-Content journal\JOURNAL.md -Tail 60                                         
 Raw logs: `results/train_<exp>.{out,err}`, `results/predict_<model>.log`, `data/convert_ns_train.log`.
 
 ## 3. Jobs and how to relaunch each (all are idempotent/resumable)
-| Job (task) | What | Status (2026-09-22 11:35) | Relaunch if dead |
+| Job (task) | What | Status (2026-09-23 06:20) | Relaunch if dead |
 |---|---|---|---|
 | `av2_cpu_v2` (P01_TrainCpuV2) | fine-tune v1-ep08 with LR decay; 4 epochs x 60k scenes, CPU | **DONE** — `results/ckpts/av2_cpu_v2/epoch03-minADE1.092.ckpt` | n/a |
 | `predict_chain1` (P01_PredictChain1) | schema-v2 predictions, models av2_cpu_v1 + av2_valsplit_v1 on av2cal/av2test/ns | **DONE** — all 6 npz exist | n/a |
-| `predict_v2` (P01_PredictV2) | schema-v2 predictions for av2_cpu_v2 on av2cal/av2test/ns | **DONE** — all 3 npz exist (ns.npz landed 11:29, slowed by AI2 CPU contention) | n/a |
-| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | chunks 0-6 done (0: 3.3h, 1: 6.2h, 2-5: ~26min each, 6: 3.0h — 3 of 7 hit heavy AI2 CPU contention, very high variance); **chunk 7 in progress since 10:19 (not yet done as of 11:35, 75+ min elapsed)**; 8, 9, 10 still to come | `powershell -File run\schedule.ps1 -Name P01_ConvertNsTrain -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\convert_ns_train.cmd` (skips finished chunks) |
+| `predict_v2` (P01_PredictV2) | schema-v2 predictions for av2_cpu_v2 on av2cal/av2test/ns | **DONE** — all 3 npz exist | n/a |
+| `ns_train_convert` (P01_ConvertNsTrain) | nuScenes prediction **train** split (32,186) in 11 chunks of 3,000 -> `data/nuscenes_scenarionet/train_cNN/` | **DONE, all 11/11 chunks.** Total wall time ~40h due to persistent AI2 CPU contention (per-chunk range: ~26min to 6.7h). Finished 2026-09-23 06:15:48. | n/a |
 | `run2_real` (manual) | `analyze_run2.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` on **real** preds2 data | **DONE, all 3 models** — `results/run2/{av2_cpu_v1,av2_valsplit_v1,av2_cpu_v2}__forward.json`. **H8 model zoo (forward) is complete.** | rerun same command if a 4th model is added; ~5 min |
-| `ns_cpu_v1` training (not yet launched) | reverse-direction source model, `run\train_ns_cpu_v1.cmd` (already written, all 11 chunk paths listed, 10 epochs like av2\_cpu\_v1) | **blocked on `ns_train_convert` finishing** (needs chunks 00-10 all present) | `powershell -File run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_ns_cpu_v1.cmd` |
+| `ns_cpu_v1` (P01_TrainNsCpuV1) | reverse-direction source model, `run\train_ns_cpu_v1.cmd` (all 11 chunk paths, 10 epochs like av2\_cpu\_v1, CPU) | **RUNNING**, launched 2026-09-23 06:18, confirmed producing output (data loading across 18 processes as of first check). **NOTE: an earlier auto-launch attempt (from inside a Monitor script) silently failed with a PowerShell execution-policy error; the script wrongly logged success. Relaunched manually and verified real output before trusting it — always verify with `Get-ScheduledTaskInfo` + log content, not just the launch command's own echo.** | `powershell -File run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_ns_cpu_v1.cmd` (auto-resumes from `last.ckpt` if present) |
 
-**Next launches, in order — H8 (forward model zoo) is DONE, everything left is H9 (reverse direction):**
-1. When `ns_train_convert` finishes all 11 chunks: launch `run\train_ns_cpu_v1.cmd` via
-   `powershell -File run\schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd F:\CLAUDE\AI1\paper01-coverage-transfer\run\train_ns_cpu_v1.cmd`
-   (already written, lists all 11 `train_cNN` dirs, mirrors av2\_cpu\_v1's settings: 10 epochs, batch 32, CPU).
+**Next launches, in order — H8 (forward model zoo) is DONE, `ns_cpu_v1` training is RUNNING:**
+1. ~~Launch `run\train_ns_cpu_v1.cmd`~~ **DONE**, running since 2026-09-23 06:18. Check progress:
+   `Get-Content results\train_ns_cpu_v1.log -Tail 20` or `python src\journal.py tail 10`.
 2. When that finishes: `run\predict_model.cmd ns_cpu_v1 auto nscal nstest av2cal av2test` (the `nscal`/`nstest` sets
    already exist in `predict_all.py`, pointed at `data/nuscenes_splits/val/{cal,test}` which is **already split**).
 3. Then `python src\analyze_run2.py --models ns_cpu_v1 --direction reverse` (H9), then `cd paper; powershell -File build.ps1`
