@@ -1,0 +1,225 @@
+diff --git a/unitraj/configs/config.yaml b/unitraj/configs/config.yaml
+index 0920570..4f13504 100644
+--- a/unitraj/configs/config.yaml
++++ b/unitraj/configs/config.yaml
+@@ -2,11 +2,11 @@
+ exp_name: 'test' # name that will be used in wandb
+ ckpt_path: null # checkpoint path, used for evaluation
+ seed: 42 # random seed
+-debug: True # debug mode, will use cpu only
++debug: False # debug mode, will use cpu only
+ devices: [ 0 ] # gpu ids
+ 
+ # data related
+-load_num_workers: 0 # number of workers for loading data
++load_num_workers: 4 # number of workers for loading data
+ train_data_path: [ "data_samples/nuscenes" ] # list of paths to the training data
+ val_data_path: [ "data_samples/nuscenes" ] # list of paths to the validation data
+ cache_path: "./cache"
+@@ -17,6 +17,7 @@ future_len: 60 # future trajectory length, 6s
+ object_type: [ 'VEHICLE' ]#, 'PEDESTRIAN', 'CYCLIST'] # object types included in the training set
+ line_type: [ 'lane','stop_sign','road_edge','road_line','crosswalk','speed_bump' ] # line type to be considered in the input
+ masked_attributes: [ 'z_axis', 'size' ] # attributes to be masked in the input
++remove_outliers: false # not used by autobot (fmae/emp-only filtering); key referenced at base_dataset.py:439
+ trajectory_sample_interval: 1 # sample interval for the trajectory
+ only_train_on_ego: False # only train on AV
+ center_offset_of_map: [ 30.0, 0.0 ] # center offset of the map
+diff --git a/unitraj/configs/method/autobot.yaml b/unitraj/configs/method/autobot.yaml
+index 9f0e578..a4e3f57 100644
+--- a/unitraj/configs/method/autobot.yaml
++++ b/unitraj/configs/method/autobot.yaml
+@@ -12,14 +12,14 @@ kl_weight: 20.0
+ use_FDEADE_aux_loss: True
+ 
+ # train
+-max_epochs: 100 #150 #40
++max_epochs: 100
+ learning_rate: 0.00075 # 0.00075 # 1e-3 for lanegcn
+ learning_rate_sched: [ 10, 20, 30, 40, 50 ]
+ optimizer: Adam #According to PyTorch naming
+ scheduler: multistep # plateau, multistep
+ ewc_lambda: 2000
+-train_batch_size: 128 #32 #128
+-eval_batch_size: 256 #32 #128
++train_batch_size: 16
++eval_batch_size: 32
+ grad_clip_norm: 5
+ 
+ # data related
+diff --git a/unitraj/datasets/__init__.py b/unitraj/datasets/__init__.py
+index bd5b829..e6013eb 100644
+--- a/unitraj/datasets/__init__.py
++++ b/unitraj/datasets/__init__.py
+@@ -1,9 +1,43 @@
+-from .MTR_dataset import MTRDataset
+-from .autobot_dataset import AutoBotDataset
+-from .wayformer_dataset import WayformerDataset
+-from .fmae_dataset import FMAEDataset
+-from .EMP_dataset import EMPDataset
+-from .SMART_dataset import SMARTDataset
++# P2000 PATCH: optional backends (SMART needs torch_geometric, etc.) import defensively
++# so AutoBot-only work does not require the full model zoo. Original: __init__.py.orig
++# Revert: cp __init__.py.orig __init__.py
++_backend_errors = {}
++
++try:
++    from .MTR_dataset import MTRDataset
++except Exception as e:  # noqa: BLE001
++    MTRDataset = None
++    _backend_errors['MTR'] = repr(e)
++
++try:
++    from .autobot_dataset import AutoBotDataset
++except Exception as e:  # noqa: BLE001
++    AutoBotDataset = None
++    _backend_errors['autobot'] = repr(e)
++
++try:
++    from .wayformer_dataset import WayformerDataset
++except Exception as e:  # noqa: BLE001
++    WayformerDataset = None
++    _backend_errors['wayformer'] = repr(e)
++
++try:
++    from .fmae_dataset import FMAEDataset
++except Exception as e:  # noqa: BLE001
++    FMAEDataset = None
++    _backend_errors['fmae'] = repr(e)
++
++try:
++    from .EMP_dataset import EMPDataset
++except Exception as e:  # noqa: BLE001
++    EMPDataset = None
++    _backend_errors['EMP'] = repr(e)
++
++try:
++    from .SMART_dataset import SMARTDataset
++except Exception as e:  # noqa: BLE001
++    SMARTDataset = None
++    _backend_errors['SMART'] = repr(e)
+ 
+ __all__ = {
+     'autobot': AutoBotDataset,
+@@ -17,7 +51,11 @@ __all__ = {
+ 
+ 
+ def build_dataset(config, val=False):
+-    dataset = __all__[config.method.model_name](
+-        config=config, is_validation=val
+-    )
++    key = config.method.model_name
++    cls = __all__[key]
++    if cls is None:
++        raise ImportError(
++            f"dataset backend '{key}' unavailable: {_backend_errors.get(key, 'unknown')}"
++        )
++    dataset = cls(config=config, is_validation=val)
+     return dataset
+diff --git a/unitraj/models/__init__.py b/unitraj/models/__init__.py
+index 86ff517..3385d20 100644
+--- a/unitraj/models/__init__.py
++++ b/unitraj/models/__init__.py
+@@ -1,10 +1,45 @@
+-from unitraj.models.autobot.autobot import AutoBotEgo
+-from unitraj.models.mtr.MTR import MotionTransformer
+-from unitraj.models.wayformer.wayformer import Wayformer
+-from unitraj.models.fmae.trainer_mae import TrainerMAE
+-from unitraj.models.fmae.trainer_forecast import TrainerForecast
+-from unitraj.models.emp.trainer_forecast import TrainerEMP
+-from unitraj.models.smart.smart import SMART
++# P2000 PATCH: optional backends (MTR needs compiled CUDA ext, SMART needs natten)
++# import defensively so AutoBot-only work runs. Original: __init__.py.orig
++# Revert: cp __init__.py.orig __init__.py
++_backend_errors = {}
++
++try:
++    from unitraj.models.autobot.autobot import AutoBotEgo
++except Exception as e:  # noqa: BLE001
++    AutoBotEgo = None
++    _backend_errors['autobot'] = repr(e)
++
++try:
++    from unitraj.models.mtr.MTR import MotionTransformer
++except Exception as e:  # noqa: BLE001
++    MotionTransformer = None
++    _backend_errors['MTR'] = repr(e)
++
++try:
++    from unitraj.models.wayformer.wayformer import Wayformer
++except Exception as e:  # noqa: BLE001
++    Wayformer = None
++    _backend_errors['wayformer'] = repr(e)
++
++try:
++    from unitraj.models.fmae.trainer_mae import TrainerMAE
++    from unitraj.models.fmae.trainer_forecast import TrainerForecast
++except Exception as e:  # noqa: BLE001
++    TrainerMAE = None
++    TrainerForecast = None
++    _backend_errors['fmae'] = repr(e)
++
++try:
++    from unitraj.models.emp.trainer_forecast import TrainerEMP
++except Exception as e:  # noqa: BLE001
++    TrainerEMP = None
++    _backend_errors['EMP'] = repr(e)
++
++try:
++    from unitraj.models.smart.smart import SMART
++except Exception as e:  # noqa: BLE001
++    SMART = None
++    _backend_errors['SMART'] = repr(e)
+ 
+ __all__ = {
+     'autobot': AutoBotEgo,
+@@ -18,8 +53,11 @@ __all__ = {
+ 
+ 
+ def build_model(config):
+-    model = __all__[config.method.model_name](
+-        config=config
+-    )
+-
++    key = config.method.model_name
++    cls = __all__[key]
++    if cls is None:
++        raise ImportError(
++            f"model backend '{key}' unavailable: {_backend_errors.get(key, 'unknown')}"
++        )
++    model = cls(config=config)
+     return model
+diff --git a/unitraj/models/autobot/autobot.py b/unitraj/models/autobot/autobot.py
+index 46c9d2b..60a5e13 100644
+--- a/unitraj/models/autobot/autobot.py
++++ b/unitraj/models/autobot/autobot.py
+@@ -72,7 +72,10 @@ class MapEncoderPts(nn.Module):
+ 
+     def get_road_pts_mask(self, roads):
+         road_segment_mask = torch.sum(roads[:, :, :, -1], dim=2) == 0
+-        road_pts_mask = (1.0 - roads[:, :, :, -1]).type(torch.BoolTensor).to(roads.device).view(-1, roads.shape[2])
++        # Paper-01 patch (2026-09-23): was `.type(torch.BoolTensor).to(roads.device)` -- torch.BoolTensor is a CPU
++        # type, so every step copied the map mask GPU->CPU->GPU with a sync (0.24 s of a 0.43 s GPU step).
++        # `.bool()` is the same conversion on-device; verified torch.equal(old, new) on a real batch.
++        road_pts_mask = (1.0 - roads[:, :, :, -1]).bool().view(-1, roads.shape[2])
+         road_pts_mask = road_pts_mask.masked_fill((road_pts_mask.sum(-1) == roads.shape[2]).unsqueeze(-1), False) # Ensures no NaNs due to empty rows.
+         return road_segment_mask, road_pts_mask
+ 
+diff --git a/unitraj/train.py b/unitraj/train.py
+index 3dbd535..b27b46d 100644
+--- a/unitraj/train.py
++++ b/unitraj/train.py
+@@ -50,12 +50,12 @@ def train(cfg):
+     trainer = pl.Trainer(
+         max_epochs=cfg.method.max_epochs,
+         logger=None if cfg.debug else WandbLogger(project="unitraj", name=cfg.exp_name, id=cfg.exp_name),
+-        devices=1 if cfg.debug else cfg.devices,
++        devices=1,
+         gradient_clip_val=cfg.method.grad_clip_norm,
+         # accumulate_grad_batches=cfg.method.Trainer.accumulate_grad_batches,
+         accelerator="cpu" if cfg.debug else "gpu",
+         profiler="simple",
+-        strategy="auto" if cfg.debug else "ddp",
++        strategy="auto",
+         callbacks=call_backs
+     )
+ 

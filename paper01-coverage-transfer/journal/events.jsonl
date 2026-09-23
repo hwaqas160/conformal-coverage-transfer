@@ -98,3 +98,22 @@
 {"ts": "2026-09-23T13:12:41", "id": "annotate_ns", "event": "artifact", "detail": "results\\preds2\\_annot\\ns.npz (9041 rows, 244s)", "sha": "a4e9d6c"}
 {"ts": "2026-09-23T13:19:22", "id": "annotate_nscal", "event": "artifact", "detail": "results\\preds2\\_annot\\nscal.npz (4534 rows, 37s)", "sha": "a4e9d6c"}
 {"ts": "2026-09-23T13:25:00", "id": "annotate_nstest", "event": "artifact", "detail": "results\\preds2\\_annot\\nstest.npz (4507 rows, 30s)", "sha": "a4e9d6c"}
+{"ts": "2026-09-23T13:53:32", "id": "annotate_av2cal", "event": "artifact", "detail": "results\\preds2\\_annot\\av2cal.npz (4576 rows, 137s)", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:53:56", "id": "annotate_av2test", "event": "artifact", "detail": "results\\preds2\\_annot\\av2test.npz (4633 rows, 23s)", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:54:25", "id": "annotate_ns", "event": "artifact", "detail": "results\\preds2\\_annot\\ns.npz (9041 rows, 29s)", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:54:40", "id": "addB_av2_cpu_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:54:50", "id": "addB_av2_cpu_v1_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v1__forward.json in 11s; k=1000 rate(cov>=.9): direct=0.51, pac=0.92, cor=0.94, cor_slack_EXPLORATORY=1.00", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:54:51", "id": "addB_av2_valsplit_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:55:02", "id": "addB_av2_valsplit_v1_forward", "event": "done", "detail": "results\\addB\\av2_valsplit_v1__forward.json in 12s; k=1000 rate(cov>=.9): direct=0.57, pac=0.91, cor=0.95, cor_slack_EXPLORATORY=0.95", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:55:03", "id": "addB_av2_cpu_v2_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:55:14", "id": "addB_av2_cpu_v2_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v2__forward.json in 12s; k=1000 rate(cov>=.9): direct=0.60, pac=0.92, cor=0.97, cor_slack_EXPLORATORY=0.97", "sha": "fe3dfa9"}
+{"ts": "2026-09-23T13:58:10", "id": "annotate_nscal", "event": "artifact", "detail": "results\\preds2\\_annot\\nscal.npz (4279 rows, 20s)", "sha": "02fe207"}
+{"ts": "2026-09-23T14:02:05", "id": "annotate_nstest", "event": "artifact", "detail": "results\\preds2\\_annot\\nstest.npz (4762 rows, 21s)", "sha": "02fe207"}
+{"ts": "2026-09-23T16:51:00", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "02fe207"}
+{"ts": "2026-09-23T16:52:46", "id": "addB_av2_cpu_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "02fe207"}
+{"ts": "2026-09-23T16:54:19", "id": "addB_av2_cpu_v1_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v1__forward.json in 94s; k=1000 rate(cov>=.9): direct=0.51, pac=0.92, cor=0.94, cor_slack_EXPLORATORY=1.00", "sha": "02fe207"}
+{"ts": "2026-09-23T16:54:20", "id": "addB_av2_valsplit_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "02fe207"}
+{"ts": "2026-09-23T16:55:53", "id": "addB_av2_valsplit_v1_forward", "event": "done", "detail": "results\\addB\\av2_valsplit_v1__forward.json in 94s; k=1000 rate(cov>=.9): direct=0.57, pac=0.91, cor=0.95, cor_slack_EXPLORATORY=0.95", "sha": "02fe207"}
+{"ts": "2026-09-23T16:55:56", "id": "addB_av2_cpu_v2_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "02fe207"}
+{"ts": "2026-09-23T16:57:28", "id": "addB_av2_cpu_v2_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v2__forward.json in 94s; k=1000 rate(cov>=.9): direct=0.60, pac=0.92, cor=0.97, cor_slack_EXPLORATORY=0.97", "sha": "02fe207"}
+{"ts": "2026-09-23T17:15:00", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "dfccc34"}

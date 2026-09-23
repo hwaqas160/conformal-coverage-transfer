@@ -17,7 +17,7 @@ set PY="F:\CLAUDE\AI1\shared\envs\unitraj\Scripts\python.exe"
 set ID=av2_gpu_full
 set LOG=F:\CLAUDE\AI1\paper01-coverage-transfer\results\train_%ID%.log
 set CKPTDIR=F:\CLAUDE\AI1\paper01-coverage-transfer\results\ckpts\%ID%
-set ARGS=src\train_autobot.py --train_db "data\av2_scenarionet\train" --val_db "data\av2_splits\val\train" --exp %ID% --epochs 60 --batch 32 --accum 4 --lr 7.5e-4 --lr_sched 10 20 30 40 50 --val_every 2 --val_subset 2000 --num_workers 6 --seed 0 --device cuda --cache_root "C:\p01_cache"
+set ARGS=src\train_autobot.py --train_db "data\av2_scenarionet\train" --val_db "data\av2_splits\val\train" --exp %ID% --epochs 60 --batch 32 --accum 4 --lr 7.5e-4 --lr_sched 10 20 30 40 50 --val_every 2 --val_subset 2000 --num_workers 10 --seed 0 --device cuda --cache_root "C:\p01_cache"
 set /a ATTEMPT=0
 :RETRY
 set /a ATTEMPT+=1

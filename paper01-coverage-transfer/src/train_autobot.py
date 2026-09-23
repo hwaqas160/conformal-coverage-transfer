@@ -46,6 +46,8 @@ def main():
                          "[10,20,30,40,50], i.e. NO decay inside a <=10-epoch run")
     ap.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
+    ap.add_argument("--profile_steps", type=int, default=0,
+                    help="diagnostic: run N train batches with Lightning's SimpleProfiler, print breakdown, exit")
     ap.add_argument("--cache_root", default=None,
                     help="UniTraj cache root (default data/unitraj_cache on F:). Use an SSD copy for shuffled "
                          "full-data training: on the F: HDD one random-access step took 262 s.")
@@ -146,7 +148,13 @@ def main():
         logger=CSVLogger(str(SRC.parent / "results" / "logs"), name=a.exp),
         log_every_n_steps=50,
         enable_progress_bar=True,
+        **({"profiler": "simple", "limit_train_batches": a.profile_steps, "limit_val_batches": 0}
+           if a.profile_steps else {}),
     )
+    if a.profile_steps:
+        trainer.callbacks = [c for c in trainer.callbacks if not isinstance(c, ModelCheckpoint)]
+        trainer.fit(model, train_loader)
+        return
     trainer.fit(model, train_loader, val_loader, ckpt_path=a.resume)
     print(f"[train] best: {ckpt_cb.best_model_path}  ({ckpt_cb.best_model_score})")
 
