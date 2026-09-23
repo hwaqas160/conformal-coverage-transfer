@@ -25,7 +25,7 @@ $undefined = $log | Select-String -Pattern "Undefined control|Citation.*undefine
 if ($undefined) { Write-Output "COMPILE PROBLEMS:"; $undefined | ForEach-Object { Write-Output "  $_" } }
 else { Write-Output "compiled clean, no undefined refs/citations" }
 
-$todos = Select-String -Path "$PSScriptRoot\sections\*.tex" -Pattern '\\todo\{' -AllMatches
+$todos = Select-String -Path "$PSScriptRoot\sections\*.tex","$PSScriptRoot\main.tex" -Pattern '\\todo\{' -AllMatches
 Write-Output "$($todos.Count) \todo{} placeholder(s) remaining, by file:"
 $todos | Group-Object Path | ForEach-Object { Write-Output ("  {0,3}  {1}" -f $_.Count, (Split-Path $_.Name -Leaf)) }
 

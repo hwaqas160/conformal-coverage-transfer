@@ -1,6 +1,19 @@
-\documentclass[journal]{IEEEtran}
-\usepackage{amsmath,amssymb,amsthm,booktabs,graphicx,cite,xcolor,url,multirow,array}
+% Follows the IEEE-TIV journal template (IEEE-TIV_template/bare_jrnl_new_sample4.tex): same class, same
+% core package set. A few extras are added for this paper only: amssymb/amsthm (Proposition/Remark
+% environments), booktabs/multirow (result tables), xcolor (draft \todo markers, stripped before submission),
+% hyperref (clickable refs, no visible boxes).
+\documentclass[lettersize,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{booktabs,multirow}
+\usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\hyphenation{op-tical net-works semi-conduc-tor}
 
 % ---- draft helpers: every unresolved item is loud in the PDF and counted by build.ps1 ----------------
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
@@ -16,9 +29,11 @@
 \begin{document}
 
 \title{\papertitle}
-\author{Hassan~Waqas%
-\thanks{H.~Waqas is with the Department of Electrical Engineering (AI \& Autonomous Systems). E-mail: h.waqas160@gmail.com}}
-\markboth{Preprint. Draft --- results marked \textit{[pending]} are not yet computed.}{Waqas: Conformal coverage under dataset shift}
+\author{Hassan~Waqas~Saleem%
+\thanks{H.~W.~Saleem is with the School of Electrical Engineering and Computer Science (SEECS), National
+University of Sciences and Technology (NUST), Islamabad 44000, Pakistan (e-mail: hsaleem.msee20seecs@seecs.edu.pk).}}
+\markboth{Preprint submitted to IEEE Transactions on Intelligent Vehicles --- results marked
+\textit{[pending]} are not yet computed}{Saleem: Conformal Coverage Transfer in Cross-Dataset Trajectory Prediction}
 \maketitle
 
 \input{sections/abstract}
@@ -38,6 +53,18 @@ Conformal prediction, trajectory prediction, distribution shift, uncertainty qua
 All code, configuration files, pre-registered hypotheses, and the append-only experiment log are in the project
 repository (\texttt{paper01-coverage-transfer}). Every number and table in this paper is regenerated from the raw
 result files by \texttt{paper/make\_results.py}; no result is typed by hand.
+
+\section*{Data Availability}
+Argoverse~2 \cite{wilson2021argoverse2} and nuScenes \cite{caesar2020nuscenes} are third-party, openly available
+research datasets (Argoverse~2: \url{https://www.argoverse.org/av2.html}; nuScenes: \url{https://www.nuscenes.org}).
+\todo{Add code/results repository URL and archive DOI once the project is made public (see title\_page.pdf for the
+format used on a companion paper: GitHub link + a Zenodo archive DOI under CC~BY~4.0).}
+
+\section*{Declaration of Generative AI and AI-Assisted Technologies in the Manuscript Preparation Process}
+During the preparation of this work the author used Anthropic Claude to edit language, draft and revise text, write
+and debug analysis code, run and monitor experiments, and generate figures and tables from computed results. After
+using this tool, the author reviewed and edited the content as needed and takes full responsibility for the content
+of the published article.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
