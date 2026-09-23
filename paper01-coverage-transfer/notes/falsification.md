@@ -347,3 +347,80 @@ each supported-ish on one model, refuted on another, and inconclusive on the thi
 and this is now a 3-model pattern, not a 2-model coincidence. H5's shrinkage variant helped only on the model it
 was originally seen to help on (v1) and lost to plain direct recalibration on the other two -- we no longer
 recommend shrinkage as anything but a candidate to test, not a default.
+
+---
+
+## Addendum B — written 2026-09-23, BEFORE any of the runs below exist
+Motivation: a reviewer-objection review of the Run-2 draft. The objections that would most likely sink the paper
+are, in order: (1) the base models are undertrained (kill condition #2 triggered: +28% to +59% minADE6 vs UniTraj's
+0.85), so the gap could be an artefact of weak models; (2) one architecture family; (3) two datasets; (4) the
+solution side is thin (only H5b is clean); (5) the cause of the gap is not probed; (6) marginal coverage only;
+(7) one training seed per model. Resources changed: the GPU is now free (AI2 no longer holds it), the full AV2
+train cache (183,333 samples, same ~180k UniTraj used) already exists, disk has >1 TB free. Everything below is
+registered now, before any of it is run; outcomes are appended below as dated entries, never edited in.
+
+**B1 / H10 — replication on a competitive model (addresses objection 1).** AutoBot-Ego trained from scratch on the
+full AV2 train cache, following UniTraj's own recipe as closely as one GPU allows: effective batch 128 (32 x 4
+gradient accumulation), lr 7.5e-4, MultiStep decay (x0.5) at epochs 10/20/30/40/50, up to 60 epochs, best checkpoint
+by val minADE6 on `av2_splits/val/train` (disjoint from cal/test). **Quality gate:** val minADE6 <= 0.98 (within 15%
+of UniTraj's 0.85, the kill-condition tolerance). A second, reverse-direction model is trained the same way on the
+full nuScenes train split (32,186 scenes; gate: within 15% of UniTraj's nuScenes-trained AutoBot, minADE6 1.21,
+i.e. <= 1.39, supp. Table 8). *Predictions (alpha=0.10):* AV2->nuScenes gap >= 0.02; H2 removal fraction < 25%
+(reweighting still fails); H5b power >= 0.90 at k=1000. *Refuted if* the gap on the gated model is < 0.01 -- that
+would mean the Run-2 gaps were an under-training artefact, and the paper must say so.
+
+**B2 / H11 — second architecture (objection 2).** Wayformer (16.5M params, pure PyTorch in UniTraj) trained on
+AV2 (and nuScenes if time allows) with UniTraj's config, batch reduced to fit 5 GB with gradient accumulation to the
+config's effective batch. EMP added as a third architecture only if it runs on the UniTraj data format without
+modification. *Prediction:* same-direction under-coverage (gap >= 0.02) AV2->nuScenes. Quality reported, not gated
+(no published single-GPU Wayformer number to gate against on this exact split).
+
+**B3 / H12 — third dataset (objection 3).** Waymo Open Motion Dataset (WOMD) via ScenarioNet, validation split
+(calibration/test halves by the same salted-hash split), used as a *target* for every source model; as a *source*
+too if a train subset can be converted in time. Requires the user's Waymo licence acceptance. *Prediction:*
+|gap| >= 0.02 for at least one of AV2->WOMD, nuScenes->WOMD (sign not pre-specified).
+
+**B4 / H13 — which shift factor causes the gap (objection 5).** Controlled shift injection on AV2 test scenes, one
+factor at a time, each chosen to mimic a measured AV2-vs-nuScenes difference: (a) history downsampled to 2 Hz and
+re-interpolated to 10 Hz (nuScenes' native rate); (b) position jitter on past trajectories at the nuScenes
+annotation-noise level (estimated from nuScenes history acceleration residuals, not guessed); (c) map truncated /
+thinned to nuScenes' measured lane-point density; (d) scene-composition reweighting only (covariate shift by
+construction). Report the coverage gap each injection induces, as a fraction of the real AV2->nuScenes gap.
+*Descriptive, with one registered prediction:* (d) alone reproduces < 25% of the real gap (consistent with H2/H3).
+
+**B5 / H14 — a guaranteed few-label repair (objection 4).** "Certify-or-recalibrate" (C-or-R), with k labelled
+target scenes and confidence 1-delta:
+ (i) *certify:* M = #(target scores > q_src); keep q_src iff the one-sided Clopper-Pearson upper bound on its
+     miscoverage at level delta/2 is <= alpha;
+ (ii) *otherwise recalibrate:* use the l-th smallest of the k target scores, with l the smallest integer such that
+     P(Bin(k, 1-alpha) <= l-1) >= 1-delta/2 (the l-th order statistic's coverage is Beta(l, k+1-l); Vovk 2012).
+By a union bound the returned threshold has coverage >= 1-alpha with probability >= 1-delta over the label draw
+(training-conditional validity), whichever branch fires. This is an assembly of known pieces; the contribution is
+the protocol and its measured label cost on real cross-dataset shift, not the inequality.
+*Prediction:* delta = 0.1: coverage >= 1-alpha in >= 88% of 200 random label draws (90% minus Monte-Carlo slack)
+for every model x pair and every k >= 250; plain direct SCP at the same k only ~50-60% (it is marginally, not
+training-conditionally, valid). Region area relative to the oracle target-calibrated region is reported as the price.
+*Refuted if* C-or-R's rate is < 85% for any model x pair at k >= 250 (would indicate non-exchangeable target
+labels, e.g. scene-level dependence -- itself a finding).
+
+**B6 / H15 — the obvious online competitor (objection 4).** Adaptive conformal inference (ACI; Gibbs & Candes 2021,
+step size gamma in {0.005, 0.01, 0.05}) run on a random-order stream of target scenes with labels revealed one at a
+time. Report how many labelled scenes ACI needs before its running coverage stays within 2 points of nominal, next
+to H5b's and H14's label budgets. Descriptive, no pass/fail.
+
+**B7 — conditional coverage (objection 6).** Descriptive: target coverage by UniTraj trajectory type, speed tercile,
+Kalman difficulty tercile, and (AV2) city, with binomial CIs, for the main gated model.
+
+**B8 — seeds (objection 7).** If GPU time allows after B1/B2, the gated AV2 AutoBot is retrained with 2 more seeds;
+report the gap as mean +/- sd over 3 seeds. Descriptive.
+
+**B9 — theory (objection "Proposition 1 covers scale shifts only").** (a) Generalise Proposition 1 to any shift
+family whose members share the unlabeled-input law but have unbounded (1-alpha)-quantile. (b) State the exact
+condition under which the normalised score (H4) is valid: target and source *normalised* score laws coincide. Test
+it: two-sample KS statistic between source-cal and target normalised scores, per model x pair. *Registered
+prediction (exploratory, n small):* across all model x pair combinations, a smaller KS statistic goes with a larger
+H4 gap reduction (Spearman rho < 0 between KS and reduction).
+
+Order of execution (compute-driven): B1-AV2 on GPU starts now; B5/B6/B7/B9 are analysis-only on existing
+predictions and run in parallel; B4 is inference-only; B1-nuScenes and B2 follow on GPU; B3 waits on the licence;
+B8 last.
