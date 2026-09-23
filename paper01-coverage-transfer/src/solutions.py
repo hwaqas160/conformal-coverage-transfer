@@ -160,6 +160,71 @@ def domain_auc(a: np.ndarray, b: np.ndarray, folds: int = 5, seed: int = 0, max_
 # ---------------------------------------------------------------------------------------------
 
 
+def pac_order_index(k: int, alpha: float, delta: float) -> int | None:
+    """
+    Training-conditional (PAC) split conformal (Vovk 2012): with k exchangeable calibration scores, the coverage of
+    the l-th order statistic is Beta(l, k+1-l), so P(coverage >= 1-alpha) = P(Bin(k, 1-alpha) <= l-1).
+    Returns the smallest l with that probability >= 1-delta, or None if even l = k is not enough (k too small).
+    """
+    from scipy.stats import binom
+    ls = np.arange(1, k + 1)
+    ok = binom.cdf(ls - 1, k, 1 - alpha) >= 1 - delta
+    return int(ls[ok][0]) if ok.any() else None
+
+
+def q_pac(tgt_scores, alpha: float, delta: float) -> float:
+    """Threshold with coverage >= 1-alpha w.p. >= 1-delta over the draw of the k labelled scores (inf if k too small)."""
+    s = np.sort(np.asarray(tgt_scores, float))
+    l = pac_order_index(len(s), alpha, delta)
+    return float(s[l - 1]) if l is not None else float("inf")
+
+
+def cp_upper(m: int, k: int, level: float) -> float:
+    """One-sided Clopper-Pearson upper confidence bound (confidence 1-level) on a miss probability, m misses of k."""
+    from scipy.stats import beta
+    return 1.0 if m >= k else float(beta.ppf(1 - level, m + 1, k - m))
+
+
+def certify_or_recalibrate(q_src: float, lab_scores, alpha: float, delta: float) -> tuple[float, str]:
+    """
+    Addendum B5.  (i) keep q_src iff the Clopper-Pearson upper bound (level delta/2) on its target miscoverage is
+    <= alpha; (ii) otherwise return the PAC target quantile at level delta/2.  Union bound: the returned threshold
+    covers >= 1-alpha with probability >= 1-delta over the label draw, whichever branch fires.
+    """
+    lab = np.asarray(lab_scores, float)
+    m = int((lab > q_src).sum())
+    if cp_upper(m, len(lab), delta / 2) <= alpha:
+        return float(q_src), "certified"
+    return q_pac(lab, alpha, delta / 2), "recalibrated"
+
+
+def aci_stream(cal_scores, stream_scores, alpha: float, gamma: float) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Adaptive conformal inference (Gibbs & Candes 2021) on a label stream, fixed (source) calibration set:
+      q_t = Quantile_{1-alpha_t}(cal),  err_t = 1{s_t > q_t},  alpha_{t+1} = alpha_t + gamma (alpha - err_t).
+    alpha_t <= 0 -> q_t = +inf (always cover); alpha_t >= 1 -> q_t = -inf.  Returns (thresholds q_1..q_{T+1}, errs).
+    """
+    cal = np.sort(np.asarray(cal_scores, float))
+    n = len(cal)
+    at = alpha
+    qs, errs = np.empty(len(stream_scores) + 1), np.empty(len(stream_scores))
+
+    def q_of(a):
+        if a <= 0:
+            return np.inf
+        if a >= 1:
+            return -np.inf
+        r = int(np.ceil((n + 1) * (1 - a)))
+        return np.inf if r > n else cal[r - 1]
+
+    for t, s in enumerate(stream_scores):
+        qs[t] = q_of(at)
+        errs[t] = float(s > qs[t])
+        at = at + gamma * (alpha - errs[t])
+    qs[-1] = q_of(at)
+    return qs, errs
+
+
 def audit_power(q_src: float, tgt_scores, ks=(25, 50, 100, 250, 500, 1000, 2500), alpha=0.10,
                 draws=500, level=0.05, seed=0) -> dict:
     """

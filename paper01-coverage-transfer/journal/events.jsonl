@@ -92,3 +92,5 @@
 {"ts": "2026-09-23T06:15:48", "id": "ns_train_convert", "event": "done", "detail": "11/11 chunks present", "sha": "850e5ec"}
 {"ts": "2026-09-23T06:18:00", "id": "ns_cpu_v1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "850e5ec"}
 {"ts": "2026-09-23T11:24:00", "id": "ns_cpu_v1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "cde5470"}
+{"ts": "2026-09-23T13:03:00", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "335e80c"}
+{"ts": "2026-09-23T13:06:23", "id": "annotate_av2cal", "event": "artifact", "detail": "results\\preds2\\_annot\\av2cal.npz (4576 rows, 139s)", "sha": "335e80c"}

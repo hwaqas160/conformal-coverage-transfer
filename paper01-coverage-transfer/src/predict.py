@@ -50,7 +50,7 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
                               num_workers=num_workers, max_data_num=n)
     print(f"[predict] {tag}: {len(ds)} samples, ckpt={'none' if not ckpt else Path(ckpt).name}")
 
-    PT, PP, G, GM, FI, FE, FL, PS, SID, DN = [], [], [], [], [], [], [], [], [], []
+    PT, PP, G, GM, FI, FE, FL, PS, SID, DN, TT, KD = [], [], [], [], [], [], [], [], [], [], [], []
     for bi, batch in enumerate(loader):
         if limit_batches is not None and bi >= limit_batches:   # NB: --n is ignored for val-mode datasets
             break
@@ -76,6 +76,8 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
 
         PT.append(pt); PP.append(pp); G.append(gt); GM.append(gm)
         FI.append(fi); FE.append(fe); FL.append(fl); PS.append(ps); SID.append(sid); DN.append(dn)
+        # UniTraj's own scene labels (WOD trajectory taxonomy; Kalman FDE at 2/4/6 s) for conditional coverage
+        TT.append(bn["trajectory_type"].astype(np.int8)); KD.append(bn["kalman_difficulty"].astype(np.float32))
         if bi % 50 == 0:
             print(f"  batch {bi}  ({sum(len(x) for x in PT)} rows, {time.time()-t0:.0f}s)")
 
@@ -101,7 +103,9 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         dataset_name=np.concatenate(DN),
         factor_names=np.asarray(FACTOR_NAMES),
         factor_names_lf=np.asarray(FACTOR_NAMES_LF),
-        schema=np.asarray(2),
+        trajectory_type=np.concatenate(TT),
+        kalman_difficulty=np.concatenate(KD),
+        schema=np.asarray(3),
     )
     print(f"[predict] wrote {path}  ({len(scores)} rows, {time.time()-t0:.0f}s)")
     print(f"          score mean={scores.mean():.2f} p50={np.median(scores):.2f} "

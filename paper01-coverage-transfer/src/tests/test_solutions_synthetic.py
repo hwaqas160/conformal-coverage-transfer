@@ -134,8 +134,63 @@ def test_audit(rng):
     return bool(ok_a and ok_b and sim["1000"] > sim["250"] > 0.3)
 
 
+def test_cor(rng):
+    """
+    Addendum B5 (certify-or-recalibrate) + the PAC quantile it rests on, against their stated guarantees:
+      (a) q_pac: true coverage >= 1-alpha in >= 1-delta of draws (continuous scores, known distribution);
+      (b) C-or-R under a real shift: same guarantee, and it must RECALIBRATE (source threshold is invalid);
+      (c) certification needs SLACK: with no shift, a source threshold calibrated at exactly alpha has miss
+          probability ~= alpha, so an upper confidence bound <= alpha is (almost) never achievable -- expect ~0
+          certifications.  A source threshold calibrated with slack (alpha_src = alpha/2) is certifiable at large k.
+          [Corrected 2026-09-23: the first version of this test wrongly expected (c) to certify at nominal alpha;
+          the procedure was right, the expectation was not.  Recorded in journal/JOURNAL.md.]
+      (d) plain direct SCP at the same k is only marginally valid: rate well below 1-delta (~50-60%).
+    True coverage is computed exactly from the known lognormal CDF, not from a finite evaluation set.
+    """
+    from scipy.stats import lognorm
+    from conformal import split_conformal_quantile
+    from solutions import q_pac, certify_or_recalibrate, q_direct
+    alpha, delta, k, draws = 0.10, 0.10, 500, 2000
+    src_dist, tgt_dist = lognorm(s=0.6, scale=np.exp(1.0)), lognorm(s=0.6, scale=np.exp(1.0) * 1.15)
+    q_src = split_conformal_quantile(src_dist.rvs(5000, random_state=rng), alpha)
+    ok_pac = ok_cor = ok_dir = 0; recal = 0
+    for _ in range(draws):
+        lab = tgt_dist.rvs(k, random_state=rng)
+        ok_pac += tgt_dist.cdf(q_pac(lab, alpha, delta)) >= 1 - alpha
+        q, br = certify_or_recalibrate(q_src, lab, alpha, delta)
+        ok_cor += tgt_dist.cdf(q) >= 1 - alpha; recal += br == "recalibrated"
+        ok_dir += tgt_dist.cdf(q_direct(lab, alpha)) >= 1 - alpha
+    cert_nom = sum(certify_or_recalibrate(q_src, src_dist.rvs(2500, random_state=rng), alpha, delta)[1] == "certified"
+                   for _ in range(300)) / 300
+    q_slack = split_conformal_quantile(src_dist.rvs(5000, random_state=rng), alpha / 2)
+    cert_slack = sum(certify_or_recalibrate(q_slack, src_dist.rvs(2500, random_state=rng), alpha, delta)[1] == "certified"
+                     for _ in range(300)) / 300
+    r_pac, r_cor, r_dir, r_rec = ok_pac / draws, ok_cor / draws, ok_dir / draws, recal / draws
+    print(f"[B5 C-or-R] (a) PAC quantile   P(true cov >= .90) = {r_pac:.3f}  (expect >= {1-delta:.2f})")
+    print(f"            (b) C-or-R, shifted P(true cov >= .90) = {r_cor:.3f}  (expect >= {1-delta:.2f}); recalibrated in {r_rec:.2f} of draws")
+    print(f"            (c) no shift, k=2500: certified {cert_nom:.2f} with q_src at alpha (expect ~0), "
+          f"{cert_slack:.2f} with q_src at alpha/2 (expect a majority)")
+    print(f"            (d) direct SCP  P(true cov >= .90) = {r_dir:.3f}  (expect ~0.5-0.6: only marginally valid)")
+    return bool(r_pac >= 1 - delta - 0.015 and r_cor >= 1 - delta - 0.015 and r_rec > 0.5
+                and cert_nom < 0.1 and cert_slack > 0.5 and r_dir < 0.75)
+
+
+def test_aci(rng):
+    """ACI (Gibbs & Candes 2021): long-run miss rate -> alpha on a shifted stream despite a stale calibration set."""
+    from solutions import aci_stream
+    cal = rng.lognormal(1.0, 0.6, 5000)
+    stream = rng.lognormal(1.0, 0.6, 20000) * 1.15
+    out = {}
+    for g in (0.005, 0.05):
+        _, errs = aci_stream(cal, stream, 0.10, g)
+        out[g] = errs.mean()
+    print(f"[B6 ACI] long-run miss rate on shifted stream: gamma=.005 -> {out[0.005]:.4f}, gamma=.05 -> {out[0.05]:.4f} (expect ~0.100)")
+    return all(abs(v - 0.10) < 0.01 for v in out.values())
+
+
 if __name__ == "__main__":
     rng = np.random.default_rng(0)
-    r = {"H4": test_h4(rng), "H5": test_h5(rng), "H6": test_h6(rng), "H5b": test_audit(rng)}
+    r = {"H4": test_h4(rng), "H5": test_h5(rng), "H6": test_h6(rng), "H5b": test_audit(rng),
+         "B5": test_cor(rng), "B6": test_aci(rng)}
     print("\n" + "  ".join(f"{k}:{'OK' if v else 'FAIL'}" for k, v in r.items()))
     sys.exit(0 if all(r.values()) else 1)
