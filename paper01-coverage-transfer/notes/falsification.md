@@ -449,3 +449,52 @@ drawn as whole scenes until >= k agents, evaluated on the other scenes. *Predict
 the agent-level ones, but the H1 gap's lower CI bound stays > 0 for all three forward models; the C-or-R rate
 at k >= 1000 stays >= 0.85. If the audit's false-alarm or C-or-R rate degrades materially under cluster sampling,
 the paper reports the clustered numbers as primary.
+
+---
+
+## Outcome log — Addendum B analyses on existing forward predictions — 2026-09-23
+Reproduce: `python src/analyze_addB.py --models av2_cpu_v1 av2_valsplit_v1 av2_cpu_v2` -> `results/addB/*__forward.json`.
+Target = nuScenes val (9041 agent-scenarios, 138 scenes). alpha = 0.10, delta = 0.10.
+
+| Test | av2_cpu_v1 | av2_valsplit_v1 | av2_cpu_v2 | Registered bar | Verdict |
+|---|---|---|---|---|---|
+| H14 C-or-R rate(cov>=.9), random agent labels, k=250/500/1000/2500 | .95/.94/.94/.95 | .97/.97/.95/.91 | .97/.97/.97/.93 | >= .88 all k>=250 (refute <.85) | **SUPPORTED** |
+| direct SCP same draws | .60/.52/.51/.53 | .62/.55/.57/.54 | .63/.64/.60/.53 | predicted ~.50-.60 | as predicted |
+| B10(a) H1 gap, scene-cluster 95% CI | +3.3 [+0.7, +6.2] | +8.0 [+5.0, +11.3] | +10.5 [+7.9, +13.8] | lower bound > 0 | **SUPPORTED** (design effect 3.5-4.4) |
+| B10(b) C-or-R rate, labels drawn as whole scenes, k=1000 / 2500 | .59 / .62 | .69 / .61 | .63 / .64 | >= .85 at k>=1000 | **REFUTED** |
+| B10(b) audit power, whole-scene labels, k=1000 | .61 | .97 | .99 | (report) | weaker only for the smallest gap |
+
+**Interpretation.** The PAC guarantee of C-or-R assumes exchangeable labels. When the labelled data are whole
+scenes -- how driving data are actually labelled -- ~65 agents per scene are strongly correlated, the effective
+sample size is the number of scenes (~15 for k=1000 agents), and the guarantee fails (~60-70%). Per the
+registration, the scene-grouped numbers are the primary ones for any deployment claim. Agent-level results are
+still valid for the (less realistic) i.i.d.-label regime and are reported as such.
+
+B7 (descriptive): coverage loss is concentrated in turning manoeuvres. Same-domain -> target: straight -1.9/-5.4/-6.7 pt;
+right turn -12.2/-27.9/-32.1; straight-right -31.6/-40.2/-25.8; left turn -8.4/-13.8/-20.8; hardest Kalman tercile
+target coverage .73/.67/.61. B6: ACI's running coverage stays within 2 pt after a median 83-100 labels (gamma .05)
+to 342-696 (gamma .005); a *frozen* ACI threshold after 1000 labels covers >= .9 in only 22-52% of streams (like
+direct SCP). B9: KS(norm) .047/.106/.109 vs H4 gap reductions 49/12/31% -> Spearman -0.5 (n=3, as predicted in sign).
+
+---
+
+## Addendum B-3 — written 2026-09-23 AFTER the B10/B7 results above, BEFORE the analyses below
+Both items are designed in response to the results above, so on the three existing forward models they are
+**exploratory**; they become confirmatory only on models/directions not yet run (the GPU-trained models, the
+reverse direction, and WOMD if available).
+
+**H16 — scene-level certify-or-recalibrate (cluster-aware repair).** Units = labelled *scenes*. Loss per scene
+j at threshold q: L_j(q) = fraction of scene j's agents with score > q (in [0,1], non-increasing in q). Target
+risk: scene-averaged miscoverage R(q) = E_j[L_j(q)]. Procedure (Learn-then-Test with fixed-sequence testing over a
+decreasing grid of q; Angelopoulos et al.): for each candidate q from largest to smallest, compute a valid
+p-value for H_q: R(q) > alpha from the m labelled scenes via the Hoeffding-Bentkus bound; stop at the first q not
+rejected at level delta; return the last rejected q. Monotone loss => P(R(q_hat) <= alpha) >= 1 - delta. The source
+threshold is tried first (certify branch) at level delta/2 with the same p-value; the grid search gets delta/2.
+*Prediction (confirmatory models only):* with whole-scene labels, rate(scene-averaged target coverage >= .90)
+>= .85 at every labelled-scene budget m >= 20; region area relative to the oracle reported as the price.
+
+**B11 — driving-side mechanism for the turn-specific loss.** nuScenes target scenes split by location: Boston
+(right-hand traffic, like all of AV2) vs Singapore (left-hand traffic). *Prediction:* for right turns, the
+same-domain -> target coverage drop is >= 10 pt larger in Singapore than in Boston for at least 2 of the 3
+existing forward models (and, confirmatory, for the gated GPU model). Straight driving: drop differs by < 5 pt
+between the two cities. Refuted if the right-turn drop is not larger in Singapore for any model.
