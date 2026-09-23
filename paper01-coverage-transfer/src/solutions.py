@@ -198,6 +198,45 @@ def certify_or_recalibrate(q_src: float, lab_scores, alpha: float, delta: float)
     return q_pac(lab, alpha, delta / 2), "recalibrated"
 
 
+def hb_pvalue(r_hat: float, m: int, alpha: float) -> float:
+    """Hoeffding-Bentkus p-value for H0: E[L] > alpha, from the mean r_hat of m i.i.d. losses in [0,1]
+    (Bates, Angelopoulos, Lei, Malik & Jordan, 'Distribution-free, risk-controlling prediction sets')."""
+    from scipy.stats import binom
+    a = min(r_hat, alpha)
+    if a <= 0:
+        h1 = -np.log(1 - alpha)                   # limit of a log(a/alpha) + (1-a) log((1-a)/(1-alpha)) at a=0
+    else:
+        h1 = a * np.log(a / alpha) + (1 - a) * np.log((1 - a) / (1 - alpha))
+    return float(min(np.exp(-m * h1), np.e * binom.cdf(np.ceil(m * r_hat), m, alpha)))
+
+
+def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: float) -> tuple[float, str]:
+    """
+    Addendum B-3 / H16: cluster-aware certify-or-recalibrate.  Units are labelled SCENES; per-scene loss
+    L_j(q) = fraction of scene j's agents with score > q (non-increasing in q).  Controls the scene-averaged
+    miscoverage R(q) = E_j L_j(q) at level alpha with probability >= 1-delta:
+      certify:  keep q_src if HB p-value for R(q_src) > alpha is <= delta/2;
+      else Learn-then-Test fixed-sequence over q from +inf downward (candidate q = labelled scores), each at
+      delta/2; return the last q whose null is rejected (monotone loss => valid without multiplicity cost).
+    Returns (threshold, branch); threshold = inf if nothing can be certified (too few scenes).
+    """
+    m = len(scene_scores)
+    def r_hat(q):
+        return float(np.mean([(s > q).mean() for s in scene_scores]))
+    if hb_pvalue(r_hat(q_src), m, alpha) <= delta / 2:
+        return float(q_src), "certified"
+    cand = np.unique(np.concatenate(scene_scores))[::-1]          # descending
+    srt = [np.sort(s) for s in scene_scores]
+    q_last = float("inf")
+    for q in cand:
+        rh = float(np.mean([1.0 - np.searchsorted(s, q, side="right") / len(s) for s in srt]))
+        if hb_pvalue(rh, m, alpha) <= delta / 2:
+            q_last = float(q)
+        else:
+            break
+    return q_last, "recalibrated"
+
+
 def aci_stream(cal_scores, stream_scores, alpha: float, gamma: float) -> tuple[np.ndarray, np.ndarray]:
     """
     Adaptive conformal inference (Gibbs & Candes 2021) on a label stream, fixed (source) calibration set:

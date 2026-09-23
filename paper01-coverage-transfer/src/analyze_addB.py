@@ -253,6 +253,77 @@ def b10_clustered(cal_s, tgt_s, tgt_clusters, B=1000, draws=200, seed=0) -> dict
     return out
 
 
+# ------------------------------------------------------------------------------------------ H16 / B11
+def h16_scene_ltt(cal_s, tgt_s, clusters, ms=(20, 30, 40, 50, 60), draws=200, seed=0) -> dict:
+    """Addendum B-3: labelled data = m whole scenes; evaluate SCENE-averaged (and agent-averaged) coverage on the
+    other scenes.  Compares scene-level LTT (H16) with agent-level C-or-R and direct SCP under the same draws."""
+    from solutions import scene_ltt_threshold
+    rng = np.random.default_rng(seed)
+    q_src = split_conformal_quantile(cal_s, ALPHA)
+    q_or = float(np.quantile(tgt_s, 1 - ALPHA))
+    uniq, inv = np.unique(clusters, return_inverse=True)
+    groups = [tgt_s[inv == c] for c in range(len(uniq))]
+    out = {"n_scenes": len(uniq), "by_m": {}}
+    for m in [m for m in ms if m <= len(uniq) - 30]:
+        res = {k: {"scene_cov": [], "agent_cov": [], "area": []} for k in ("scene_ltt", "agent_cor", "direct")}
+        cert = 0
+        for _ in range(draws):
+            perm = rng.permutation(len(uniq)); lab, ev = perm[:m], perm[m:]
+            lab_s = [groups[i] for i in lab]; ev_all = np.concatenate([groups[i] for i in ev])
+            q1, b1 = scene_ltt_threshold(q_src, lab_s, ALPHA, DELTA); cert += b1 == "certified"
+            q2, _ = certify_or_recalibrate(q_src, np.concatenate(lab_s), ALPHA, DELTA)
+            q3 = q_direct(np.concatenate(lab_s), ALPHA)
+            for nm, q in (("scene_ltt", q1), ("agent_cor", q2), ("direct", q3)):
+                res[nm]["scene_cov"].append(float(np.mean([(groups[i] <= q).mean() for i in ev])))
+                res[nm]["agent_cov"].append(float((ev_all <= q).mean()))
+                res[nm]["area"].append((q / q_or) ** 2 if np.isfinite(q) else np.inf)
+        out["by_m"][str(m)] = {nm: {"rate_scene_cov_ge_nominal": float(np.mean(np.array(v["scene_cov"]) >= 1 - ALPHA)),
+                                    "rate_agent_cov_ge_nominal": float(np.mean(np.array(v["agent_cov"]) >= 1 - ALPHA)),
+                                    "mean_scene_cov": float(np.mean(v["scene_cov"])),
+                                    "median_area_vs_oracle": float(np.median(v["area"])),
+                                    "frac_infinite": float(np.mean(np.isinf(v["area"])))}
+                               for nm, v in res.items()}
+        out["by_m"][str(m)]["scene_ltt"]["frac_certified"] = cert / draws
+    return out
+
+
+def b11_driving_side(cal, same, tgt, B=1000, seed=0) -> dict:
+    """Addendum B-3 / B11: per-manoeuvre coverage drop AV2 same-domain -> nuScenes Boston vs Singapore, with a
+    scene-cluster bootstrap CI for (drop_Singapore - drop_Boston)."""
+    loc = json.loads((OUT / "nuscenes_scene_location.json").read_text())
+    rng = np.random.default_rng(seed)
+    q = split_conformal_quantile(cal["scores"], ALPHA)
+    scene = clusters_of(tgt)
+    city = np.array(["singapore" if loc[s].startswith("singapore") else "boston" for s in scene])
+    out = {"n": {c: int((city == c).sum()) for c in ("boston", "singapore")}, "by_type": {}}
+    for ti, nm in enumerate(TRAJ_TYPES):
+        s_idx = same["trajectory_type"] == ti
+        if s_idx.sum() < 40:
+            continue
+        cov_same = float((same["scores"][s_idx] <= q).mean())
+        r = {"same": cov_same, "n_same": int(s_idx.sum())}
+        for c in ("boston", "singapore"):
+            idx = (tgt["trajectory_type"] == ti) & (city == c)
+            r[c] = float((tgt["scores"][idx] <= q).mean()) if idx.sum() >= 30 else None
+            r[f"n_{c}"] = int(idx.sum())
+        if r["boston"] is None or r["singapore"] is None:
+            out["by_type"][nm] = r; continue
+        r["drop_boston"] = cov_same - r["boston"]; r["drop_singapore"] = cov_same - r["singapore"]
+        diff = np.empty(B)
+        sc_c = {c: np.unique(scene[city == c]) for c in ("boston", "singapore")}
+        for b in range(B):
+            cov = {}
+            for c in ("boston", "singapore"):
+                pick = rng.choice(sc_c[c], len(sc_c[c]), replace=True)
+                rows = np.concatenate([np.nonzero((scene == s) & (tgt["trajectory_type"] == ti))[0] for s in pick])
+                cov[c] = float((tgt["scores"][rows] <= q).mean()) if len(rows) else np.nan
+            diff[b] = cov["boston"] - cov["singapore"]            # = drop_singapore - drop_boston
+        r["drop_diff_sg_minus_bos"] = r["drop_singapore"] - r["drop_boston"]
+        r["drop_diff_ci95_cluster"] = [float(np.nanpercentile(diff, 2.5)), float(np.nanpercentile(diff, 97.5))]
+        out["by_type"][nm] = r
+    return out
+
+
 # ------------------------------------------------------------------------------------------ driver
 def run(model: str, direction: str) -> None:
     t0 = time.time()
@@ -265,6 +336,11 @@ def run(model: str, direction: str) -> None:
            "B7": b7_conditional(cal, same, tgt),
            "B9": b9_ks(cal, tgt),
            "B10_target_clustered": b10_clustered(cal["scores"], tgt["scores"], clusters_of(tgt))}
+    cl = clusters_of(tgt)
+    if len(np.unique(cl)) < len(cl) / 2:        # clustered target (nuScenes); AV2 clips are independent -> skip
+        res["H16_scene_ltt"] = h16_scene_ltt(cal["scores"], tgt["scores"], cl)
+    if direction == "forward":
+        res["B11_driving_side"] = b11_driving_side(cal, same, tgt)
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / f"{model}__{direction}.json"
     p.write_text(json.dumps(res, indent=1))

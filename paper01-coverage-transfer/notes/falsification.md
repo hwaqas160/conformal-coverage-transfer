@@ -498,3 +498,20 @@ threshold is tried first (certify branch) at level delta/2 with the same p-value
 same-domain -> target coverage drop is >= 10 pt larger in Singapore than in Boston for at least 2 of the 3
 existing forward models (and, confirmatory, for the gated GPU model). Straight driving: drop differs by < 5 pt
 between the two cities. Refuted if the right-turn drop is not larger in Singapore for any model.
+
+---
+
+## Outcome log — Addendum B-3 on the 3 existing forward models (EXPLORATORY, per B-3) — 2026-09-23
+**B11 (driving side): prediction met on all three models.** Right-turn coverage drop (AV2 same-domain -> nuScenes)
+is larger in Singapore (left-hand traffic) than Boston by +15.5 / +22.6 / +25.2 pt (scene-cluster 95% CI
+[-1.7, 28.5] / [4.7, 36.7] / [9.2, 36.9]); straight driving differs by -0.5 / -0.1 / -1.8 pt (< 5 pt as predicted).
+Left turns show no extra Singapore drop (-13.5 / -5.6 / -0.1 pt). Consistent with: in left-hand traffic the right
+turn is the wide, across-traffic manoeuvre never seen in AV2 training. Confirmatory test pending on the GPU model.
+**H16 (scene-level LTT, Hoeffding-Bentkus): valid but impractically conservative.** Scene-averaged coverage >= .90
+in 100% of draws at every m, but median region area vs oracle: m=20 infinite (HB needs m >= 29 scenes to reject
+at all at delta/2 = .05), m=30 18-30x, m=40 8-10x, m=60 4.4-4.9x. Agent-level C-or-R under the same whole-scene
+draws: .41-.58; direct SCP .32-.40. Practical reading: with clustered labels, the label budget must be counted in
+scenes, and a distribution-free guarantee with ~50 scenes is currently very expensive.
+Next (exploratory, not registered as confirmatory yet): H16b = same LTT procedure with a variance-adaptive betting
+p-value (Waudby-Smith & Ramdas) instead of HB; if it is materially tighter on these exploratory models it will be
+registered for the confirmatory models before they are run.

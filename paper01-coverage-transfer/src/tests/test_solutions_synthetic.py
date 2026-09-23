@@ -175,6 +175,38 @@ def test_cor(rng):
                 and cert_nom < 0.1 and cert_slack > 0.5 and r_dir < 0.75)
 
 
+def test_scene_ltt(rng):
+    """
+    H16 on synthetic CLUSTERED data (scenes with a shared random difficulty, ~60 agents each -- mimicking nuScenes):
+      (a) agent-level C-or-R with whole-scene labels loses its guarantee (rate well below 1-delta), reproducing the
+          real-data B10 finding;
+      (b) scene-level LTT keeps it: P(scene-averaged coverage >= 1-alpha) >= 1-delta.
+    Truth = scene-averaged coverage over a large fresh population of scenes (not the labelled ones).
+    """
+    from conformal import split_conformal_quantile
+    from solutions import certify_or_recalibrate, scene_ltt_threshold
+    alpha, delta = 0.10, 0.10
+
+    def scenes(n_sc):
+        diff = rng.lognormal(0.0, 0.35, n_sc) * 1.15                    # shifted target, scene-level difficulty
+        return [rng.lognormal(1.0, 0.45, rng.integers(30, 90)) * d for d in diff]
+
+    pop = scenes(3000)
+    q_src = split_conformal_quantile(rng.lognormal(1.0, 0.6, 5000), alpha)
+    ok_agent = ok_scene = inf = 0; draws = 150; m = 40
+    for _ in range(draws):
+        lab = scenes(m)
+        qa, _ = certify_or_recalibrate(q_src, np.concatenate(lab), alpha, delta)
+        qs, _ = scene_ltt_threshold(q_src, lab, alpha, delta)
+        ok_agent += np.mean([(s <= qa).mean() for s in pop]) >= 1 - alpha
+        ok_scene += np.mean([(s <= qs).mean() for s in pop]) >= 1 - alpha
+        inf += np.isinf(qs)
+    ra, rs = ok_agent / draws, ok_scene / draws
+    print(f"[H16 scene-LTT] m={m} whole-scene labels: agent-level C-or-R rate={ra:.2f} (expect < {1-delta:.2f}); "
+          f"scene-level LTT rate={rs:.2f} (expect >= {1-delta:.2f}); infinite thresholds {inf/draws:.2f}")
+    return bool(rs >= 1 - delta - 0.03 and ra < rs)
+
+
 def test_aci(rng):
     """ACI (Gibbs & Candes 2021): long-run miss rate -> alpha on a shifted stream despite a stale calibration set."""
     from solutions import aci_stream
@@ -191,6 +223,6 @@ def test_aci(rng):
 if __name__ == "__main__":
     rng = np.random.default_rng(0)
     r = {"H4": test_h4(rng), "H5": test_h5(rng), "H6": test_h6(rng), "H5b": test_audit(rng),
-         "B5": test_cor(rng), "B6": test_aci(rng)}
+         "B5": test_cor(rng), "B6": test_aci(rng), "H16": test_scene_ltt(rng)}
     print("\n" + "  ".join(f"{k}:{'OK' if v else 'FAIL'}" for k, v in r.items()))
     sys.exit(0 if all(r.values()) else 1)
