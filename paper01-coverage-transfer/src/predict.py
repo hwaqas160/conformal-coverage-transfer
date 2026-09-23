@@ -71,7 +71,7 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         fi = bn["center_gt_final_valid_idx"].astype(np.int32)
         fe = compute_factors(bn, dataset_key)
         fl = compute_factors_lf(bn, dataset_key)
-        sid = np.asarray(bn["scenario_id"]).astype("U40")
+        sid = np.asarray(bn["scenario_id"]).astype("U160")   # was U40: truncated nuScenes ids (agent part lost)
         dn = np.asarray(bn["dataset_name"]).astype("U16")
 
         PT.append(pt); PP.append(pp); G.append(gt); GM.append(gm)

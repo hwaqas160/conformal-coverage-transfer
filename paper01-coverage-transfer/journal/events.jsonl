@@ -94,3 +94,7 @@
 {"ts": "2026-09-23T11:24:00", "id": "ns_cpu_v1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "cde5470"}
 {"ts": "2026-09-23T13:03:00", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "335e80c"}
 {"ts": "2026-09-23T13:06:23", "id": "annotate_av2cal", "event": "artifact", "detail": "results\\preds2\\_annot\\av2cal.npz (4576 rows, 139s)", "sha": "335e80c"}
+{"ts": "2026-09-23T13:08:37", "id": "annotate_av2test", "event": "artifact", "detail": "results\\preds2\\_annot\\av2test.npz (4633 rows, 134s)", "sha": "a4e9d6c"}
+{"ts": "2026-09-23T13:12:41", "id": "annotate_ns", "event": "artifact", "detail": "results\\preds2\\_annot\\ns.npz (9041 rows, 244s)", "sha": "a4e9d6c"}
+{"ts": "2026-09-23T13:19:22", "id": "annotate_nscal", "event": "artifact", "detail": "results\\preds2\\_annot\\nscal.npz (4534 rows, 37s)", "sha": "a4e9d6c"}
+{"ts": "2026-09-23T13:25:00", "id": "annotate_nstest", "event": "artifact", "detail": "results\\preds2\\_annot\\nstest.npz (4507 rows, 30s)", "sha": "a4e9d6c"}

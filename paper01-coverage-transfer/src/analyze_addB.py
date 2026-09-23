@@ -41,14 +41,25 @@ TRAJ_TYPES = ["stationary", "straight", "straight_right", "straight_left",
 
 # ------------------------------------------------------------------------------------------ io
 def attach_annot(d: dict, set_names: list[str]) -> dict:
-    """Join model-independent scene annotations by POSITION (same dataset, same order, shuffle=False),
-    asserting scenario ids match row by row so a silent misalignment is impossible."""
+    """Join model-independent scene annotations by scenario_id.  (Position is NOT usable: UniTraj's loader order
+    differs between runs -- same id set, 0.04% rows in place, checked 2026-09-23.)  Strict: ids must be unique on
+    both sides and every prediction row must find its annotation, else raise."""
+    from annotate_sets import gt_keys
     parts = [dict(np.load(ANNOT / f"{s}.npz", allow_pickle=True)) for s in set_names]
-    sid = np.concatenate([p["scenario_id"] for p in parts])
-    if len(sid) != len(d["scores"]) or not np.array_equal(sid, d["scenario_id"]):
-        raise RuntimeError(f"annotation/prediction misalignment for {set_names}: {len(sid)} vs {len(d['scores'])}")
+    # key = (id truncated to 40 chars, hash of the GT future).  Prediction files <= schema 3 stored ids as U40,
+    # which collapses different nuScenes agents of one scene/sample onto one id; the GT hash separates them.
+    a_key = [f"{str(s)[:40]}|{g}" for s, g in zip(np.concatenate([p["scenario_id"] for p in parts]),
+                                                   np.concatenate([p["gt_key"] for p in parts]))]
+    p_key = [f"{str(s)[:40]}|{g}" for s, g in zip(d["scenario_id"], gt_keys(d["gt"]))]
+    if len(set(a_key)) != len(a_key) or len(set(p_key)) != len(p_key):
+        raise RuntimeError(f"non-unique (id, gt) keys in {set_names}; join would be ambiguous")
+    pos = {k: i for i, k in enumerate(a_key)}
+    try:
+        idx = np.fromiter((pos[k] for k in p_key), dtype=np.int64, count=len(p_key))
+    except KeyError as e:
+        raise RuntimeError(f"prediction row {e} has no annotation in {set_names}") from None
     for k in ("trajectory_type", "kalman_difficulty", "speed_now"):
-        d[k] = np.concatenate([p[k] for p in parts])
+        d[k] = np.concatenate([p[k] for p in parts])[idx]
     return d
 
 
@@ -179,6 +190,69 @@ def b9_ks(cal, tgt) -> dict:
             for tag, k in (("raw", "scores"), ("norm", "scores_norm"))}
 
 
+# ------------------------------------------------------------------------------------------ B10
+def clusters_of(d: dict) -> np.ndarray:
+    """Cluster id per row: the nuScenes scene (~65 correlated agent-scenarios each); AV2 scenarios are independent
+    11 s clips with one focal agent, so each is its own cluster."""
+    import re
+    out = []
+    for s in d["scenario_id"]:
+        m = re.search(r"scene-\d+", str(s))
+        out.append(m.group(0) if m else str(s))
+    return np.asarray(out)
+
+
+def _grouped_draw(rng, cl_idx: list, k: int, n: int):
+    """Draw whole clusters in random order until >= k rows are labelled; the rest is the evaluation set."""
+    lab = []
+    for c in rng.permutation(len(cl_idx)):
+        lab.extend(cl_idx[c])
+        if len(lab) >= k:
+            break
+    lab = np.asarray(lab)
+    ev = np.setdiff1d(np.arange(n), lab, assume_unique=True)
+    return lab, ev
+
+
+def b10_clustered(cal_s, tgt_s, tgt_clusters, B=1000, draws=200, seed=0) -> dict:
+    """Scene-cluster robustness (Addendum B-2): (a) H1 gap CI with a cluster bootstrap on the target (calibration
+    set resampled by scenario -- it is AV2, independent clips); (b) H5b audit and B5 C-or-R with labelled data
+    drawn as whole scenes."""
+    from scipy.stats import binom
+    rng = np.random.default_rng(seed)
+    q = split_conformal_quantile(cal_s, ALPHA)
+    gap = (1 - ALPHA) - float((tgt_s <= q).mean())
+    uniq, inv = np.unique(tgt_clusters, return_inverse=True)
+    cl_idx = [np.nonzero(inv == c)[0] for c in range(len(uniq))]
+    cov_i = (tgt_s <= q).astype(float)
+    g_cl, g_iid = np.empty(B), np.empty(B)
+    for b in range(B):
+        qb = split_conformal_quantile(cal_s[rng.integers(0, len(cal_s), len(cal_s))], ALPHA)
+        pick = rng.integers(0, len(uniq), len(uniq))
+        rows = np.concatenate([cl_idx[c] for c in pick])
+        g_cl[b] = (1 - ALPHA) - float((tgt_s[rows] <= qb).mean())
+        g_iid[b] = (1 - ALPHA) - float((tgt_s[rng.integers(0, len(tgt_s), len(tgt_s))] <= qb).mean())
+    out = {"n_clusters": int(len(uniq)), "rows_per_cluster_mean": float(len(tgt_s) / len(uniq)), "gap": gap,
+           "ci95_cluster": [float(np.percentile(g_cl, 2.5)), float(np.percentile(g_cl, 97.5))],
+           "ci95_iid": [float(np.percentile(g_iid, 2.5)), float(np.percentile(g_iid, 97.5))],
+           # design effect: variance inflation of the coverage mean from clustering
+           "design_effect": float(np.var(g_cl) / max(np.var(g_iid), 1e-12)),
+           "grouped_draws": {}}
+    n = len(tgt_s)
+    for k in [k for k in KS if k <= n - 1000]:
+        rej = cor_ok = dir_ok = 0
+        for _ in range(draws):
+            lab, ev = _grouped_draw(rng, cl_idx, k, n)
+            m = int((tgt_s[lab] > q).sum())
+            rej += binom.sf(m - 1, len(lab), ALPHA) <= 0.05
+            qc, _ = certify_or_recalibrate(q, tgt_s[lab], ALPHA, DELTA)
+            cor_ok += float((tgt_s[ev] <= qc).mean()) >= 1 - ALPHA
+            dir_ok += float((tgt_s[ev] <= q_direct(tgt_s[lab], ALPHA)).mean()) >= 1 - ALPHA
+        out["grouped_draws"][str(k)] = {"audit_reject_prob": rej / draws, "cor_rate_cov_ge_nominal": cor_ok / draws,
+                                        "direct_rate_cov_ge_nominal": dir_ok / draws}
+    return out
+
+
 # ------------------------------------------------------------------------------------------ driver
 def run(model: str, direction: str) -> None:
     t0 = time.time()
@@ -189,7 +263,8 @@ def run(model: str, direction: str) -> None:
            "B5_same_domain_control": b5_cor(cal["scores"], same["scores"], seed=1),
            "B6_target": b6_aci(cal["scores"], tgt["scores"]),
            "B7": b7_conditional(cal, same, tgt),
-           "B9": b9_ks(cal, tgt)}
+           "B9": b9_ks(cal, tgt),
+           "B10_target_clustered": b10_clustered(cal["scores"], tgt["scores"], clusters_of(tgt))}
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / f"{model}__{direction}.json"
     p.write_text(json.dumps(res, indent=1))
