@@ -27,7 +27,11 @@ def _bucket(scenario_id: str, salt: str, nbuckets: int = 10000) -> int:
     return int(h[:8], 16) % nbuckets
 
 
-def split_db(db: str, out: str, fractions, names, salt: str):
+def split_db(db: str, out: str, fractions, names, salt: str, group_regex: str | None = None):
+    """group_regex: hash a GROUP key (first regex match in the scenario id) instead of the scenario id, so every
+    member of a group lands in the same split.  Needed for nuScenes, whose ~60 agent-scenarios per 20 s scene are
+    strongly correlated (use r'scene-\\d+'); AV2 scenarios are independent clips and need no grouping."""
+    import re
     db = Path(db)
     out = Path(out)
     assert abs(sum(fractions) - 1.0) < 1e-6, "fractions must sum to 1"
@@ -44,8 +48,13 @@ def split_db(db: str, out: str, fractions, names, salt: str):
 
     parts = {n: ({}, {}) for n in names}
     for fname, meta in summary.items():
-        sid = meta.get("scenario_id", fname)
-        b = _bucket(str(sid), salt)
+        sid = str(meta.get("scenario_id", fname))
+        if group_regex:
+            m = re.search(group_regex, sid) or re.search(group_regex, fname)
+            if m is None:
+                raise ValueError(f"group_regex {group_regex!r} does not match scenario {sid!r}")
+            sid = m.group(0)
+        b = _bucket(sid, salt)
         for name, edge in zip(names, edges):
             if b < edge:
                 parts[name][0][fname] = meta
@@ -66,7 +75,7 @@ def split_db(db: str, out: str, fractions, names, salt: str):
         abs_map = {k: str((db / v).resolve()) for k, v in m_map.items()}
         pickle.dump(s_map, open(sub / "dataset_summary.pkl", "wb"))
         pickle.dump(abs_map, open(sub / "dataset_mapping.pkl", "wb"))
-        (sub / "SOURCE.txt").write_text(f"split of {db.resolve()}\nsalt={salt}\nn={len(s_map)}\n")
+        (sub / "SOURCE.txt").write_text(f"split of {db.resolve()}\nsalt={salt}\ngroup_regex={group_regex}\nn={len(s_map)}\n")
         print(f"  {name:8s} {len(s_map):7d} scenarios -> {sub}")
 
     total = sum(len(parts[n][0]) for n in names)
@@ -80,5 +89,6 @@ if __name__ == "__main__":
     ap.add_argument("--fractions", type=float, nargs="+", default=[0.6, 0.2, 0.2])
     ap.add_argument("--names", nargs="+", default=["train", "cal", "test"])
     ap.add_argument("--salt", default="av2v1")
+    ap.add_argument("--group_regex", default=None, help=r"e.g. 'scene-\d+' for nuScenes (scene-level split)")
     a = ap.parse_args()
-    split_db(a.db, a.out, a.fractions, a.names, a.salt)
+    split_db(a.db, a.out, a.fractions, a.names, a.salt, a.group_regex)

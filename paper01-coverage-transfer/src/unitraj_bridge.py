@@ -66,11 +66,50 @@ def build_model(method: str = "autobot", ckpt_path: str | None = None,
         os.chdir(cwd)
 
 
+DEFAULT_CACHE = REPO / "data" / "unitraj_cache"
+_MARKER = "SOURCE_DB.txt"
+
+
+def _cache_dir(db_path: str, cache_root) -> Path:
+    """UniTraj's own rule (base_dataset.py): <cache_root>/<db basename>/<db parent basename>.  Two DBs sharing
+    their last two path components therefore share a cache -- and UniTraj silently REUSES an existing one."""
+    p = Path(db_path).resolve()
+    return Path(cache_root) / p.name / p.parent.name
+
+
+def cache_guard(db_paths, cache_root) -> None:
+    """Refuse to run if a DB would map onto a cache built from a DIFFERENT DB (found 2026-09-23: nuScenes
+    `nuscenes_splits/val/cal` silently loaded the AV2 `av2_splits/val/cal` cache).  Every cache dir carries a
+    SOURCE_DB.txt marker; a cache dir without one is also refused (unknown provenance)."""
+    for db in db_paths:
+        c = _cache_dir(db, cache_root)
+        if not c.exists():
+            continue
+        m = c / _MARKER
+        want = Path(db).resolve().as_posix()
+        if not m.exists():
+            raise RuntimeError(f"cache {c} has no {_MARKER}: provenance unknown, refusing to reuse it for {want}")
+        got = m.read_text().strip()
+        if got != want:
+            raise RuntimeError(f"CACHE COLLISION: {c} was built from {got}, not {want}. Rename the DB directory "
+                               f"so its last two path components are unique.")
+
+
+def cache_mark(db_paths, cache_root) -> None:
+    """Record provenance after UniTraj (re)built a cache."""
+    for db in db_paths:
+        c = _cache_dir(db, cache_root)
+        if c.exists() and not (c / _MARKER).exists():
+            (c / _MARKER).write_text(Path(db).resolve().as_posix())
+
+
 def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
-                 max_data_num: int | None = None, is_validation: bool = True):
+                 max_data_num: int | None = None, is_validation: bool = True, cache_root=None):
     """Dataset + DataLoader over a ScenarioNet-converted DB directory."""
     from torch.utils.data import DataLoader
     db_path = Path(db_path).resolve().as_posix()
+    cache_root = Path(cache_root) if cache_root else DEFAULT_CACHE
+    cache_guard([db_path], cache_root)
     cwd = os.getcwd()
     os.chdir(UNITRAJ_PKG)
     try:
@@ -80,8 +119,9 @@ def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
         cfg.max_data_num = [max_data_num]
         cfg.starting_frame = [0]
         # absolute, stable cache so it survives changing CWD between runs
-        cfg.cache_path = str(REPO / "data" / "unitraj_cache")
+        cfg.cache_path = str(cache_root)
         ds = build_dataset(cfg, val=is_validation)
+        cache_mark([db_path], cache_root)
         loader = DataLoader(ds, batch_size=batch_size, shuffle=False, drop_last=False,
                             num_workers=num_workers, collate_fn=ds.collate_fn)
         return ds, loader

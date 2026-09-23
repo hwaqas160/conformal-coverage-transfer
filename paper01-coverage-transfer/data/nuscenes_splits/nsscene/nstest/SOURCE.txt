@@ -1,3 +1,4 @@
 split of F:\CLAUDE\AI1\paper01-coverage-transfer\data\nuscenes_scenarionet\val
-salt=nsv1
-n=4534
+salt=nsv2scene
+group_regex=scene-\d+
+n=4762

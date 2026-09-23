@@ -29,8 +29,11 @@ SETS = {
     "av2cal":  ("data/av2_splits/val/cal", "av2"),
     "av2test": ("data/av2_splits/val/test", "av2"),
     "ns":      ("data/nuscenes_scenarionet/val", "ns"),
-    "nscal":   ("data/nuscenes_splits/val/cal", "ns"),
-    "nstest":  ("data/nuscenes_splits/val/test", "ns"),
+    # 2026-09-23: (1) was nuscenes_splits/val/{cal,test}; UniTraj keys its cache on the last two path components,
+    # so those names collided with av2_splits/val/{cal,test} and silently loaded AV2 data.  (2) now split by SCENE
+    # (salt nsv2scene, 64/74 scenes, 0 overlap): nuScenes has ~60 correlated agent-scenarios per scene.
+    "nscal":   ("data/nuscenes_splits/nsscene/nscal", "ns"),
+    "nstest":  ("data/nuscenes_splits/nsscene/nstest", "ns"),
 }
 
 

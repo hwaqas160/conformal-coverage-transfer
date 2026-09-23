@@ -21,7 +21,7 @@ import torch
 
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
-from unitraj_bridge import UNITRAJ_PKG, _load_cfg  # noqa: E402
+from unitraj_bridge import UNITRAJ_PKG, _load_cfg, DEFAULT_CACHE, cache_guard, cache_mark  # noqa: E402
 
 
 def main():
@@ -46,6 +46,9 @@ def main():
                          "[10,20,30,40,50], i.e. NO decay inside a <=10-epoch run")
     ap.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
+    ap.add_argument("--cache_root", default=None,
+                    help="UniTraj cache root (default data/unitraj_cache on F:). Use an SSD copy for shuffled "
+                         "full-data training: on the F: HDD one random-access step took 262 s.")
     a = ap.parse_args()
     # resolve to absolute BEFORE any chdir
     a.train_db = [Path(p).resolve().as_posix() for p in a.train_db]
@@ -75,7 +78,9 @@ def main():
     cfg.seed = a.seed
     cfg.debug = False
     cfg.load_num_workers = a.num_workers
-    cfg.cache_path = str(SRC.parent / "data" / "unitraj_cache")
+    cache_root = Path(a.cache_root).resolve() if a.cache_root else DEFAULT_CACHE
+    cache_guard(a.train_db + [a.val_db], cache_root)       # refuse silent cross-DB cache reuse
+    cfg.cache_path = str(cache_root)
     cfg.train_data_path = a.train_db
     cfg.val_data_path = [a.val_db]
     cfg.max_data_num = [a.limit_train] * len(a.train_db)
@@ -100,6 +105,7 @@ def main():
         print(f"[train] initialised weights from {a.init_ckpt} (missing={len(_miss)}, unexpected={len(_unexp)})")
     train_set = build_dataset(cfg, val=False)
     val_set = build_dataset(cfg, val=True)
+    cache_mark(a.train_db + [a.val_db], cache_root)
     if a.val_subset and len(val_set) > a.val_subset:
         from torch.utils.data import Subset
         import numpy as _np

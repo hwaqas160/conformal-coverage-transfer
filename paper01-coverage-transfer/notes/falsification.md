@@ -424,3 +424,28 @@ H4 gap reduction (Spearman rho < 0 between KS and reduction).
 Order of execution (compute-driven): B1-AV2 on GPU starts now; B5/B6/B7/B9 are analysis-only on existing
 predictions and run in parallel; B4 is inference-only; B1-nuScenes and B2 follow on GPU; B3 waits on the licence;
 B8 last.
+
+---
+
+## Addendum B-2 — written 2026-09-23, BEFORE the analyses below were run
+**Two data-handling defects found today, both disclosed here:**
+1. *Cache-key collision.* UniTraj keys its preprocessed cache on the last two path components of a DB path and
+   silently reuses an existing cache. `nuscenes_splits/val/cal` therefore mapped onto the cache built earlier from
+   `av2_splits/val/cal` (log: "Loaded 4576 samples" = the AV2 cal count; nuScenes cal has 4534). Effect: the
+   `ns_cpu_v1` run monitored validation -- and ranked checkpoints -- on **AV2** data, i.e. on its own H9 target
+   domain. Its training data were correct nuScenes; the LR schedule is milestone-based, so validation did not
+   affect the weights. **Disposition:** H9 uses `ns_cpu_v1`'s final checkpoint (`last.ckpt`), never the
+   "best"-ranked one. All forward-direction results are unaffected (their sets map to unique caches; verified by
+   sample counts 4576 / 4633 / 9041). A provenance guard (`unitraj_bridge.cache_guard`) now refuses any
+   cache built from a different DB.
+2. *Scene clustering in nuScenes.* nuScenes val has 9041 agent-scenarios from ~138 scenes (~65 per scene), which are
+   strongly correlated. The nuScenes cal/test halves were re-split **by scene** (salt `nsv2scene`: 64 / 74 scenes,
+   0 overlap) before any reverse-direction analysis used them.
+
+**B10 — scene-clustered robustness of results already reported (registered now, before running).** For every
+forward model with nuScenes as target: (a) the H1 gap CI is recomputed with a *scene-cluster* bootstrap (resample
+scenes, not agents); (b) H5b audit power / false alarm and B5 C-or-R rates are recomputed with labelled scenes
+drawn as whole scenes until >= k agents, evaluated on the other scenes. *Prediction:* cluster CIs are wider than
+the agent-level ones, but the H1 gap's lower CI bound stays > 0 for all three forward models; the C-or-R rate
+at k >= 1000 stays >= 0.85. If the audit's false-alarm or C-or-R rate degrades materially under cluster sampling,
+the paper reports the clustered numbers as primary.
