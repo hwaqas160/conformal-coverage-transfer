@@ -239,6 +239,19 @@ index 46c9d2b..6190cdc 100644
          B = pred.size(0)
          T = pred.size(1)
          mu_x = pred[:, :, 0].unsqueeze(2)
+diff --git a/unitraj/models/wayformer/wayformer.py b/unitraj/models/wayformer/wayformer.py
+index 9b4b094..eaf2a19 100644
+--- a/unitraj/models/wayformer/wayformer.py
++++ b/unitraj/models/wayformer/wayformer.py
+@@ -187,7 +187,7 @@ class Wayformer(BaseModel):
+     def configure_optimizers(self):
+         optimizer = optim.AdamW(self.parameters(), lr=self.config['learning_rate'], eps=0.0001)
+ 
+-        scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.0002, steps_per_epoch=1, epochs=150,
++        scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.0002, steps_per_epoch=1, epochs=self.config['max_epochs'],  # Paper-01 patch: was hard-coded 150
+                                                         pct_start=0.02, div_factor=100.0, final_div_factor=10)
+ 
+         return [optimizer], [scheduler]
 diff --git a/unitraj/train.py b/unitraj/train.py
 index 3dbd535..b27b46d 100644
 --- a/unitraj/train.py

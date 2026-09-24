@@ -46,6 +46,7 @@ def main():
                          "[10,20,30,40,50], i.e. NO decay inside a <=10-epoch run")
     ap.add_argument("--device", choices=["cuda", "cpu"], default="cuda")
     ap.add_argument("--threads", type=int, default=None, help="torch.set_num_threads, CPU only")
+    ap.add_argument("--method", default="autobot", help="UniTraj method config: autobot | wayformer")
     ap.add_argument("--profile_steps", type=int, default=0,
                     help="diagnostic: run N train batches with Lightning's SimpleProfiler, print breakdown, exit")
     ap.add_argument("--cache_root", default=None,
@@ -75,7 +76,7 @@ def main():
     from unitraj.utils.utils import set_seed
 
     set_seed(a.seed)
-    cfg = _load_cfg("autobot")
+    cfg = _load_cfg(a.method)
     cfg.exp_name = a.exp
     cfg.seed = a.seed
     cfg.debug = False

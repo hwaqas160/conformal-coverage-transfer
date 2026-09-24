@@ -156,3 +156,5 @@
 {"ts": "2026-09-24T12:08:51", "id": "addB_av2_valsplit_v1_forward", "event": "done", "detail": "results\\addB\\av2_valsplit_v1__forward.json in 165s; k=1000 rate(cov>=.9): direct=0.57, pac=0.91, cor=0.95, cor_slack_EXPLORATORY=0.95", "sha": "6a95959"}
 {"ts": "2026-09-24T12:08:52", "id": "addB_av2_cpu_v2_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "6a95959"}
 {"ts": "2026-09-24T12:11:29", "id": "addB_av2_cpu_v2_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v2__forward.json in 158s; k=1000 rate(cov>=.9): direct=0.60, pac=0.92, cor=0.97, cor_slack_EXPLORATORY=0.97", "sha": "6a95959"}
+{"ts": "2026-09-24T15:24:40", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "648094a"}
+{"ts": "2026-09-24T15:31:56", "id": "ns_cpu_v1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "648094a"}

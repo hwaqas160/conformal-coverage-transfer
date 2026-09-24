@@ -63,6 +63,7 @@ def main():
     ap.add_argument("--ckpt", required=True, help="path or 'auto'")
     ap.add_argument("--sets", nargs="+", default=["av2cal", "av2test", "ns"])
     ap.add_argument("--device", default="cpu")
+    ap.add_argument("--method", default="autobot", help="UniTraj method config: autobot | wayformer")
     ap.add_argument("--batch_size", type=int, default=32)
     ap.add_argument("--num_workers", type=int, default=2)
     a = ap.parse_args()
@@ -84,7 +85,8 @@ def main():
             continue
         try:
             dump(str(ckpt), str(ROOT / db), key, f"{name}_from_{a.model}", str(outdir),
-                 device=a.device, batch_size=a.batch_size, num_workers=a.num_workers, out_file=str(out))
+                 device=a.device, batch_size=a.batch_size, num_workers=a.num_workers, out_file=str(out),
+                 method=a.method)
             journal.event(exp_id, "artifact", f"{out.relative_to(ROOT)}")
         except Exception as e:  # keep going: other sets may still succeed; caller retries
             traceback.print_exc()

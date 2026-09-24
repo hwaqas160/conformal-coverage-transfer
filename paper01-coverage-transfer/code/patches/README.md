@@ -20,3 +20,6 @@ every step; 25.5% of main-thread wall time by py-spy). Only `.entropy()` is ever
 identical dropout seeds, train and eval mode: loss rel. diff <= 1.5e-7, gradient rel-L2 <= 5.9e-7, cosine 1.0000.
 The original remains as `get_BVG_distributions_reference`. (An earlier comparison without fixed seeds showed 2-5%
 loss differences and cosine 0.2-0.96: that was dropout noise between two forward passes, not the formula.)
+
+Notable change (2026-09-24): `models/wayformer/wayformer.py` `configure_optimizers`: `OneCycleLR(..., epochs=150)` was
+hard-coded; now `epochs=self.config['max_epochs']` so a shortened (compute-limited) schedule is a complete one-cycle schedule.

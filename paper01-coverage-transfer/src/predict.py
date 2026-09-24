@@ -36,6 +36,17 @@ from shift_factors import compute_factors, compute_factors_lf, FACTOR_NAMES, FAC
 from conformal import nonconformity_scores  # noqa: E402
 
 
+def predicted_scale(full: np.ndarray, method: str) -> np.ndarray:
+    """(B,K,T,5) raw model output -> (B,K) mean-over-horizon sqrt(sx^2+sy^2) in metres.
+    autobot: channels 2,3 are Laplace scales (softplus + eps).  wayformer: channels 2,3 are LOG standard deviations
+    (clipped to [-1.609, 5] in UniTraj's loss; std = exp(clip))."""
+    if method == "wayformer":
+        sx, sy = np.exp(np.clip(full[..., 2], -1.609, 5.0)), np.exp(np.clip(full[..., 3], -1.609, 5.0))
+    else:
+        sx, sy = full[..., 2], full[..., 3]
+    return np.sqrt(sx ** 2 + sy ** 2).mean(axis=2)
+
+
 @torch.no_grad()
 def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
          batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None, transform=None):
@@ -66,7 +77,7 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
 
         _full = out["predicted_trajectory"].detach().cpu().numpy()       # (B,K,T,5): x,y,bx,by,rho
         pt = _full[..., :2]
-        ps = np.sqrt(_full[..., 2] ** 2 + _full[..., 3] ** 2).mean(axis=2)  # (B,K) mean-horizon Laplace scale
+        ps = predicted_scale(_full, method)                               # (B,K) mean-horizon predicted scale
         pp = out["predicted_probability"].detach().cpu().numpy()
         bn = {k: (v.detach().cpu().numpy() if torch.is_tensor(v) else np.asarray(v))
               for k, v in inp.items()}
