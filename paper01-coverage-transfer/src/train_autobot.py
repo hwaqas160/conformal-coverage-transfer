@@ -116,12 +116,15 @@ def main():
         val_set.collate_fn = train_set.collate_fn
     print(f"[train] train={len(train_set)}  val={len(val_set)}")
 
+    # pin_memory: page-locked batches make the host->device copy asynchronous and fast (py-spy showed 44% of the
+    # main thread inside the blocking pageable-memory transfer).  Purely a transfer-path change.
+    pin = a.device == "cuda"
     train_loader = DataLoader(train_set, batch_size=a.batch, shuffle=True, drop_last=True,
                               num_workers=a.num_workers, collate_fn=train_set.collate_fn,
-                              persistent_workers=a.num_workers > 0)
+                              persistent_workers=a.num_workers > 0, pin_memory=pin)
     val_loader = DataLoader(val_set, batch_size=cfg.method.eval_batch_size, shuffle=False,
                             num_workers=a.num_workers, collate_fn=val_set.collate_fn,
-                            persistent_workers=a.num_workers > 0)
+                            persistent_workers=a.num_workers > 0, pin_memory=pin)
 
     ckpt_cb = ModelCheckpoint(
         monitor="val/minADE6", mode="min", save_top_k=2, save_last=True,
