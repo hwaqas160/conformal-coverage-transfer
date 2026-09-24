@@ -1,7 +1,33 @@
 # RESUME — start here after a crash, a reboot, or a new session
 
 _Keep this file accurate: update it whenever a job is launched/finished or a decision changes. Last full update:
-2026-09-23 06:20._
+2026-09-24 11:10._
+
+## 00. CURRENT STATE (2026-09-24) — read this first; §0 below is the older (2026-09-23 morning) summary
+**Plan changed 2026-09-23:** after a reviewer-objection review, the paper is being strengthened (Addendum B in
+`notes/falsification.md`, registered before each run): (1) full-data GPU AutoBot, gate val minADE6 <= 0.98;
+(2) Wayformer as 2nd architecture; (3) Waymo as 3rd dataset (**needs the user to accept the Waymo Open licence at
+waymo.com/open** — ask again if not done); (4) certify-or-recalibrate repair (H14), scene-level version (H16/H16b), ACI
+baseline; (5) scene-clustered statistics (B10), conditional coverage (B7), driving-side mechanism (B11: right-turn
+loss concentrated in left-hand-traffic Singapore, supported on 3/3 exploratory models); (6) shift-injection (B4, TODO).
+**Jobs:**
+| Job | State | Resume |
+|---|---|---|
+| `P01_TrainAv2GpuFull` (`run\train_av2_gpu_full.cmd`, GPU, full AV2, 60 ep) | **WATCHDOG task: repeats every 10 min, IgnoreNew, idempotent, resumes `results/ckpts/av2_gpu_full/last.ckpt`, stops at DONE/FAILED marker.** Was at epoch 6 (val minADE6 1.241 @ep5, high LR; decays at ep 10/20/30/40/50). ~1.9 s/step observed (5729 steps/epoch) -> ~3 h/epoch unless data-bound issue is fixed. | `powershell -File run\install_watchdog.ps1 -Name P01_TrainAv2GpuFull -Cmd F:\...\run\train_av2_gpu_full.cmd` |
+| `ns_cpu_v1` (CPU nuScenes model) | **PAUSED** at epoch 5.x (last.ckpt 09-23 13:46) to leave CPU to the GPU job. Its validation ran on AV2 data by a cache collision (checkpoint RANKING invalid) -> use `last.ckpt` for H9. Will be superseded by a GPU nuScenes model. | `schedule.ps1 -Name P01_TrainNsCpuV1 -Cmd ...\run\train_ns_cpu_v1.cmd` |
+**Why watchdog:** the user session is killed from outside (see memory `reference-machine-gotchas`): logoff 09-23 11:09;
+09-24 10:50 a FAILED shutdown attempt still terminated all processes incl. the wrapper.
+**Data hygiene changes:** nuScenes cal/test are now scene-disjoint (`data/nuscenes_splits/nsscene/{nscal,nstest}`,
+salt nsv2scene, 64/74 scenes); UniTraj cache provenance guard (`SOURCE_DB.txt`); training cache on SSD `C:\p01_cache`;
+local UniTraj edits captured in `code/patches/`.
+**Analyses done on the 3 forward models** (`results/addB/*.json`, outcome log in falsification.md): C-or-R guarantee holds
+for i.i.d. labels (.91-.97) but FAILS for whole-scene labels (.59-.71) -> scene-level LTT valid but conservative (HB)
+-> H16b betting version 1.39x vs 3.41x area (synthetic). Turn-specific loss (right turn -12..-32 pt).
+**Next:** (a) confirm the watchdog restarted GPU training and measure its real step rate; find why 1.9 s/step vs 0.5-0.8
+profile; (b) register H16b before running it on confirmatory models; (c) after the GPU AV2 model passes its gate:
+predict on av2cal/av2test/ns (+ annotations), run `analyze_run2.py` + `analyze_addB.py`; (d) GPU nuScenes model (full
+32,186 train chunks) for H9; (e) Wayformer; (f) shift injection B4; (g) Waymo when licensed; (h) fill paper
+(results/discussion/abstract) from `results/`.
 
 ## 0. One-paragraph state of the project
 Paper 01 asks: **does the conformal-prediction coverage guarantee survive a zero-label change of dataset in
