@@ -1,0 +1,20 @@
+{
+ "av2": {
+  "sigma_m": 0.29320662456912944,
+  "sigma_m_median_agent": 0.23003296844109603,
+  "n_agents": 6636,
+  "map_points_per_scene_median": 2318.0
+ },
+ "ns": {
+  "sigma_m": 0.12552882054594056,
+  "sigma_m_median_agent": 0.04763333929327392,
+  "n_agents": 8131,
+  "map_points_per_scene_median": 2340.0
+ },
+ "jitter_sigma_m": 0.0,
+ "lanes_median": {
+  "av2": 85.0,
+  "ns": 52.0
+ },
+ "lane_keep_prob": 0.611764705882353
+}

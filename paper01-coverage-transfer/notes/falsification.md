@@ -545,3 +545,26 @@ label-free factors from existing prediction files):
      differences do NOT fully explain the gap (the remainder is label/behaviour shift). No pass/fail on g_map alone.
 Reported for the models with this analysis: the three CPU models (exploratory) and, confirmatory, the gated GPU model.
 Also registered: the CPU-model injections are run with `--device cpu` on ALL 4633 AV2 test scenes.
+
+---
+
+## Outcome log — Addendum B-4 shift injection on the 3 CPU forward models (EXPLORATORY set) — 2026-09-24
+Reproduce: `python src/shift_inject.py run --model M --conds hz2 map hz2map --device cuda`; `python src/analyze_inject.py --models ...`
+-> `results/addB/inject_<model>.json`. Effect = paired change in coverage of the AV2-calibrated threshold on the same
+4633 AV2 test scenes, as a fraction of the real AV2->nuScenes gap G (alpha=.10). CIs are scene-bootstrap 95%.
+
+| Model (G) | hz2 (2 Hz history) | map (lane dropout .61) | hz2+map | comp (scene mix reweighted) |
+|---|---|---|---|---|
+| av2_cpu_v1 (+3.3 pt) | +0.6 [0.1,1.1] = 19% | +1.4 [0.9,2.1] = 43% | +1.8 [1.1,2.4] = **53%** | -1.3 [-2.1,-0.4] = -38% |
+| av2_valsplit_v1 (+8.0) | +0.7 [0.2,1.1] = 8% | +1.4 [0.8,2.0] = 17% | +1.4 [0.7,2.0] = **17%** | -1.4 [-2.2,-0.6] = -18% |
+| av2_cpu_v2 (+10.5) | +1.1 [0.5,1.7] = 11% | +1.3 [0.7,1.9] = 12% | +2.2 [1.5,3.0] = **21%** | -1.1 [-2.0,-0.2] = -11% |
+
+**Verdicts on the registered predictions:** P1 (hz2 >= 25% of G; refuted only if < 10% for EVERY model): 19/8/11% ->
+**not supported, not refuted** (the sampling-rate axis explains a small, real, statistically non-zero share).
+P2 (comp < 25% of G): **supported** -- composition alone moves coverage the WRONG way (nuScenes' scene mix is easier).
+P3 (hz2+map < 75% of G): **supported** on all three -- the measured input-level differences do not explain the gap.
+Excluded by measurement before running: excess annotation noise (nuScenes is smoother than AV2) and map-point density.
+**Reading:** input-side differences (2 Hz history + sparser lane graph) reproduce 17-53% of the loss, and 17-21% for the two
+models with the largest gaps; the remainder is not an input-statistics effect, consistent with the turn-specific,
+left-hand-traffic-concentrated loss (B11) -- i.e. mostly a conditional (behavioural) shift.
+Note: `hz2` and `map` are position-only perturbations, exact for AutoBot (which reads only positions + masks).
