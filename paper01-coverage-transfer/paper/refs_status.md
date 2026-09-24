@@ -40,3 +40,12 @@ else matched what was already written and needed no change.
 ## Still open
 Nothing outstanding. If new citations are added later, verify them the same way before submission -- never cite
 from memory alone.
+
+## Added 2026-09-24 (for the certify-or-recalibrate / scene-level LTT methods) -- all V against primary pages
+| key | status | source checked |
+|---|---|---|
+| angelopoulos2025ltt | V 2026-09-24 | projecteuclid.org Ann. Appl. Stat. 19(2), doi 10.1214/24-AOAS1998 (authors: Angelopoulos, Bates, Candes, Jordan, Lei; **pages not verified -> omitted**) |
+| waudbysmith2024betting | V 2026-09-24 | academic.oup.com JRSSB 86(1):1-27, doi 10.1093/jrsssb/qkad009 |
+| bates2021rcps | V 2026-09-24 | dl.acm.org J. ACM 68(6), Art. 43, doi 10.1145/3478535 (source of the Hoeffding-Bentkus p-value) |
+| clopper1934confidence | V 2026-09-24 | academic.oup.com Biometrika 26(4):404-413, doi 10.1093/biomet/26.4.404 |
+| bian2023training | V 2026-09-24 | projecteuclid.org EJS 17(2):2044-2066 |
