@@ -18,6 +18,13 @@ work conditions on an observable nuisance parameter and generates synthetic data
 (both preprints). We study a different point in this space: no feedback, no generative model, and two real driving
 datasets.
 
+\paragraph{Grouped data and risk control.}
+When observations come in groups (repeated measurements, several agents per scene), exchangeability across observations fails, and hierarchical conformal methods restore
+validity by pooling or subsampling at the group level \cite{dunn2023hierarchical,lee2023hierarchical}. Risk-controlling procedures \cite{bates2021rcps} and Learn-then-Test \cite{angelopoulos2025ltt}
+give finite-sample control of a monotone risk by testing a fixed ordered set of thresholds, and betting-based $p$-values \cite{waudbysmith2024betting} make such tests far tighter
+than Hoeffding-type bounds when losses are small. We combine the two ideas for a setting those works do not address: dataset shift in trajectory prediction, where the natural
+labelling unit is the \emph{scene} and the risk to be controlled is the scene-averaged miscoverage of a fixed, source-calibrated forecaster.
+
 \paragraph{Cross-dataset trajectory prediction.}
 UniTraj harmonises several driving datasets and reports that accuracy drops when models are transferred between them
 \cite{feng2024unitraj}; that study is about point accuracy, not about the validity of an uncertainty guarantee. Beyond

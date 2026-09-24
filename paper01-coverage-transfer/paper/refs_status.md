@@ -49,3 +49,5 @@ from memory alone.
 | bates2021rcps | V 2026-09-24 | dl.acm.org J. ACM 68(6), Art. 43, doi 10.1145/3478535 (source of the Hoeffding-Bentkus p-value) |
 | clopper1934confidence | V 2026-09-24 | academic.oup.com Biometrika 26(4):404-413, doi 10.1093/biomet/26.4.404 |
 | bian2023training | V 2026-09-24 | projecteuclid.org EJS 17(2):2044-2066 |
+| dunn2023hierarchical | V 2026-09-24 | tandfonline.com JASA 118(544):2491-2502, doi 10.1080/01621459.2022.2060112 (online 2022; cited with the 2023 issue year) |
+| lee2023hierarchical | V 2026-09-24 | arxiv.org/abs/2306.06342 (Lee, Barber, Willett; page states "to appear in ACM/IMS J. Data Science" -> cited as arXiv preprint only) |
