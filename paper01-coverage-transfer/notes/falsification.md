@@ -611,3 +611,22 @@ the registered criterion is applied as written on the confirmatory models. HB is
 m <= ~40 scenes and 4.5-10x the oracle area otherwise -> not practical. Bottom line (exploratory): with ~40-60 labelled
 SCENES (~2.6-3.9k agents) betting scene-level LTT gives a threshold within 1.5-1.9x of the oracle region and covers at
 ~.9 across held-out scenes, where agent-level guarantees collapse to ~.5.
+
+---
+
+## Development dry run on an intermediate GPU checkpoint — 2026-09-24 (NOT a confirmatory result)
+**Purpose and rules.** To find pipeline bugs and to manage the risk "the gap is an artefact of weak models" *early*, the
+best checkpoint of the running full-data AV2 AutoBot at epoch 11 (`av2_gpu_dev_ep11`, val minADE6 = 1.043; not the final
+model, gate 0.98 not yet met) was pushed through the whole analysis chain (`analyze_run2.py`, `analyze_addB.py`).
+It is NOT part of any table's confirmatory set (`make_results_addB.CONFIRMATORY` lists only the final gated model).
+No design decision, threshold, or hypothesis was changed because of these numbers; the registered analyses are re-run on the
+final checkpoint. Reported here because it is informative for the risk it was meant to manage, and it will be disclosed in
+the paper.
+**What it showed (val minADE6 1.043, better than all three CPU models):** raw gap **+11.0 pt** (CI 9.6-12.7; scene-cluster
+CI 8.4-13.8), same-domain +0.1 pt; normalised gap +6.9 pt (ratio 0.63); audit power 1.00 / false alarm 2.8% at k=1000;
+covariate reweighting again worse (removal -22%); right-turn coverage 0.81 -> 0.52, straight 0.94 -> 0.85; i.i.d.-label
+C-or-R 0.96 (direct 0.50); whole-scene labels: agent-level C-or-R 0.56-0.59 vs betting scene-LTT 0.93 / 0.89 at m = 40 / 60
+scenes (area 1.72x / 1.56x oracle). **Every qualitative finding of the three-model zoo replicates, and the gap is larger,
+not smaller, than for the weaker models** -- so "the loss is an under-training artefact" is not what happens at this
+accuracy level. (Pattern across four models: the better the point predictor, the larger the coverage gap; n = 4,
+exploratory, no causal claim.)
