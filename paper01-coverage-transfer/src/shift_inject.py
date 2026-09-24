@@ -18,7 +18,7 @@ AutoBot consumes only obj_trajs[..., :2] + obj_trajs_mask and map_polylines[...,
 these three perturbations are exact for it.  (Wayformer also reads velocity/heading channels -> its own handling.)
 
   python src/shift_inject.py sigma                              # noise level -> results/addB/inject_params.json
-  python src/shift_inject.py run --model av2_cpu_v2 --ckpt auto --conds hz2 jitter map [--n_batches 20] [--device cpu]
+  python src/shift_inject.py run --model av2_cpu_v2 --ckpt auto --conds hz2 map hz2map [--n_batches 20] [--device cpu]
 Outputs  results/preds2/<model>/inj_<cond>.npz  (same schema as predict.py)
 """
 from __future__ import annotations
@@ -122,7 +122,10 @@ def make_transform(cond: str, params: dict, seed: int = 0):
         keep = (torch.rand(mk.shape[:2], generator=g).to(mk.device) < params["lane_keep_prob"])
         inp["map_polylines_mask"] = mk * keep.unsqueeze(-1).to(mk.dtype)
 
-    return {"hz2": hz2, "jitter": jitter, "map": map_thin}[cond]
+    def both(inp):
+        hz2(inp); map_thin(inp)
+
+    return {"hz2": hz2, "jitter": jitter, "map": map_thin, "hz2map": both}[cond]
 
 
 def cmd_run(a):
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     s = sub.add_parser("sigma"); s.add_argument("--n_batches", type=int, default=80); s.set_defaults(f=cmd_sigma)
     r = sub.add_parser("run")
     r.add_argument("--model", required=True); r.add_argument("--ckpt", default="auto")
-    r.add_argument("--conds", nargs="+", default=["hz2", "map"])
+    r.add_argument("--conds", nargs="+", default=["hz2", "map", "hz2map"])
     r.add_argument("--n_batches", type=int, default=None); r.add_argument("--device", default="cuda")
     r.add_argument("--batch_size", type=int, default=32); r.add_argument("--num_workers", type=int, default=4)
     r.add_argument("--force", action="store_true"); r.set_defaults(f=cmd_run)
