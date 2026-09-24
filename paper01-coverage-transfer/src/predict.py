@@ -38,7 +38,9 @@ from conformal import nonconformity_scores  # noqa: E402
 
 @torch.no_grad()
 def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
-         batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None):
+         batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None, transform=None):
+    """transform: optional callable(input_dict_on_device) -> None, applied IN PLACE to the model inputs before
+    prediction (used by shift_inject.py for controlled input perturbations).  Ground truth is never touched."""
     os.makedirs(out_dir, exist_ok=True)
     t0 = time.time()
     if ckpt:                       # build_model() chdirs into UniTraj; relative paths would break
@@ -58,6 +60,8 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         for k, v in list(inp.items()):
             if torch.is_tensor(v):
                 inp[k] = v.to(device)
+        if transform is not None:
+            transform(inp)
         out = model.predict(batch)
 
         _full = out["predicted_trajectory"].detach().cpu().numpy()       # (B,K,T,5): x,y,bx,by,rho

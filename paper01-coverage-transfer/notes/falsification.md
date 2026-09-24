@@ -515,3 +515,33 @@ scenes, and a distribution-free guarantee with ~50 scenes is currently very expe
 Next (exploratory, not registered as confirmatory yet): H16b = same LTT procedure with a variance-adaptive betting
 p-value (Waudby-Smith & Ramdas) instead of HB; if it is materially tighter on these exploratory models it will be
 registered for the confirmatory models before they are run.
+
+---
+
+## Addendum B-4 — written 2026-09-24, BEFORE any injected-input prediction was run or looked at
+**Change to B4 (shift injection), driven by measurement, not by results.** Before running anything I measured the
+input statistics the injections were meant to mimic (`python src/shift_inject.py sigma`, `results/addB/inject_params.json`;
+label-free factors from existing prediction files):
+* *Annotation noise (registered injection "jitter").* Excess-noise estimate = quadratic-fit residual of the 5 native
+  2-Hz keyframes of 2 s histories of moving agents: AV2 sigma = 0.29 m (n=6636 agents), nuScenes sigma = 0.13 m (n=8131).
+  nuScenes histories are SMOOTHER, so the excess noise is 0 and the "jitter" injection is vacuous. **Not run;**
+  reported as: the noise hypothesis is not supported by the data. (Caveat: this is a smoothness statistic, not a
+  ground-truth noise measurement; nuScenes tracks may be smoothed upstream.)
+* *Map density (registered "thin lane points").* Median valid map points per scene: AV2 2318, nuScenes 2340 -> equal;
+  that injection would be vacuous. **Replaced** by lane dropout at the measured lane-count ratio: n_lanes_near_ego
+  medians 85 (AV2) vs 52 (nuScenes) => each map polyline kept with p = 0.612.
+* Other measured differences (KS): native_dt 1.00; n_lanes 0.37; hist_heading_change 0.33; map_point_density per lane
+  0.28; hist_curvature 0.25; n_agents 0.24 (nuScenes has MORE agents: median 14 vs 11 -> no agent-dropout injection);
+  hist_speed 0.14.
+**Final B4 set (all applied to AV2 test inputs; AV2-calibrated threshold; ground truth untouched):**
+ (a) `hz2` -- history re-sampled to 2 Hz keyframes + linear interpolation (all agents with complete keyframes);
+ (b) `map` -- lane dropout p_keep = 0.612;
+ (c) `hz2+map` -- both;   (d) `comp` -- composition reweighting of AV2 test scenes to the nuScenes distribution of the
+     7 label-free factors (domain-classifier weights, no inference needed).
+**Registered predictions (for each model, alpha = .10):** let G = real AV2->nuScenes gap and g_x the gap under injection x.
+ P1: g_hz2 >= 0.25 G (the sampling-rate axis alone explains a non-trivial part) -- refuted if g_hz2 < 0.10 G for
+     every model. (Prior evidence: scoring at native 2 Hz did not change the gap, so the *history* rate is the open
+     question.)  P2: g_comp < 0.25 G (consistent with H2/H3).  P3: g_(hz2+map) < 0.75 G, i.e. the measured input-level
+     differences do NOT fully explain the gap (the remainder is label/behaviour shift). No pass/fail on g_map alone.
+Reported for the models with this analysis: the three CPU models (exploratory) and, confirmatory, the gated GPU model.
+Also registered: the CPU-model injections are run with `--device cpu` on ALL 4633 AV2 test scenes.
