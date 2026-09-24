@@ -1,25 +1,25 @@
 \section{Experimental Setup}\label{sec:setup}
 \paragraph{Data.} Argoverse~2 \cite{wilson2021argoverse2} and nuScenes \cite{caesar2020nuscenes}, converted with ScenarioNet \cite{li2023scenarionet}
-and loaded through UniTraj \cite{feng2024unitraj}. Each dataset's held-out split is divided by a fixed salted hash into a calibration
-half and a test half, so calibration and test scenes never overlap. The AV2 test split has no labels and is not used.
-\paragraph{Forecasters.} AutoBot-Ego \cite{girgis2022autobots} (1.5M parameters), $K=6$ modes, all trained on CPU (a 5\,GB
-GPU shared with other work was not consistently available). This matters quantitatively, not just qualitatively:
-UniTraj's own AutoBot-on-AV2 baseline (8$\times$A100, batch 128, full 180k-scene training set) reaches
-minADE\textsubscript{6} $0.85$ \cite{feng2024unitraj}; our checkpoints reach $1.349$ (av2\_cpu\_v1, $+59\%$) and
-$1.092$ (av2\_cpu\_v2, $+28\%$) on our own held-out subset. Both exceed the $15\%$ tolerance we pre-registered for
-treating the base model as competitive, so we report this as a triggered, disclosed limitation rather than
-understating it: our models are not competitive point predictors, and the coverage-transfer magnitude and repair
-effect sizes we measure should not be assumed to hold for a properly-resourced SOTA model without further study.
-The same-domain coverage check (H1) still validates that our conformal implementation is correct for whatever
-predictor is actually used. The forward-direction (AV2-source) model zoo used for the H8 robustness check
-so far: \textbf{av2\_cpu\_v1}, trained from scratch on 60k AV2 scenes for 10 epochs (selected checkpoint: epoch 8,
-val minADE\textsubscript{6} 1.349); \textbf{av2\_valsplit\_v1}, trained from scratch on a smaller, disjoint 13.7k-scene
-split for 20 epochs (epoch 17, val minADE\textsubscript{6} 1.347); \textbf{av2\_cpu\_v2}, fine-tuned from
-av2\_cpu\_v1's checkpoint with a decaying learning rate for 4 further epochs (epoch 3, val minADE\textsubscript{6}
-1.092). \todo{Add the reverse-direction model ns\_cpu\_v1 (nuScenes-source, architecture-matched) once trained ---
-data conversion in progress.}
-\paragraph{Protocol.} $\alpha=0.1$. Forward direction: calibrate on AV2 calibration half, test on AV2 test half (same-domain control) and on nuScenes (cross-dataset).
-Reverse direction: the swap. Confidence intervals are percentile bootstraps over scenes. Hypotheses H1--H9 and their pass thresholds were
-written before the corresponding runs (\texttt{notes/falsification.md}); those defined after seeing Run~1 are marked post-hoc there and
-are confirmed only on Run~2 data.
-\paragraph{Metrics.} Coverage, coverage gap $\Delta$, region area proxy, label budget $k^\star$, audit power/false-alarm, monitor AUC and Spearman correlation.
+and loaded through UniTraj \cite{feng2024unitraj}. Argoverse~2 scenarios are independent 11\,s clips with one focal agent; their held-out split is divided by a fixed
+salted hash into a calibration half and a test half. nuScenes provides about 65 agent-scenarios per 20\,s scene (9041 from 138 scenes in its validation split), so its
+calibration/test split is made \emph{by scene} (64 and 74 scenes, disjoint), and every uncertainty statement on nuScenes uses scene-level resampling
+(Sec.~\ref{sec:cluster}). The AV2 test split has no labels and is not used.
+\paragraph{Forecasters.} AutoBot-Ego \cite{girgis2022autobots} (1.5M parameters), $K=6$ modes. We distinguish two kinds of source model.
+\emph{Exploratory zoo}: three AutoBots trained on a single, shared CPU --- \textbf{av2\_cpu\_v1} (from scratch on 60k AV2 scenes, 10 epochs; val minADE\textsubscript{6} 1.349),
+\textbf{av2\_valsplit\_v1} (13.7k scenes, 20 epochs; 1.347) and \textbf{av2\_cpu\_v2} (fine-tuned from av2\_cpu\_v1 with a decaying learning rate; 1.092).
+UniTraj's own AutoBot-on-AV2 baseline (8$\times$A100, batch 128, the full 180k-scene set) reaches minADE\textsubscript{6} $0.85$ \cite{feng2024unitraj}, so these
+models are $+28\%$ to $+59\%$ worse and exceed the 15\% tolerance we pre-registered for calling a base model competitive; we report this as a triggered limitation,
+and used the zoo to design analyses, so every result on it is labelled exploratory. \emph{Competitive models}, trained \emph{after} the corresponding hypotheses were
+registered: AutoBot on the full 183k-scene AV2 training set with UniTraj's recipe (effective batch 128, learning rate $7.5\times10^{-4}$ halved at epochs 10/20/30/40/50) on one GPU,
+accepted only if its validation minADE\textsubscript{6} is within 15\% of $0.85$; the same recipe on the full nuScenes training split for the reverse direction (gate: within 15\% of $1.21$);
+and a second architecture (Wayformer) \todo{fill: gated models, epochs, val minADE, once trained}.
+\paragraph{Protocol.} $\alpha=0.1$, $\delta=0.1$. Forward direction: calibrate on the AV2 calibration half; test on the AV2 test half (same-domain control) and on all of nuScenes
+(cross-dataset). Reverse direction: the swap, calibrating on the nuScenes calibration scenes. Label-budget experiments draw $k$ labelled agents at random (exchangeable case) or $m$ whole scenes
+(clustered case) 200 times and evaluate on the disjoint remainder. Intervals are percentile bootstraps over scenes (over agents only for AV2, whose clips are independent).
+\paragraph{Pre-registration and disclosures.} Hypotheses and thresholds are written in \texttt{notes/falsification.md} before the runs they govern; later analyses were added as dated
+addenda and each outcome is appended, never edited. Two initial hypotheses about the shift were changed \emph{before} running because measurement showed them vacuous
+(Sec.~\ref{sec:inject}). Defects found during the work, none changing a reported number: a silent cache collision that made one validation set an Argoverse cache, per-agent (not per-scene)
+nuScenes splits, and truncated scenario identifiers in early prediction files. One intermediate checkpoint of the competitive AV2 model was evaluated during training to test the pipeline
+(a ``development dry run''); it informed no design decision, is excluded from all confirmatory tables and is disclosed here.
+\paragraph{Metrics.} Coverage, coverage gap $\Delta$, region-area proxy, label budget $k^\star$, audit power and false-alarm rate, the rate at which a repaired threshold
+covers $\ge 90\%$ of held-out scenes, region area relative to the oracle threshold, monitor AUC and Spearman correlation.
