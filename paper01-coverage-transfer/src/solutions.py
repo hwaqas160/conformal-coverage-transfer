@@ -231,14 +231,15 @@ def wsr_pvalue(losses: np.ndarray, alpha: float) -> float:
 
 
 def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: float,
-                        pval: str = "hb") -> tuple[float, str]:
+                        pval: str = "hb", grid_hi: float = 4.0, grid_lo: float = 0.5, n_grid: int = 300) -> tuple[float, str]:
     """
     Addendum B-3 / H16: cluster-aware certify-or-recalibrate.  Units are labelled SCENES; per-scene loss
     L_j(q) = fraction of scene j's agents with score > q (non-increasing in q).  Controls the scene-averaged
     miscoverage R(q) = E_j L_j(q) at level alpha with probability >= 1-delta:
       certify:  keep q_src if HB p-value for R(q_src) > alpha is <= delta/2;
-      else Learn-then-Test fixed-sequence over q from +inf downward (candidate q = labelled scores), each at
-      delta/2; return the last q whose null is rejected (monotone loss => valid without multiplicity cost).
+      else Learn-then-Test fixed-sequence over q from large to small, each at
+      delta/2 over a FIXED log-spaced grid q_src*[grid_hi .. grid_lo]; return the last q whose null is rejected
+      (monotone loss + fixed-sequence => valid without multiplicity cost).
     Returns (threshold, branch); threshold = inf if nothing can be certified (too few scenes).
     """
     m = len(scene_scores)
@@ -250,9 +251,11 @@ def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: f
 
     if p_of(q_src) <= delta / 2:
         return float(q_src), "certified"
-    cand = np.unique(np.concatenate(scene_scores))[::-1]          # descending
+    # FIXED candidate grid, independent of the labelled target scores (anchored on the source threshold): required
+    # for fixed-sequence testing to be valid with non-monotone p-values (the betting p-value).  Descending, log-spaced.
+    grid = float(q_src) * np.exp(np.linspace(np.log(grid_hi), np.log(grid_lo), n_grid))
     q_last = float("inf")
-    for q in cand:
+    for q in grid:
         if p_of(q) <= delta / 2:
             q_last = float(q)
         else:

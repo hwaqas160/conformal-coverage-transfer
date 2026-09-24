@@ -256,7 +256,8 @@ def b10_clustered(cal_s, tgt_s, tgt_clusters, B=1000, draws=200, seed=0) -> dict
 # ------------------------------------------------------------------------------------------ H16 / B11
 def h16_scene_ltt(cal_s, tgt_s, clusters, ms=(20, 30, 40, 50, 60), draws=200, seed=0) -> dict:
     """Addendum B-3: labelled data = m whole scenes; evaluate SCENE-averaged (and agent-averaged) coverage on the
-    other scenes.  Compares scene-level LTT (H16) with agent-level C-or-R and direct SCP under the same draws."""
+    other scenes.  Compares scene-level LTT with the Hoeffding-Bentkus p-value (H16) and with the betting p-value
+    (H16b), both on the FIXED threshold grid, against agent-level C-or-R and direct SCP under the same draws."""
     from solutions import scene_ltt_threshold
     rng = np.random.default_rng(seed)
     q_src = split_conformal_quantile(cal_s, ALPHA)
@@ -265,15 +266,16 @@ def h16_scene_ltt(cal_s, tgt_s, clusters, ms=(20, 30, 40, 50, 60), draws=200, se
     groups = [tgt_s[inv == c] for c in range(len(uniq))]
     out = {"n_scenes": len(uniq), "by_m": {}}
     for m in [m for m in ms if m <= len(uniq) - 30]:
-        res = {k: {"scene_cov": [], "agent_cov": [], "area": []} for k in ("scene_ltt", "agent_cor", "direct")}
+        res = {k: {"scene_cov": [], "agent_cov": [], "area": []} for k in ("scene_ltt", "scene_ltt_bet", "agent_cor", "direct")}
         cert = 0
         for _ in range(draws):
             perm = rng.permutation(len(uniq)); lab, ev = perm[:m], perm[m:]
             lab_s = [groups[i] for i in lab]; ev_all = np.concatenate([groups[i] for i in ev])
             q1, b1 = scene_ltt_threshold(q_src, lab_s, ALPHA, DELTA); cert += b1 == "certified"
+            q1b, _ = scene_ltt_threshold(q_src, lab_s, ALPHA, DELTA, pval="wsr")
             q2, _ = certify_or_recalibrate(q_src, np.concatenate(lab_s), ALPHA, DELTA)
             q3 = q_direct(np.concatenate(lab_s), ALPHA)
-            for nm, q in (("scene_ltt", q1), ("agent_cor", q2), ("direct", q3)):
+            for nm, q in (("scene_ltt", q1), ("scene_ltt_bet", q1b), ("agent_cor", q2), ("direct", q3)):
                 res[nm]["scene_cov"].append(float(np.mean([(groups[i] <= q).mean() for i in ev])))
                 res[nm]["agent_cov"].append(float((ev_all <= q).mean()))
                 res[nm]["area"].append((q / q_or) ** 2 if np.isfinite(q) else np.inf)

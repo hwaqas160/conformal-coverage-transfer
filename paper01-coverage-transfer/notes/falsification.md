@@ -568,3 +568,22 @@ Excluded by measurement before running: excess annotation noise (nuScenes is smo
 models with the largest gaps; the remainder is not an input-statistics effect, consistent with the turn-specific,
 left-hand-traffic-concentrated loss (B11) -- i.e. mostly a conditional (behavioural) shift.
 Note: `hz2` and `map` are position-only perturbations, exact for AutoBot (which reads only positions + masks).
+
+---
+
+## Addendum B-5 — written 2026-09-24, BEFORE H16/H16b are re-run with the fixed grid on real data
+**Correction to H16.** The first exploratory H16 run (outcome log above) used data-dependent candidate thresholds
+(the labelled scores). That is valid for the monotone Hoeffding-Bentkus p-value but not for a non-monotone one, so
+the procedure was changed to a FIXED log-spaced grid anchored on the source threshold: q in q_src x [4 .. 0.5], 300
+points, fixed-sequence testing from the top (`solutions.scene_ltt_threshold`). Re-validated on synthetic clustered
+data (`test_scene_ltt`): HB rate 1.00, betting rate 0.96 (both >= .90), area vs oracle 3.43x (HB) vs 1.39x (betting),
+agent-level C-or-R under whole-scene labels 0.70 (fails, as on real data). The earlier exploratory H16 numbers
+(HB: 4.4-30x area) are superseded by the re-run below.
+**H16b (registered for the CONFIRMATORY models -- gated GPU AutoBot AV2->nuScenes, GPU nuScenes AutoBot
+nuScenes->AV2, and any further model/direction; the 3 CPU models are exploratory):** scene-level LTT with the
+Waudby-Smith-Ramdas betting p-value (`pval="wsr"`), delta = .10, whole-scene labels, m labelled scenes.
+*Predictions:* (i) rate(scene-averaged coverage of the returned threshold >= .90) >= .88 for every m in {30,40,50,60};
+(ii) median area vs oracle <= 3.0x at m = 40 and <= 2.0x at m = 60; (iii) betting is at least as tight as HB at every
+m (median area ratio betting/HB <= 1). *Refuted if* (i) fails for any m >= 40 on any confirmatory model, or (ii) fails
+on both confirmatory directions. If (ii) fails but (i) holds the method is reported as valid-but-costly, not as a fix.
+Reading rule: the per-scene loss uses all agents of a scene equally; scene weights are equal (scene-averaged risk).
