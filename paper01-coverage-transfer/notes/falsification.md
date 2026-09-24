@@ -587,3 +587,27 @@ Waudby-Smith-Ramdas betting p-value (`pval="wsr"`), delta = .10, whole-scene lab
 m (median area ratio betting/HB <= 1). *Refuted if* (i) fails for any m >= 40 on any confirmatory model, or (ii) fails
 on both confirmatory directions. If (ii) fails but (i) holds the method is reported as valid-but-costly, not as a fix.
 Reading rule: the per-scene loss uses all agents of a scene equally; scene weights are equal (scene-averaged risk).
+
+---
+
+## Outcome log — H16 / H16b (fixed-grid scene-level LTT) on the 3 CPU forward models (EXPLORATORY) — 2026-09-24
+Whole-scene labels from nuScenes (138 scenes, 9041 agents), m labelled scenes, evaluation on the remaining scenes;
+200 draws; delta = .10; alpha = .10; area = median region area vs the oracle (target-calibrated at exactly .90).
+
+| m scenes | HB p-value: rate / area (v1, valsplit, v2) | betting p-value (H16b): rate / area (v1, valsplit, v2) | agent-level C-or-R rate |
+|---|---|---|---|
+| 30 | 1.00 / inf ; 1.00 / inf ; 1.00 / inf | .92/1.89 ; .95/1.74 ; .95/1.71 | .53 / .56 / .58 |
+| 40 | 1.00 / 9.6 ; 1.00 / 8.3 ; 1.00 / inf | .89/1.76 ; .91/1.62 ; .92/1.67 | .47 / .53 / .54 |
+| 50 | 1.00 / 6.1 ; 1.00 / 5.8 ; 1.00 / 6.5 | .91/1.72 ; .93/1.63 ; .86/1.69 | .41 / .54 / .56 |
+| 60 | 1.00 / 4.7 ; 1.00 / 4.5 ; 1.00 / 4.9 | .88/1.66 ; .91/1.50 ; .87/1.46 | .47 / .48 / .55 |
+
+Against the registered H16b predictions (which apply to the confirmatory models; shown here for the exploratory ones):
+(ii) area <= 3.0x at m=40 and <= 2.0x at m=60: met on all three (1.6-1.8x, 1.5-1.7x); (iii) betting <= HB: met everywhere;
+(i) rate >= .88 at every m in {30,40,50,60}: met for v1 (.92/.89/.91/.88) and valsplit (.95/.91/.93/.91), NOT met for
+av2_cpu_v2 at m=50, 60 (.86, .87). Caveat on (i): the "rate" is evaluated on the <= 108 held-out scenes, whose own
+sampling noise (SD of scene-averaged coverage ~1 pt) makes a threshold at the guarantee boundary look worse than its
+population risk; it is a conservative-in-the-wrong-direction measurement, not a failure of the p-value's validity, but
+the registered criterion is applied as written on the confirmatory models. HB is valid but returns an infinite region for
+m <= ~40 scenes and 4.5-10x the oracle area otherwise -> not practical. Bottom line (exploratory): with ~40-60 labelled
+SCENES (~2.6-3.9k agents) betting scene-level LTT gives a threshold within 1.5-1.9x of the oracle region and covers at
+~.9 across held-out scenes, where agent-level guarantees collapse to ~.5.
