@@ -129,3 +129,30 @@
 {"ts": "2026-09-24T11:41:15", "id": "inject_analysis_av2_valsplit_v1", "event": "result", "detail": "comp: -1.4pt (-18% of G=8.0)", "sha": "b9d6b46"}
 {"ts": "2026-09-24T11:41:17", "id": "inject_analysis_av2_cpu_v2", "event": "result", "detail": "comp: -1.1pt (-11% of G=10.5)", "sha": "b9d6b46"}
 {"ts": "2026-09-24T11:41:37", "id": "inject_av2_cpu_v2_hz2", "event": "attempt_start", "detail": "ckpt=epoch03-minADE1.092.ckpt n_batches=None", "sha": "b9d6b46"}
+{"ts": "2026-09-24T11:43:48", "id": "inject_av2_cpu_v2_hz2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\inj_hz2.npz in 131s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:43:48", "id": "inject_av2_cpu_v2_map", "event": "attempt_start", "detail": "ckpt=epoch03-minADE1.092.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:45:45", "id": "inject_av2_cpu_v2_map", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\inj_map.npz in 117s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:45:45", "id": "inject_av2_cpu_v2_hz2map", "event": "attempt_start", "detail": "ckpt=epoch03-minADE1.092.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:47:43", "id": "inject_av2_cpu_v2_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v2\\inj_hz2map.npz in 118s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:47:51", "id": "inject_av2_cpu_v1_hz2", "event": "attempt_start", "detail": "ckpt=epoch08-minADE1.349.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:49:55", "id": "inject_av2_cpu_v1_hz2", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\inj_hz2.npz in 124s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:49:55", "id": "inject_av2_cpu_v1_map", "event": "attempt_start", "detail": "ckpt=epoch08-minADE1.349.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:51:54", "id": "inject_av2_cpu_v1_map", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\inj_map.npz in 119s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:51:54", "id": "inject_av2_cpu_v1_hz2map", "event": "attempt_start", "detail": "ckpt=epoch08-minADE1.349.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:53:52", "id": "inject_av2_cpu_v1_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_cpu_v1\\inj_hz2map.npz in 118s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:54:06", "id": "inject_analysis_av2_cpu_v1", "event": "result", "detail": "hz2: +0.6pt (19% of G=3.3); map: +1.4pt (43% of G=3.3); hz2map: +1.8pt (53% of G=3.3); comp: -1.3pt (-38% of G=3.3)", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:54:07", "id": "inject_analysis_av2_valsplit_v1", "event": "result", "detail": "comp: -1.4pt (-18% of G=8.0)", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:54:09", "id": "inject_analysis_av2_cpu_v2", "event": "result", "detail": "hz2: +1.1pt (11% of G=10.5); map: +1.3pt (12% of G=10.5); hz2map: +2.2pt (21% of G=10.5); comp: -1.1pt (-11% of G=10.5)", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:54:30", "id": "inject_av2_valsplit_v1_hz2", "event": "attempt_start", "detail": "ckpt=epoch17-minADE1.347.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:56:41", "id": "inject_av2_valsplit_v1_hz2", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\inj_hz2.npz in 131s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:56:41", "id": "inject_av2_valsplit_v1_map", "event": "attempt_start", "detail": "ckpt=epoch17-minADE1.347.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:58:42", "id": "inject_av2_valsplit_v1_map", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\inj_map.npz in 121s", "sha": "627ab5c"}
+{"ts": "2026-09-24T11:58:42", "id": "inject_av2_valsplit_v1_hz2map", "event": "attempt_start", "detail": "ckpt=epoch17-minADE1.347.ckpt n_batches=None", "sha": "627ab5c"}
+{"ts": "2026-09-24T12:00:34", "id": "inject_av2_valsplit_v1_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_valsplit_v1\\inj_hz2map.npz in 113s", "sha": "627ab5c"}
+{"ts": "2026-09-24T12:00:42", "id": "inject_analysis_av2_valsplit_v1", "event": "result", "detail": "hz2: +0.7pt (8% of G=8.0); map: +1.4pt (17% of G=8.0); hz2map: +1.4pt (17% of G=8.0); comp: -1.4pt (-18% of G=8.0)", "sha": "627ab5c"}
+{"ts": "2026-09-24T12:03:03", "id": "addB_av2_cpu_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "6a95959"}
+{"ts": "2026-09-24T12:06:06", "id": "addB_av2_cpu_v1_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v1__forward.json in 185s; k=1000 rate(cov>=.9): direct=0.51, pac=0.92, cor=0.94, cor_slack_EXPLORATORY=1.00", "sha": "6a95959"}
+{"ts": "2026-09-24T12:06:07", "id": "addB_av2_valsplit_v1_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "6a95959"}
+{"ts": "2026-09-24T12:08:51", "id": "addB_av2_valsplit_v1_forward", "event": "done", "detail": "results\\addB\\av2_valsplit_v1__forward.json in 165s; k=1000 rate(cov>=.9): direct=0.57, pac=0.91, cor=0.95, cor_slack_EXPLORATORY=0.95", "sha": "6a95959"}
+{"ts": "2026-09-24T12:08:52", "id": "addB_av2_cpu_v2_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "6a95959"}
+{"ts": "2026-09-24T12:11:29", "id": "addB_av2_cpu_v2_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v2__forward.json in 158s; k=1000 rate(cov>=.9): direct=0.60, pac=0.92, cor=0.97, cor_slack_EXPLORATORY=0.97", "sha": "6a95959"}

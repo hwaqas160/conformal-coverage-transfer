@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\caption{The coverage gap on nuScenes with agent-level vs.\ scene-clustered bootstrap intervals (138 scenes, $\sim$65 agents each). The design effect is the variance inflation caused by clustering.}
+\label{tab:cluster}
+\resizebox{\columnwidth}{!}{\begin{tabular}{llrccr}
+\toprule
+Model & Set & gap (pt) & 95\% CI (agents) & 95\% CI (scenes) & design eff. \\
+\midrule
+av2\_cpu\_v1 & expl. & +3.3 & [2.1, 4.5] & [0.7, 6.2] & 4.4 \\
+av2\_valsplit\_v1 & expl. & +8.0 & [6.5, 9.4] & [5.0, 11.3] & 4.2 \\
+av2\_cpu\_v2 & expl. & +10.5 & [9.2, 12.3] & [7.9, 13.8] & 3.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}

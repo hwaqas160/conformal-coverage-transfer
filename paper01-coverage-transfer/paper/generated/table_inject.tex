@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\caption{Where does the loss come from? Coverage lost (points; share of the real gap $G$ in parentheses) when one measured AV2--nuScenes difference is injected into AV2 test inputs: 2\,Hz history, lane-graph dropout, both, and re-weighting AV2 scenes to nuScenes' scene mix. Excess annotation noise and map-point density were measured and found absent (nuScenes is smoother; equal density), so they are not injected.}
+\label{tab:inject}
+\resizebox{\columnwidth}{!}{\begin{tabular}{llrcccc}
+\toprule
+Model & Set & $G$ (pt) & 2\,Hz & lanes & both & scene mix \\
+\midrule
+av2\_cpu\_v1 & expl. & +3.3 & +0.6 (19\%) & +1.4 (43\%) & +1.8 (53\%) & -1.3 (-38\%) \\
+av2\_valsplit\_v1 & expl. & +8.0 & +0.7 (8\%) & +1.4 (17\%) & +1.4 (17\%) & -1.4 (-18\%) \\
+av2\_cpu\_v2 & expl. & +10.5 & +1.1 (11\%) & +1.3 (12\%) & +2.2 (21\%) & -1.1 (-11\%) \\
+\bottomrule
+\end{tabular}}
+\end{table}

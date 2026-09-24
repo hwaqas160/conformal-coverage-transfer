@@ -1,4 +1,4 @@
-\section{Results}
+\section{Results}\label{sec:results}
 \emph{Status: \nModelsDone/\nModelsTotal\ forward-direction models analysed, \nReverseDone/1 reverse-direction
 models. Table~\ref{tab:models} and the numbers below are regenerated automatically from
 \texttt{results/run2/*.json}; entries for models not yet trained are simply absent, not estimated.}
@@ -68,6 +68,64 @@ results and one clear refutation, none reaching the pre-registered $\rho\ge0.5$ 
 \textbf{H6 is not supported on any of the three models, and refuted on one.} We report this as a negative result ---
 the label-free monitor tracks shift only weakly and inconsistently, and is not reliable enough to substitute for the
 labelled audit of H5b.
+
+\subsection{Where does the coverage loss come from?}\label{sec:where}
+\emph{Evidence status: the three CPU-trained models form the exploratory zoo; every statement in this and the following subsections about
+them is exploratory, and the pre-registered confirmatory replication on competitive models is pending} (\todo{fill from the gated GPU models}).
+
+\paragraph{Turns, not straight driving} Split by UniTraj's manoeuvre taxonomy \cite{feng2024unitraj} (Fig.~\ref{fig:traj}), coverage on straight driving falls by
+only \dropStraightMin--\dropStraightMax\ points from the AV2 same-domain test to nuScenes, whereas right turns lose \dropRightMin--\dropRightMax\ points and
+straight-right manoeuvres (right-hand lane changes) \dropStraightRightMin--\dropStraightRightMax\ points. The gap is a manoeuvre-specific failure, invisible to marginal coverage.
+
+\paragraph{Driving side} nuScenes contains left-hand-traffic scenes (Singapore) that AV2 lacks. The right-turn coverage drop is
+\sgExtraRightMin--\sgExtraRightMax\ points \emph{larger} in Singapore than in Boston (scene-clustered 95\% intervals exclude zero for two of the three models),
+while straight driving differs by at most 1.8 points (range \sgExtraStraightMin\ to \sgExtraStraightMax\ points): what AV2-trained forecasters miss is the wide, across-traffic turn of
+left-hand traffic.
+
+\paragraph{Input-level differences explain a minority} Table~\ref{tab:inject} injects one measured AV2--nuScenes difference at a time into AV2 test inputs. Re-sampling the
+history to nuScenes' 2\,Hz reproduces \injHzMin--\injHzMax\% of the real gap, dropping lanes at the measured density \injMapMin--\injMapMax\%, both together \injBothMin--\injBothMax\%
+(only \injBothMin\% for the two models with the largest gaps). Re-weighting AV2 scenes to the nuScenes scene mix, which isolates pure covariate shift, moves coverage by
+\injCompMin\ to \injCompMax\ points, i.e.\ it \emph{raises} coverage: nuScenes' mix of speeds and manoeuvres is easier, so composition works against the observed gap. Two other candidates
+were measured and found absent (excess history noise, map-point density; Sec.~\ref{sec:inject}). Together with Sec.~\ref{sec:h2h3}, the loss is largely a \emph{conditional} shift that
+scene statistics do not reveal.
+
+\input{generated/table_inject}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{generated/fig_traj_type.pdf}
+\caption{Coverage of the AV2-calibrated threshold ($\alpha=0.1$, dashed = nominal) by manoeuvre type, AV2 same-domain test vs.\ nuScenes, with Wilson 95\% intervals.
+Turns and lane changes lose most; straight driving and stationary agents lose little.}
+\label{fig:traj}
+\end{figure*}
+
+\subsection{Statistics under scene clustering}\label{sec:cluster}
+The 9041 nuScenes agent-scenarios come from only 138 scenes, so they are strongly dependent. Resampling whole scenes widens every gap interval (design effect \designEffMin--\designEffMax, Table~\ref{tab:cluster});
+the gap remains significantly positive for all three models (lower interval bounds from \clusterLoMin\ to \clusterLoMax\ points).
+
+\input{generated/table_cluster}
+
+\subsection{Repair with exchangeable labels}\label{sec:repair-iid}
+With $k=1000$ labelled target scenes drawn at random (Table~\ref{tab:repair}), plain direct recalibration reaches coverage $\ge 90\%$ on held-out scenes in only
+\corDirectMin--\corDirectMax\% of label draws --- marginal, not training-conditional, validity. The PAC threshold does so in \corPACMin--\corPACMax\% of draws, and certify-or-recalibrate
+(Sec.~\ref{sec:cor}) in \corCORMin--\corCORMax\%, at a median region \corCORareaMin--\corCORareaMax$\times$ the size of the oracle region.
+
+\input{generated/table_repair}
+
+\subsection{Repair with whole-scene labels}\label{sec:repair-scene}
+Labels are collected scene by scene, and then exchangeability at the agent level is false. With $m=40$ labelled \emph{scenes} the agent-level certify-or-recalibrate rule covers
+$\ge 90\%$ of held-out scenes in only \sceneAgentFortyMin--\sceneAgentFortyMax\% of draws (Table~\ref{tab:scene}): its guarantee is not merely loose but wrong. Scene-level Learn-then-Test
+(Sec.~\ref{sec:scene}) restores it. With the Hoeffding--Bentkus $p$-value it is valid but returns an infinite region for the smallest budgets and a region
+\sceneHBAreaSixtyMin--\sceneHBAreaSixtyMax$\times$ the oracle's at $m=60$ scenes; with the betting $p$-value it covers $\ge 90\%$ of held-out scenes in \sceneBetFortyMin--\sceneBetFortyMax\% of draws at $m=40$
+(region \sceneBetAreaFortyMin--\sceneBetAreaFortyMax$\times$ the oracle's) and \sceneBetSixtyMin--\sceneBetSixtyMax\% at $m=60$ (\sceneBetAreaSixtyMin--\sceneBetAreaSixtyMax$\times$), i.e.\ at the nominal level
+up to the sampling noise of the small held-out scene pool. Scene-level rates here are \emph{exploratory}; the registered confirmatory test is pending.
+
+\input{generated/table_scene}
+
+\subsection{Comparison with an online method}
+Adaptive conformal inference \cite{gibbs2021adaptive} needs a stream of labels. Its running coverage stays within 2 points of nominal after a median of \aciFastMin--\aciFastMax\ labels
+with $\gamma=0.05$ but only after \aciSlowMin--\aciSlowMax\ labels with $\gamma=0.005$. Frozen after 1000 labels, its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFrozenMax\% of streams
+(like plain recalibration): ACI gives long-run, not finite-sample, control, which is what an audit-then-deploy workflow needs.
 
 \subsection{H8: robustness across a model zoo}
 Table~\ref{tab:models} is the full forward-direction model-zoo comparison: all \nModelsDone\ of \nModelsTotal\ planned

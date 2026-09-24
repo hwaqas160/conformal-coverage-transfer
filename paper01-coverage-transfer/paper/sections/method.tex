@@ -6,17 +6,83 @@ $s'(x,y)=\min_k \max_t\|\hat y_{k,t}-y_t\|/u_k(x)$. The region is the union of b
 shift makes scenes harder, the forecaster's own scale widens, so the normalised score is less shift-sensitive. Its
 efficiency is measured by region area $\sum_k\pi(\hat q' u_k)^2$ at matched coverage.
 
+\subsection{Coverage audit}\label{sec:audit}
+Given a source-calibrated $\hat q$ and $k$ labelled target scenes, an
+exact one-sided binomial test of $H_0$: coverage $\ge1-\alpha$ flags
+a violation. We report its empirical power and its false-alarm
+rate on a shift-free split, alongside the theoretical budget of
+Eq.~\eqref{eq:budget}.
+
 \subsection{Recalibration with $k$ target labels}
 We compare three thresholds computed from $k$ labelled target scenes and $n$ source scenes:
 \emph{direct} (SCP on the $k$ target scores); \emph{pooled} (SCP on the union); and \emph{shrinkage}
 ($\hat q=\lambda\hat q_{\text{tgt}}+(1-\lambda)\hat q_{\text{src}}$ with $\lambda=k/(k+k_0)$). We report the label budget $k^\star$ at which
 absolute coverage error falls below $0.02$ in at least 90\% of random label draws.
 
-\subsection{Coverage audit}\label{sec:audit}
-Given a source-calibrated $\hat q$ and $k$ labelled target scenes, an exact one-sided binomial test of
-$H_0$: coverage $\ge1-\alpha$ flags a violation. We report its empirical power and its false-alarm rate on a
-shift-free split, alongside the theoretical budget of Eq.~\eqref{eq:budget}.
+\subsection{Certify-or-recalibrate with exchangeable labels}\label{sec:cor}
+Plain recalibration on $k$ target labels is only \emph{marginally} valid: the coverage of the resulting threshold is
+$\mathrm{Beta}(\ell,k+1-\ell)$-distributed \cite{vovk2012conditional}, so it falls below $1-\alpha$ in roughly half of all
+label draws (Sec.~\ref{sec:results}). A practitioner needs the stronger, \emph{training-conditional}
+statement \cite{vovk2012conditional,bian2023training}: coverage $\ge 1-\alpha$ with probability $\ge 1-\delta$ over the draw of the labels.
+\emph{Certify-or-recalibrate} (C-or-R) delivers it while keeping the source threshold when it can be certified.
+With $k$ labelled scores $s_1,\dots,s_k$ and $M=\#\{s_i>\hat q_{\mathrm{src}}\}$:
+\begin{enumerate}
+\item \emph{Certify.} Keep $\hat q_{\mathrm{src}}$ iff the one-sided Clopper--Pearson upper confidence bound
+\cite{clopper1934confidence} on its miss probability at level $\delta/2$ is $\le\alpha$.
+\item \emph{Otherwise recalibrate.} Return the $\ell$-th smallest labelled score, with $\ell$ the smallest integer such that
+$\Pr[\mathrm{Bin}(k,1-\alpha)\le \ell-1]\ge 1-\delta/2$ (the $\ell$-th order statistic has coverage $\mathrm{Beta}(\ell,k+1-\ell)$); if no such $\ell\le k$ exists
+return $+\infty$.
+\end{enumerate}
+\begin{proposition}[C-or-R is training-conditionally valid]\label{prop:cor}
+If the $k$ target scores are exchangeable with the target scores at test time and continuously distributed, the returned threshold
+$\hat q$ satisfies $\Pr\big[\Pr_{\text{test}}(s\le\hat q\mid \text{labels})\ge 1-\alpha\big]\ge 1-\delta$.
+\end{proposition}
+\begin{proof}
+Let $F$ be the target score CDF. The event ``$\hat q$ fails'' is contained in (a) the source threshold is certified although
+$F(\hat q_{\mathrm{src}})<1-\alpha$, or (b) the branch-2 order statistic has coverage $<1-\alpha$. (a) has probability $\le\delta/2$ because the
+Clopper--Pearson bound is a valid one-sided confidence bound for the miss probability $1-F(\hat q_{\mathrm{src}})$ of the fixed threshold; (b) has probability
+$\le\delta/2$ by the definition of $\ell$. A union bound gives $\delta$.
+\end{proof}
+Certification needs slack: a source threshold calibrated at exactly $\alpha$ has miss probability $\approx\alpha$ and its confidence bound cannot fall below
+$\alpha$; in our experiments it is (almost) never certified on shifted data, and on unshifted data it is certified only if calibrated at a smaller
+$\alpha_{\mathrm{src}}<\alpha$.
+
+\subsection{Scene-level risk control under clustered labels}\label{sec:scene}
+Driving datasets label many agents per scene, and agents in one scene share road, traffic and annotator. Labels drawn scene by scene are not
+exchangeable at the agent level, and Proposition~\ref{prop:cor} then fails (Sec.~\ref{sec:results}). We therefore make the \emph{scene} the unit.
+For a labelled scene $j$ with agent scores $\{s_{ji}\}$ let $L_j(q)=\frac1{n_j}\sum_i\mathbf 1[s_{ji}>q]\in[0,1]$, non-increasing in $q$, and
+control the scene-averaged miscoverage $R(q)=\mathbb E_j\,L_j(q)$. Given $m$ labelled scenes, scene-level certify-or-recalibrate
+proceeds as in Sec.~\ref{sec:cor} but with Learn-then-Test \cite{angelopoulos2025ltt} over a \emph{fixed}, label-independent grid
+$q_1>q_2>\dots>q_G$ (log-spaced around the source threshold, $\hat q_{\mathrm{src}}\times[4,0.5]$, $G=300$): for each candidate we compute a $p$-value for
+$H_{q}:R(q)>\alpha$ from the $m$ per-scene losses, test candidates from the largest downwards at level $\delta/2$, and return the last $q$ rejected
+($+\infty$ if none). The source threshold is tried first at level $\delta/2$ (certification). Two $p$-values are used:
+Hoeffding--Bentkus \cite{bates2021rcps}, and a betting $p$-value \cite{waudbysmith2024betting}: with predictable bets $\lambda_i\in[0,\tfrac1{2\alpha}]$ (variance-adaptive)
+the capital $K=\prod_i\big(1+\lambda_i(\alpha-L_i)\big)$ is a non-negative supermartingale under $\mathbb E L\ge\alpha$, so $p=\min(1,1/\max_tK_t)$
+is valid by Ville's inequality; being variance-adaptive it exploits that per-scene miss fractions are mostly close to zero.
+\begin{proposition}[Scene-level guarantee]\label{prop:scene}
+If the $m$ labelled scenes are exchangeable draws from the target scene population, and each $p$-value is valid for its null, the returned
+threshold satisfies $\Pr[R(\hat q)\le\alpha]\ge 1-\delta$.
+\end{proposition}
+\begin{proof}
+$R$ is non-increasing, so along the descending grid the false nulls ($R(q_i)\le\alpha$) form a prefix and the true nulls a suffix beginning at some $i_0$.
+The procedure returns a threshold with $R>\alpha$ only if it rejects $H_{q_{i_0}}$ (fixed-sequence testing stops at the first non-rejection), which has probability $\le\delta/2$
+because the grid does not depend on the labels; the certification branch fails with probability $\le\delta/2$. A union bound gives $\delta$.
+\end{proof}
+
+\subsection{Online baseline}
+Adaptive conformal inference (ACI) \cite{gibbs2021adaptive} updates the working level $\alpha_{t+1}=\alpha_t+\gamma(\alpha-\mathrm{err}_t)$ after every revealed label, keeping the source
+calibration set fixed; it needs a stream of labels and offers long-run, not finite-sample, coverage. We report (i) how many streamed labels ACI needs before its
+running coverage stays within $2$ points of nominal, and (ii) the coverage of its threshold frozen after $k$ labels, for $\gamma\in\{0.005,0.01,0.05\}$.
+
+\subsection{Controlled input shifts}\label{sec:inject}
+To locate the source of the loss we perturb one measured AV2--nuScenes difference at a time in AV2 test \emph{inputs} (ground truth untouched) and record the coverage lost by
+the AV2-calibrated threshold: (i) \emph{2\,Hz history}: keep the five 2\,Hz keyframes of the 2\,s history and interpolate linearly; (ii) \emph{lane dropout}: drop each map polyline with the probability implied
+by the measured median number of lanes near the target agent (nuScenes 52 vs.\ AV2 85); (iii) both; (iv) \emph{scene mix}: re-weight AV2 scenes to the nuScenes distribution of seven label-free scene
+factors with cross-fitted domain-classifier weights, which isolates pure covariate shift. Two further candidates were \emph{measured} and excluded: excess history noise
+(a quadratic-fit residual estimate is smaller on nuScenes: $0.13$\,m vs.\ $0.29$\,m) and map-point density (equal per scene).
 
 \subsection{Label-free shift monitor}
-A domain classifier on label-free scene features (native sampling interval, nearby-agent count, map density, nearby lanes, history speed, heading change, curvature) is trained to separate source and target scenes; its AUC is the monitor.
-Within a dataset, the same classifier is trained per city against the rest. We test whether the AUC predicts the coverage loss (across cities, by Spearman correlation).
+A domain classifier on label-free scene features (native sampling interval, nearby-agent count, map density, nearby
+lanes, history speed, heading change, curvature) is trained to separate source and target scenes; its AUC is the monitor.
+Within a dataset, the same classifier is trained per city against the rest. We test whether the AUC predicts the coverage loss
+(across cities, by Spearman correlation).

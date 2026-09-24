@@ -242,6 +242,10 @@ def main():
     print(f"wrote {OUT/'numbers.tex'} ({len(lines)} macros), {OUT/'table_models.tex'} ({len(rows)} rows), "
           f"{OUT/'table_reweight.tex'} ({len(rw_rows)} rows)")
 
+    # Addendum-B tables/figures (repair, scene-level repair, injection, conditional coverage)
+    import make_results_addB
+    print("addB tables/figs for:", make_results_addB.write_all())
+
 
 if __name__ == "__main__":
     main()

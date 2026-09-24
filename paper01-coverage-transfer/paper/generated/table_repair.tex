@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Repair with $k$ labelled target scenes, labels exchangeable. Cells: \% of label draws whose threshold covers $\ge 90\%$ of the held-out target scenes / median region area relative to the oracle threshold. C-or-R = certify-or-recalibrate ($\delta=0.1$).}
+\label{tab:repair}
+\begin{tabular}{llrccc}
+\toprule
+Model & Set & $k$ & direct SCP & PAC & C-or-R \\
+\midrule
+av2\_cpu\_v1 & expl. & 250 & 60 / 1.05 & 90 / 1.36 & 96 / 1.56 \\
+av2\_cpu\_v1 & expl. & 1000 & 50 / 1.01 & 92 / 1.14 & 94 / 1.18 \\
+av2\_valsplit\_v1 & expl. & 250 & 62 / 1.06 & 93 / 1.35 & 97 / 1.53 \\
+av2\_valsplit\_v1 & expl. & 1000 & 57 / 1.02 & 91 / 1.14 & 96 / 1.19 \\
+av2\_cpu\_v2 & expl. & 250 & 63 / 1.09 & 94 / 1.43 & 98 / 1.63 \\
+av2\_cpu\_v2 & expl. & 1000 & 60 / 1.03 & 92 / 1.19 & 98 / 1.23 \\
+\bottomrule
+\end{tabular}
+\end{table}

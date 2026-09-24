@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Repair when whole \emph{scenes} are labelled (nuScenes: $\sim$65 correlated agents per scene). Cells: \% of draws whose threshold covers $\ge 90\%$ of held-out scenes (scene-averaged) / median area vs oracle. Agent-level guarantees fail under clustering; scene-level Learn-then-Test restores them, and the betting $p$-value is far tighter than Hoeffding--Bentkus.}
+\label{tab:scene}
+\resizebox{\columnwidth}{!}{\begin{tabular}{llrcccc}
+\toprule
+Model & Set & $m$ scenes & direct & C-or-R (agent) & LTT (HB) & LTT (betting) \\
+\midrule
+av2\_cpu\_v1 & expl. & 30 & 36 & 52 & 100 / $\infty$ & 92 / 1.9 \\
+av2\_cpu\_v1 & expl. & 40 & 36 & 46 & 100 / 9.6 & 88 / 1.8 \\
+av2\_cpu\_v1 & expl. & 60 & 32 & 48 & 100 / 4.7 & 88 / 1.7 \\
+av2\_valsplit\_v1 & expl. & 30 & 40 & 56 & 100 / $\infty$ & 95 / 1.7 \\
+av2\_valsplit\_v1 & expl. & 40 & 36 & 53 & 100 / 8.3 & 91 / 1.6 \\
+av2\_valsplit\_v1 & expl. & 60 & 32 & 48 & 100 / 4.5 & 91 / 1.5 \\
+av2\_cpu\_v2 & expl. & 30 & 38 & 58 & 100 / $\infty$ & 95 / 1.7 \\
+av2\_cpu\_v2 & expl. & 40 & 34 & 54 & 100 / $\infty$ & 92 / 1.7 \\
+av2\_cpu\_v2 & expl. & 60 & 39 & 55 & 100 / 4.9 & 87 / 1.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
