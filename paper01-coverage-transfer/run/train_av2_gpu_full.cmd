@@ -7,8 +7,13 @@ REM Quality gate (pre-registered): val minADE6 <= 0.98 (within 15% of UniTraj's 
 REM val_db = av2_splits/val/train: disjoint from the cal/test halves used for conformal calibration/evaluation.
 REM Cache read from the NVMe SSD copy (C:\p01_cache): on the F: HDD, shuffled reads across the 117 GB cache took
 REM 262 s for ONE step (2026-09-23).  PRECONDITION: robocopy of train\av2_scenarionet + train\val to C:\p01_cache done.
-REM Retries resume from last.ckpt (saved every 200 steps); a 5-min pause between retries so a transient GPU
-REM conflict (another project grabbing memory) does not burn all attempts in seconds.
+REM
+REM WATCHDOG DESIGN (2026-09-24): this machine's user session gets killed from outside (2026-09-23 11:09 logoff;
+REM 2026-09-24 10:50 a failed shutdown attempt still terminated every process, exit 0x40010004, and killed even
+REM this wrapper).  So the Task Scheduler task repeats this script every 10 minutes (run\install_watchdog.ps1,
+REM MultipleInstances=IgnoreNew): if an instance is alive the trigger is ignored; if the tree was killed, the next
+REM tick starts a new one, which resumes from last.ckpt (saved every 200 steps).  Therefore this script must be
+REM idempotent and must STOP re-launching once finished: a DONE or FAILED marker in the checkpoint dir ends it.
 cd /d F:\CLAUDE\AI1\paper01-coverage-transfer
 set PYTHONIOENCODING=utf-8
 set PYTHONUNBUFFERED=1
@@ -17,6 +22,8 @@ set PY="F:\CLAUDE\AI1\shared\envs\unitraj\Scripts\python.exe"
 set ID=av2_gpu_full
 set LOG=F:\CLAUDE\AI1\paper01-coverage-transfer\results\train_%ID%.log
 set CKPTDIR=F:\CLAUDE\AI1\paper01-coverage-transfer\results\ckpts\%ID%
+if exist "%CKPTDIR%\DONE" exit /b 0
+if exist "%CKPTDIR%\FAILED" exit /b 1
 set ARGS=src\train_autobot.py --train_db "data\av2_scenarionet\train" --val_db "data\av2_splits\val\train" --exp %ID% --epochs 60 --batch 32 --accum 4 --lr 7.5e-4 --lr_sched 10 20 30 40 50 --val_every 2 --val_subset 2000 --num_workers 10 --seed 0 --device cuda --cache_root "C:\p01_cache"
 set /a ATTEMPT=0
 :RETRY
@@ -29,10 +36,17 @@ if exist "%CKPTDIR%\last.ckpt" (
 )
 set EC=%ERRORLEVEL%
 %PY% src\journal.py event %ID%_train attempt_end "attempt %ATTEMPT% exit %EC%"
-if %EC% NEQ 0 if %ATTEMPT% LSS 12 (
+if %EC% NEQ 0 if %ATTEMPT% LSS 6 (
   REM ping, not timeout: timeout aborts when stdin is not a console (the Task Scheduler case)
-  ping -n 301 127.0.0.1 > nul
+  ping -n 121 127.0.0.1 > nul
   goto RETRY
 )
-if %EC% EQU 0 (%PY% src\journal.py event %ID%_train done "exit 0, see %LOG%") else (%PY% src\journal.py event %ID%_train failed "exhausted %ATTEMPT% attempts, exit %EC%")
+if %EC% EQU 0 (
+  echo done > "%CKPTDIR%\DONE"
+  %PY% src\journal.py event %ID%_train done "exit 0, see %LOG%"
+) else if %ATTEMPT% GEQ 6 (
+  echo failed > "%CKPTDIR%\FAILED"
+  %PY% src\journal.py event %ID%_train failed "exhausted %ATTEMPT% attempts, exit %EC% -- watchdog stopped by FAILED marker"
+)
 echo DONE_EXIT_%EC% >> "%LOG%"
+exit /b %EC%

@@ -193,18 +193,23 @@ def test_scene_ltt(rng):
 
     pop = scenes(3000)
     q_src = split_conformal_quantile(rng.lognormal(1.0, 0.6, 5000), alpha)
-    ok_agent = ok_scene = inf = 0; draws = 150; m = 40
+    q_oracle = np.quantile(np.concatenate(pop), 1 - alpha)
+    ok_agent = ok_scene = ok_wsr = inf = 0; draws = 150; m = 40; a_hb, a_w = [], []
     for _ in range(draws):
         lab = scenes(m)
         qa, _ = certify_or_recalibrate(q_src, np.concatenate(lab), alpha, delta)
         qs, _ = scene_ltt_threshold(q_src, lab, alpha, delta)
+        qw, _ = scene_ltt_threshold(q_src, lab, alpha, delta, pval="wsr")
         ok_agent += np.mean([(s <= qa).mean() for s in pop]) >= 1 - alpha
         ok_scene += np.mean([(s <= qs).mean() for s in pop]) >= 1 - alpha
-        inf += np.isinf(qs)
-    ra, rs = ok_agent / draws, ok_scene / draws
+        ok_wsr += np.mean([(s <= qw).mean() for s in pop]) >= 1 - alpha
+        inf += np.isinf(qs); a_hb.append((qs / q_oracle) ** 2); a_w.append((qw / q_oracle) ** 2)
+    ra, rs, rw = ok_agent / draws, ok_scene / draws, ok_wsr / draws
     print(f"[H16 scene-LTT] m={m} whole-scene labels: agent-level C-or-R rate={ra:.2f} (expect < {1-delta:.2f}); "
           f"scene-level LTT rate={rs:.2f} (expect >= {1-delta:.2f}); infinite thresholds {inf/draws:.2f}")
-    return bool(rs >= 1 - delta - 0.03 and ra < rs)
+    print(f"               H16b betting p-value: rate={rw:.2f} (expect >= {1-delta:.2f}); median area vs oracle "
+          f"HB {np.median(a_hb):.2f}x  vs  betting {np.median(a_w):.2f}x")
+    return bool(rs >= 1 - delta - 0.03 and rw >= 1 - delta - 0.03 and ra < rs)
 
 
 def test_aci(rng):

@@ -210,7 +210,28 @@ def hb_pvalue(r_hat: float, m: int, alpha: float) -> float:
     return float(min(np.exp(-m * h1), np.e * binom.cdf(np.ceil(m * r_hat), m, alpha)))
 
 
-def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: float) -> tuple[float, str]:
+def wsr_pvalue(losses: np.ndarray, alpha: float) -> float:
+    """
+    Betting p-value for H0: E[L] >= alpha from losses in [0,1] taken in a FIXED order (Waudby-Smith & Ramdas,
+    'Estimating means of bounded random variables by betting').  Capital K_t = prod_i (1 + lam_i (alpha - L_i)) with
+    a predictable bet lam_i in [0, 0.5/alpha] (aGRAPA-style Kelly approximation from the running mean/variance).
+    Under H0, K is a nonnegative supermartingale, so by Ville's inequality p = min(1, 1/max_t K_t) is valid.
+    Unlike Hoeffding-Bentkus it adapts to a small variance -- per-scene miss fractions are mostly near 0.
+    """
+    L = np.asarray(losses, float)
+    mu, var, n = alpha / 2, alpha / 4, 1.0            # weak prior; updated only with PAST losses (predictable)
+    k, kmax = 1.0, 1.0
+    for x in L:
+        edge = alpha - mu
+        lam = 0.0 if edge <= 0 else min(edge / (var + edge * edge), 0.5 / alpha)
+        k *= 1.0 + lam * (alpha - x)
+        kmax = max(kmax, k)
+        n += 1; d = x - mu; mu += d / n; var += (d * (x - mu) - var) / n
+    return float(min(1.0, 1.0 / kmax))
+
+
+def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: float,
+                        pval: str = "hb") -> tuple[float, str]:
     """
     Addendum B-3 / H16: cluster-aware certify-or-recalibrate.  Units are labelled SCENES; per-scene loss
     L_j(q) = fraction of scene j's agents with score > q (non-increasing in q).  Controls the scene-averaged
@@ -221,16 +242,18 @@ def scene_ltt_threshold(q_src: float, scene_scores: list, alpha: float, delta: f
     Returns (threshold, branch); threshold = inf if nothing can be certified (too few scenes).
     """
     m = len(scene_scores)
-    def r_hat(q):
-        return float(np.mean([(s > q).mean() for s in scene_scores]))
-    if hb_pvalue(r_hat(q_src), m, alpha) <= delta / 2:
+    srt = [np.sort(s) for s in scene_scores]
+
+    def p_of(q):
+        L = np.array([1.0 - np.searchsorted(s, q, side="right") / len(s) for s in srt])
+        return hb_pvalue(float(L.mean()), m, alpha) if pval == "hb" else wsr_pvalue(L, alpha)
+
+    if p_of(q_src) <= delta / 2:
         return float(q_src), "certified"
     cand = np.unique(np.concatenate(scene_scores))[::-1]          # descending
-    srt = [np.sort(s) for s in scene_scores]
     q_last = float("inf")
     for q in cand:
-        rh = float(np.mean([1.0 - np.searchsorted(s, q, side="right") / len(s) for s in srt]))
-        if hb_pvalue(rh, m, alpha) <= delta / 2:
+        if p_of(q) <= delta / 2:
             q_last = float(q)
         else:
             break
