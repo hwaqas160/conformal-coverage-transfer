@@ -119,3 +119,16 @@ Raw logs: `results/train_<exp>.{out,err}`, `results/predict_<model>.log`, `data/
 * `obj_trajs` layout: xy 0:2 | type 6:11 | time 11:33 | heading 33:35 | velocity 35:37 | accel 37:39.
 * DataLoader workers can die silently on CPU (happened once, ~3 h in) — `last.ckpt` every 200 steps + the retry wrapper cover it.
 * Console encoding: set `PYTHONIOENCODING=utf-8` when printing non-ASCII.
+
+## AUTONOMOUS PIPELINE (added 2026-09-25) -- runs with NO Claude session and NO user action
+Every stage is a Task Scheduler watchdog (tick every 10 min, MultipleInstances=IgnoreNew, no time limit). Each is idempotent and
+writes markers, so after a crash/logoff/reboot the next tick resumes where it stopped. Chain:
+  P01_TrainAv2GpuFull -> results/ckpts/av2_gpu_full/DONE
+  P01_PostAv2GpuFull  (waits for that DONE) -> predict, analyze_run2, analyze_addB, shift_inject+analyze_inject; markers results/post/av2_gpu_full/*.ok, POST_DONE; log results/post_av2_gpu_full.log
+  P01_TrainNsGpuFull  (waits for av2_gpu_full DONE/FAILED) -> results/ckpts/ns_gpu_full/DONE
+  P01_PostNsGpuFull   (waits for ns DONE) -> reverse predictions + analyses; results/post/ns_gpu_full/POST_DONE
+Status any time:  python src/journal.py status ; python src/journal.py tail 20 ; ls results/post/*
+Manual steps left AFTER POST_DONE (need a Claude session): add av2_gpu_full to make_results_addB CONFIRMATORY list, evaluate H16b/H10 in
+notes/falsification.md, rewrite abstract/intro/discussion, fill setup.tex TODO, python paper/make_results.py, powershell -File paper/build.ps1.
+Limits: PC must stay ON and not sleep (power plan: never sleep). A logoff can kill tasks; the watchdog restarts them at the next tick if the
+task is set to run when user is logged on and the user logs back in.
