@@ -132,3 +132,9 @@ Manual steps left AFTER POST_DONE (need a Claude session): add av2_gpu_full to m
 notes/falsification.md, rewrite abstract/intro/discussion, fill setup.tex TODO, python paper/make_results.py, powershell -File paper/build.ps1.
 Limits: PC must stay ON and not sleep (power plan: never sleep). A logoff can kill tasks; the watchdog restarts them at the next tick if the
 task is set to run when user is logged on and the user logs back in.
+
+## WAYMO (added 2026-09-28)
+User accepted the Waymo licence (h.waqas160@gmail.com); gcloud SDK installed at shared/tools/google-cloud-sdk (auth done; CLOUDSDK_PYTHON=shared/envs/gcs).
+Bucket gs://waymo_open_dataset_motion_v_1_2_1/uncompressed/scenario/validation (150 shards ~275 MB, ~294 scenarios each; we take the first 30).
+Watchdog P01_DownloadWaymo -> data/waymo_raw/validation, marker results/ckpts/waymo_dl/DONE, log results/download_waymo.log.
+NEXT: convert to ScenarioNet (needs tensorflow + waymo-open-dataset in a SEPARATE env, not the unitraj env), then scene-level cal/test split, predict with av2_gpu_full and ns_gpu_full, pre-register Waymo hypotheses (Addendum C) BEFORE looking at results.
