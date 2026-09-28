@@ -630,3 +630,33 @@ scenes (area 1.72x / 1.56x oracle). **Every qualitative finding of the three-mod
 not smaller, than for the weaker models** -- so "the loss is an under-training artefact" is not what happens at this
 accuracy level. (Pattern across four models: the better the point predictor, the larger the coverage gap; n = 4,
 exploratory, no causal claim.)
+
+---
+
+## Addendum C — third dataset (Waymo Open Motion) — written 2026-09-28, BEFORE any Waymo prediction exists or was looked at
+**Why.** Two datasets invite "is this a property of AV2/nuScenes or of dataset shift?". A third dataset makes the claim about
+shift in general. Data: Waymo Open Motion v1.2.1 `scenario/validation`, first 30 of 150 shards (8,610 scenarios; 287 in shard 0),
+converted with ScenarioNet through UniTraj's own Waymo pipeline, **unmodified** (whatever history length/padding UniTraj
+produces for Waymo is part of the shift; nothing is tuned to Waymo).
+**Design (fixed now).** Scenario-disjoint calibration/test split of the Waymo scenarios by salted hash (salt `wm1`, 50/50 by
+scenario id; all agents of a scenario go to the same side). Forward direction only, using the confirmatory model
+`av2_gpu_full` (last checkpoint, per B-2) calibrated on the AV2 calibration half. If the reverse-direction model
+`ns_gpu_full` passes its gate, it is also applied to Waymo (nuScenes -> Waymo) as a second source. No Waymo-trained model is
+trained (none is needed: the questions concern a source-calibrated forecaster meeting a new dataset). All uncertainty
+statements use scenario-level resampling. The exploratory CPU zoo is NOT run on Waymo (no gate, avoids a forking path).
+**Hypotheses (predictions written before data).**
+- H17 (breaks on a third dataset): source-only coverage on Waymo is below 0.90 by at least 3 pt (raw gap >= +3.0 pt, scenario-cluster
+  95% CI excluding 0). Refuted if the gap is < 3 pt or the CI includes 0. (Direction is not assumed obvious: Waymo history is
+  shorter, which alone could go either way for coverage; a *negative* gap, i.e. over-coverage, would be reported as such and the
+  paper's claim would be restated as "not guaranteed", not "under-covers".)
+- H18 (generality): raw gap > 0 on both target datasets (nuScenes and Waymo) for the same source model, each with CI excluding 0.
+  If Waymo shows over-coverage the paper says the *sign* is dataset-dependent and only the loss of the guarantee is general.
+- H19 (repair transfers): scene-level betting LTT, with m in {30,40,50,60} labelled Waymo scenarios drawn 200 times, achieves
+  rate(scene coverage >= 0.90) >= 0.88 at every m, and median area <= 3.0x oracle at m = 40. The number of predicted agents per
+  Waymo scenario is smaller than in nuScenes (design effect smaller), so the agent-level C-or-R baseline may *not* fail badly here;
+  no failure threshold is asserted for it. Whatever it does is reported (if it is fine on Waymo, the paper says that scene-level
+  labelling matters when scenes carry many correlated agents).
+- H20 (mechanism consistency, exploratory): as on nuScenes, the normalised score halves or reduces the gap without ever
+  removing it entirely; reported without a threshold.
+**Reporting commitment.** All four are reported whichever way they land; Waymo results are labelled confirmatory (registered
+before data) but only for the analyses listed here, every other Waymo analysis is exploratory.
