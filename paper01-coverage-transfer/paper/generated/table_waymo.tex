@@ -1,0 +1,13 @@
+\begin{table}[t]
+\centering
+\caption{Third-dataset replication (Waymo Open Motion v1.2.1 validation, 30/150 shards, 8730 scenarios, scenario-level cal/test split). Both source models are confirmatory (Table~\ref{tab:models}); calibration uses each model's own AV2 or nuScenes calibration half, as in the main result. Pre-registered as Addendum C (H17/H18/H20) before any Waymo prediction existed.}
+\label{tab:waymo}
+\begin{tabular}{llrrcr}
+\toprule
+Transfer & Status & $n_\text{test}$ & gap (pt) & 95\% CI & norm.\ gap \\
+\midrule
+AV2$\to$Waymo & conf. & 4318 & 23.4 & [21.6, 24.9] & 16.7 \\
+nuScenes$\to$Waymo & conf. & 4318 & 18.3 & [16.9, 20.4] & 16.3 \\
+\bottomrule
+\end{tabular}
+\end{table}

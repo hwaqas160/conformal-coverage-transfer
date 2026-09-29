@@ -51,3 +51,8 @@ from memory alone.
 | bian2023training | V 2026-09-24 | projecteuclid.org EJS 17(2):2044-2066 |
 | dunn2023hierarchical | V 2026-09-24 | tandfonline.com JASA 118(544):2491-2502, doi 10.1080/01621459.2022.2060112 (online 2022; cited with the 2023 issue year) |
 | lee2023hierarchical | V 2026-09-24 | arxiv.org/abs/2306.06342 (Lee, Barber, Willett; page states "to appear in ACM/IMS J. Data Science" -> cited as arXiv preprint only) |
+
+## Added 2026-09-29 (Waymo Open Motion, third dataset, Addendum C)
+| key | status | source checked |
+|---|---|---|
+| ettinger2021waymo | V 2026-09-29 | arxiv.org/abs/2104.10133 (title/authors confirmed via fetch); venue ICCV 2021 corroborated by the CVF open-access URL pattern (content/ICCV2021/papers/Ettinger_..._ICCV_2021_paper.pdf, request blocked by bot protection, 403 not 404) and by prior knowledge; no page numbers available from either source so `pages` is omitted, matching the convention used for angelopoulos2025ltt above |

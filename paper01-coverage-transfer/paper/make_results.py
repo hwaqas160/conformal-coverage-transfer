@@ -16,6 +16,7 @@ still pending.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 try:
@@ -40,8 +41,19 @@ MAIN_MODEL = "av2_cpu_v1"          # the Run-1 model; pre-registration was writt
 MAIN_DIRECTION = "forward"
 K_HEADLINE = "1000"                # the label budget H5b/H5 are reported at in prose
 
-ALL_MODELS = ["av2_cpu_v1", "av2_valsplit_v1", "av2_cpu_v2"]   # forward model zoo (H8), as they land
-REVERSE_MODELS = ["ns_cpu_v1"]                                  # reverse-direction models (H9), as they land
+ALL_MODELS = ["av2_cpu_v1", "av2_valsplit_v1", "av2_cpu_v2", "av2_gpu_full"]   # forward model zoo (H8), as they land
+REVERSE_MODELS = ["ns_cpu_v1", "ns_gpu_full"]                                  # reverse-direction models (H9), as they land
+CONF_MODEL = "av2_gpu_full"          # the gate-passing, pre-registered confirmatory forward model
+CONF_REVERSE_MODEL = "ns_gpu_full"   # the gate-passing, pre-registered confirmatory reverse model
+
+
+def best_minade6(model):
+    """Lowest val/minADE6 among the model's saved checkpoints (Lightning's own monitored metric, filename
+    epochNN-minADEx.xxx.ckpt) -- the number the pre-registered accuracy gate is checked against. NOT the same as
+    base_model['minADE5_2Hz_same'] in run2 json, which is a different (5-mode, 2Hz-subsampled) diagnostic metric."""
+    d = ROOT / "results" / "ckpts" / model
+    vals = [float(m.group(1)) for f in d.glob("epoch*.ckpt") if (m := re.search(r"minADE([\d.]+)\.ckpt$", f.name))]
+    return min(vals) if vals else None
 
 
 def load(model, direction):
@@ -151,6 +163,28 @@ def main():
             r"\newcommand{\gapWeightedMain}{%s}" % pct(h3["weighted"]["gap"]),
             r"\newcommand{\removalFracMain}{%.0f}" % (100 * d["H2"]["label_free_reweighting_removal_fraction"]),
         ]
+    # ---- confirmatory headline macros (gate-passing GPU models, both directions) -------------
+    for tag, model, direction in (("Conf", CONF_MODEL, "forward"), ("ConfRev", CONF_REVERSE_MODEL, "reverse"),
+                                  ("RevExpl", "ns_cpu_v1", "reverse")):
+        dc = load(model, direction)
+        if dc is None:
+            continue
+        h = dc["H1_H4"][ALPHA_KEY]
+        raw_same, raw_tgt = h["raw"]["same"], h["raw"]["target"]
+        norm_tgt = h["norm"]["target"]
+        reduction = 100 * (1 - norm_tgt["gap"] / raw_tgt["gap"]) if raw_tgt["gap"] else 0.0
+        lines += [
+            r"\newcommand{\gapRaw%s}{%s}" % (tag, pct(raw_tgt["gap"])),
+            r"\newcommand{\gapRaw%sCI}{%s}" % (tag, fmt_ci(raw_tgt["ci95"])),
+            r"\newcommand{\gapSame%s}{%s}" % (tag, pct(raw_same["gap"])),
+            r"\newcommand{\gapNorm%s}{%s}" % (tag, pct(norm_tgt["gap"])),
+            r"\newcommand{\normReduction%s}{%.0f}" % (tag, reduction),
+            r"\newcommand{\nCal%s}{%d}" % (tag, dc["n"]["cal"]),
+            r"\newcommand{\nTarget%s}{%d}" % (tag, dc["n"]["target"]),
+        ]
+        b6 = best_minade6(model)
+        if b6 is not None:
+            lines.append(r"\newcommand{\minADESix%s}{%.3f}" % (tag, b6))
     lines.append(r"\newcommand{\nModelsDone}{%d}" % len([m for m in ALL_MODELS if load(m, "forward")]))
     lines.append(r"\newcommand{\nModelsTotal}{%d}" % len(ALL_MODELS))
     lines.append(r"\newcommand{\nReverseDone}{%d}" % len([m for m in REVERSE_MODELS if load(m, "reverse")]))
@@ -174,7 +208,8 @@ def main():
             cj = load_cities(m)
             rho, _ = h6_rho(cj)
             rows.append({
-                "model": m.replace("_", r"\_"), "direction": direction, "target": dj["target"],
+                "model": m.replace("_", r"\_"), "status": "conf." if m in (CONF_MODEL, CONF_REVERSE_MODEL) else "expl.",
+                "direction": direction, "target": dj["target"],
                 "n_cal": dj["n"]["cal"], "n_tgt": dj["n"]["target"],
                 "gap_raw": pct(raw_tgt["gap"]), "ci": fmt_ci(raw_tgt["ci95"]),
                 "gap_norm": pct(norm_tgt["gap"]), "reduction": f"{reduction:.0f}",
@@ -185,24 +220,26 @@ def main():
     tex = [
         r"\begin{table*}[t]",
         r"\centering",
-        (r"\caption{Coverage transfer by model and direction, $\alpha=0.10$. "
+        (r"\caption{Coverage transfer by model and direction, $\alpha=0.10$. Status: conf.\ = gate-passing model "
+         r"trained on the full dataset after the hypothesis was registered; expl.\ = CPU-trained exploratory zoo, "
+         r"used to design the analyses (Sec.~\ref{sec:setup}). "
          r"``red.'' = \%% reduction in gap from the label-free normalised score (H4); "
          r"``power/FA'' = audit reject probability at $k=%s$ target labels on the shifted / same-domain split (H5b); "
          r"$\rho$ = Spearman correlation between the label-free domain-monitor AUC and the per-city miscoverage (H6).}" % K_HEADLINE),
         r"\label{tab:models}",
-        r"\begin{tabular}{llrrrrrrrr}",
+        r"\begin{tabular}{lllrrrrrrrr}",
         r"\toprule",
-        (r"Model & Dir. & $n_\text{cal}$ & $n_\text{tgt}$ & gap (pt) & 95\% CI & norm.\ gap & red.\ (\%) & "
+        (r"Model & Status & Dir. & $n_\text{cal}$ & $n_\text{tgt}$ & gap (pt) & 95\% CI & norm.\ gap & red.\ (\%) & "
          r"power/FA @" + K_HEADLINE + r" & $\rho$ \\"),
         r"\midrule",
     ]
     for r in rows:
         tex.append(
-            f"{r['model']} & {r['direction']} & {r['n_cal']} & {r['n_tgt']} & {r['gap_raw']} & {r['ci']} & "
+            f"{r['model']} & {r['status']} & {r['direction']} & {r['n_cal']} & {r['n_tgt']} & {r['gap_raw']} & {r['ci']} & "
             f"{r['gap_norm']} & {r['reduction']} & {r['power']}/{r['fa']} & {r['rho']} \\\\"
         )
     if not rows:
-        tex.append(r"\multicolumn{10}{c}{no results yet} \\")
+        tex.append(r"\multicolumn{11}{c}{no results yet} \\")
     tex += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
     (OUT / "table_models.tex").write_text("\n".join(tex) + "\n")
 
@@ -245,6 +282,10 @@ def main():
     # Addendum-B tables/figures (repair, scene-level repair, injection, conditional coverage)
     import make_results_addB
     print("addB tables/figs for:", make_results_addB.write_all())
+
+    # Addendum-C tables/macros (Waymo, third dataset)
+    import make_results_addC
+    print("addC tables/macros for:", make_results_addC.write_all())
 
 
 if __name__ == "__main__":

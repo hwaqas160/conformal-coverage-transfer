@@ -207,6 +207,36 @@ def macros(models=EXPLORATORY) -> str:
     return "\n".join(L) + "\n"
 
 
+def macros_conf(models=CONFIRMATORY) -> str:
+    """Same quantities as macros(), but single point values (not ranges) for the confirmatory model(s), suffixed
+    'Conf' -- used in the paper to state whether each exploratory-zoo finding replicates on the gated GPU model."""
+    L = []
+    for m in models:
+        d = _load(m)
+        if d is None:
+            continue
+        inj = json.loads((ADDB / f"inject_{m}.json").read_text()) if (ADDB / f"inject_{m}.json").exists() else {}
+        g = lambda *path: _dig(d, path)
+        tt = lambda dom, t: d["B7"]["raw"][dom]["trajectory_type"][t]["coverage"]
+
+        def put(name, val, fmt="{:.0f}", scale=100.0):
+            L.append(r"\newcommand{\%sConf}{%s}" % (name, "--" if val is None else fmt.format(val * scale)))
+
+        put("dropRight", tt("same", "right_turn") - tt("target", "right_turn"))
+        put("dropStraight", tt("same", "straight") - tt("target", "straight"), "{:.1f}")
+        put("sgExtraRight", g("B11_driving_side", "by_type", "right_turn", "drop_diff_sg_minus_bos"))
+        put("designEff", g("B10_target_clustered", "design_effect"), "{:.1f}", 1.0)
+        put("injHz", (inj.get("injections", {}).get("hz2") or {}).get("fraction_of_G"))
+        put("injMap", (inj.get("injections", {}).get("map") or {}).get("fraction_of_G"))
+        put("injComp", inj.get("composition", {}).get("effect_pt"), "{:.1f}", 100.0)
+        put("corDirect", g("B5_target", "by_k", "1000", "direct", "rate_cov_ge_nominal"))
+        put("corCOR", g("B5_target", "by_k", "1000", "cor", "rate_cov_ge_nominal"))
+        for m_, w in (("30", "Thirty"), ("40", "Forty"), ("50", "Fifty"), ("60", "Sixty")):
+            put(f"sceneBet{w}", g("H16_scene_ltt", "by_m", m_, "scene_ltt_bet", "rate_scene_cov_ge_nominal"))
+            put(f"sceneBetArea{w}", g("H16_scene_ltt", "by_m", m_, "scene_ltt_bet", "median_area_vs_oracle"), "{:.2f}", 1.0)
+    return "\n".join(L) + "\n"
+
+
 def _dig(d, path):
     for p in path:
         if d is None or p not in d:
@@ -217,7 +247,7 @@ def _dig(d, path):
 
 def write_all():
     OUT.mkdir(exist_ok=True)
-    (OUT / "numbers_addB.tex").write_text(macros())
+    (OUT / "numbers_addB.tex").write_text(macros() + macros_conf())
     (OUT / "table_cluster.tex").write_text(table_cluster() + "\n")
     (OUT / "table_repair.tex").write_text(table_repair() + "\n")
     (OUT / "table_scene.tex").write_text(table_scene() + "\n")
