@@ -697,3 +697,22 @@ CI lower bound stays > 0 in both cases -> not removed.
 away from the training distribution) generalises to a third, independently collected dataset with a different sensor
 suite and city set. The fix generalises partially: it works at the same label budget (30-40 scenes) that was validated
 on nuScenes, but the paper will not claim it holds at 50-60 scenes on Waymo without qualification.
+
+---
+
+## Outcome log — H16b on the confirmatory model (av2_gpu_full, gate-passing, AV2->nuScenes) — 2026-09-29
+Registered criterion (Addendum B-5): (i) rate(scene cov >= .90) >= .88 at every m in {30,40,50,60}; (ii) area <= 3.0x
+oracle at m=40 and <= 2.0x at m=60; (iii) betting <= Hoeffding-Bentkus area.
+**Result:** betting rate 93%/92%/84%/87% at m=30/40/50/60; area 1.86x/1.86x/1.81x/1.81x. Criterion (i) is met at
+m=30,40 (93, 92 >= 88) and NOT met at m=50,60 (84, 87 < 88). Criterion (ii) is met (1.86x <= 3.0x at m=40; 1.81x <=
+2.0x at m=60). Criterion (iii) is met throughout: HB is valid but returns an infinite region at every m tested here
+(96.5-100% of draws), so betting is the only practical choice. Agent-level C-or-R and direct SCP remain far below any
+usable rate at m=40 (50% and 36.5%), so the qualitative finding -- whole-scene labelling needs a scene-level, not
+agent-level, guarantee -- is confirmed without qualification.
+**Reading: same shape of partial result as Addendum C's H19 on Waymo** (met at the smaller label budgets, missed at
+the larger ones, on the SAME confirmatory model and the SAME registered numeric bar). This is now three independent
+runs of the identical criterion (nuScenes exploratory zoo mostly passing all m, nuScenes confirmatory model passing
+m=30/40 only, Waymo confirmatory passing m=30/40 only for one of two source models): the fix is real and large
+(un-repaired baseline is 36.5% vs 84-93% repaired) and the practical operating point the paper recommends is
+**30-40 labelled scenes**, not 50-60. Recommending m up to 60 without qualification, as the exploratory-zoo text
+originally implied, is not what the confirmatory evidence supports, and the paper is corrected accordingly.
