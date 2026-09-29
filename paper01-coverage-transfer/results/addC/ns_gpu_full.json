@@ -1,0 +1,173 @@
+{
+ "model": "ns_gpu_full",
+ "target": "waymo",
+ "n": {
+  "cal": 4279,
+  "same": 4762,
+  "wm_cal_scenarios": 4331,
+  "wm_test": 16096,
+  "wm_test_scenarios": 4318
+ },
+ "H17_gap_waymo": {
+  "gap": 0.1834244532803181,
+  "coverage": 0.7165755467196819,
+  "q": 6.403519153594971,
+  "n_scenarios": 4318,
+  "ci95_cluster": [
+   0.16923191153389566,
+   0.204354320815804
+  ]
+ },
+ "H17_gap_same_domain_control": {
+  "gap": -0.019361612767744618,
+  "coverage": 0.9193616127677446,
+  "q": 6.403519153594971,
+  "ci95": [
+   -0.027661696766064656,
+   -0.006200125997480055
+  ]
+ },
+ "H17_verdict": "SUPPORTED",
+ "H18_other_target_gap": 0.07710934954935389,
+ "H18_verdict": "SUPPORTED",
+ "H19_scene_ltt_waymo": {
+  "n_scenes": 4318,
+  "by_m": {
+   "30": {
+    "scene_ltt": {
+     "rate_scene_cov_ge_nominal": 1.0,
+     "rate_agent_cov_ge_nominal": 1.0,
+     "mean_scene_cov": 0.9951523881707535,
+     "median_area_vs_oracle": Infinity,
+     "frac_infinite": 0.865,
+     "frac_certified": 0.0
+    },
+    "scene_ltt_bet": {
+     "rate_scene_cov_ge_nominal": 0.85,
+     "rate_agent_cov_ge_nominal": 0.85,
+     "mean_scene_cov": 0.9446657282782516,
+     "median_area_vs_oracle": 2.0190011845497695,
+     "frac_infinite": 0.2
+    },
+    "agent_cor": {
+     "rate_scene_cov_ge_nominal": 0.945,
+     "rate_agent_cov_ge_nominal": 0.95,
+     "mean_scene_cov": 0.9469187710998577,
+     "median_area_vs_oracle": 1.9321624616887518,
+     "frac_infinite": 0.0
+    },
+    "direct": {
+     "rate_scene_cov_ge_nominal": 0.735,
+     "rate_agent_cov_ge_nominal": 0.755,
+     "mean_scene_cov": 0.9168675039978678,
+     "median_area_vs_oracle": 1.2322905514154354,
+     "frac_infinite": 0.0
+    }
+   },
+   "40": {
+    "scene_ltt": {
+     "rate_scene_cov_ge_nominal": 1.0,
+     "rate_agent_cov_ge_nominal": 1.0,
+     "mean_scene_cov": 0.993331425732986,
+     "median_area_vs_oracle": Infinity,
+     "frac_infinite": 0.77,
+     "frac_certified": 0.0
+    },
+    "scene_ltt_bet": {
+     "rate_scene_cov_ge_nominal": 0.82,
+     "rate_agent_cov_ge_nominal": 0.82,
+     "mean_scene_cov": 0.9404777975355639,
+     "median_area_vs_oracle": 1.781434884208371,
+     "frac_infinite": 0.14
+    },
+    "agent_cor": {
+     "rate_scene_cov_ge_nominal": 0.945,
+     "rate_agent_cov_ge_nominal": 0.95,
+     "mean_scene_cov": 0.9392790258576548,
+     "median_area_vs_oracle": 1.6211752324148185,
+     "frac_infinite": 0.0
+    },
+    "direct": {
+     "rate_scene_cov_ge_nominal": 0.67,
+     "rate_agent_cov_ge_nominal": 0.68,
+     "mean_scene_cov": 0.9114777210089272,
+     "median_area_vs_oracle": 1.1349114119125336,
+     "frac_infinite": 0.0
+    }
+   },
+   "50": {
+    "scene_ltt": {
+     "rate_scene_cov_ge_nominal": 1.0,
+     "rate_agent_cov_ge_nominal": 1.0,
+     "mean_scene_cov": 0.9879279145467933,
+     "median_area_vs_oracle": Infinity,
+     "frac_infinite": 0.625,
+     "frac_certified": 0.0
+    },
+    "scene_ltt_bet": {
+     "rate_scene_cov_ge_nominal": 0.805,
+     "rate_agent_cov_ge_nominal": 0.815,
+     "mean_scene_cov": 0.9334248755969117,
+     "median_area_vs_oracle": 1.6161616701331298,
+     "frac_infinite": 0.085
+    },
+    "agent_cor": {
+     "rate_scene_cov_ge_nominal": 0.915,
+     "rate_agent_cov_ge_nominal": 0.92,
+     "mean_scene_cov": 0.933094299493462,
+     "median_area_vs_oracle": 1.5208422888008344,
+     "frac_infinite": 0.0
+    },
+    "direct": {
+     "rate_scene_cov_ge_nominal": 0.58,
+     "rate_agent_cov_ge_nominal": 0.605,
+     "mean_scene_cov": 0.9033901849868344,
+     "median_area_vs_oracle": 1.070259401098505,
+     "frac_infinite": 0.0
+    }
+   },
+   "60": {
+    "scene_ltt": {
+     "rate_scene_cov_ge_nominal": 1.0,
+     "rate_agent_cov_ge_nominal": 1.0,
+     "mean_scene_cov": 0.9828075597195195,
+     "median_area_vs_oracle": 3.3778767139547226,
+     "frac_infinite": 0.485,
+     "frac_certified": 0.0
+    },
+    "scene_ltt_bet": {
+     "rate_scene_cov_ge_nominal": 0.815,
+     "rate_agent_cov_ge_nominal": 0.83,
+     "mean_scene_cov": 0.9365060334608245,
+     "median_area_vs_oracle": 1.7325607880251992,
+     "frac_infinite": 0.115
+    },
+    "agent_cor": {
+     "rate_scene_cov_ge_nominal": 0.94,
+     "rate_agent_cov_ge_nominal": 0.945,
+     "mean_scene_cov": 0.9328692908586638,
+     "median_area_vs_oracle": 1.5479510539814143,
+     "frac_infinite": 0.0
+    },
+    "direct": {
+     "rate_scene_cov_ge_nominal": 0.67,
+     "rate_agent_cov_ge_nominal": 0.69,
+     "mean_scene_cov": 0.9064470254870384,
+     "median_area_vs_oracle": 1.100933595504286,
+     "frac_infinite": 0.0
+    }
+   }
+  }
+ },
+ "H20_normalized_gap_waymo": {
+  "gap": 0.16323310139165015,
+  "coverage": 0.7367668986083499,
+  "q": 272.68951416015625,
+  "n_scenarios": 4318,
+  "ci95_cluster": [
+   0.14788497564367206,
+   0.17831419744340027
+  ]
+ },
+ "H20_verdict": "reduced, NOT removed"
+}

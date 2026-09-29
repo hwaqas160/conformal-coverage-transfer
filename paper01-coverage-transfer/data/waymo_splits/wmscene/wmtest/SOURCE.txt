@@ -1,0 +1,4 @@
+split of F:\CLAUDE\AI1\paper01-coverage-transfer\data\waymo_scenarionet\val
+salt=wm1
+group_regex=None
+n=4357
