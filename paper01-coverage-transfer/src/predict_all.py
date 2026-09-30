@@ -34,7 +34,11 @@ SETS = {
     # (salt nsv2scene, 64/74 scenes, 0 overlap): nuScenes has ~60 correlated agent-scenarios per scene.
     "nscal":   ("data/nuscenes_splits/nsscene/nscal", "ns"),
     "nstest":  ("data/nuscenes_splits/nsscene/nstest", "ns"),
+    "wmcal":   ("data/waymo_splits/wmscene/wmcal", "wo"),
+    "wmtest":  ("data/waymo_splits/wmscene/wmtest", "wo"),
 }
+# Revision R1 (Addendum D3): nuScenes TRAIN chunks are the labelled pool for AV2 -> nuScenes scene-level repair.
+SETS.update({f"nstrain_c{i:02d}": (f"data/nuscenes_scenarionet/train_c{i:02d}", "ns") for i in range(11)})
 
 
 def best_ckpt(model: str) -> Path:

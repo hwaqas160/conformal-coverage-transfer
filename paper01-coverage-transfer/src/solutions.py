@@ -210,11 +210,14 @@ def hb_pvalue(r_hat: float, m: int, alpha: float) -> float:
     return float(min(np.exp(-m * h1), np.e * binom.cdf(np.ceil(m * r_hat), m, alpha)))
 
 
+BET_CAP = 0.5   # Addendum D2: lam_i <= BET_CAP/(1-alpha) keeps capital non-negative for losses in [0,1] (needs lam <= 1/(1-alpha))
+
+
 def wsr_pvalue(losses: np.ndarray, alpha: float) -> float:
     """
     Betting p-value for H0: E[L] >= alpha from losses in [0,1] taken in a FIXED order (Waudby-Smith & Ramdas,
     'Estimating means of bounded random variables by betting').  Capital K_t = prod_i (1 + lam_i (alpha - L_i)) with
-    a predictable bet lam_i in [0, 0.5/alpha] (aGRAPA-style Kelly approximation from the running mean/variance).
+    a predictable bet lam_i in [0, BET_CAP/(1-alpha)] (aGRAPA-style Kelly approximation from the running mean/variance).
     Under H0, K is a nonnegative supermartingale, so by Ville's inequality p = min(1, 1/max_t K_t) is valid.
     Unlike Hoeffding-Bentkus it adapts to a small variance -- per-scene miss fractions are mostly near 0.
     """
@@ -223,8 +226,9 @@ def wsr_pvalue(losses: np.ndarray, alpha: float) -> float:
     k, kmax = 1.0, 1.0
     for x in L:
         edge = alpha - mu
-        lam = 0.0 if edge <= 0 else min(edge / (var + edge * edge), 0.5 / alpha)
+        lam = 0.0 if edge <= 0 else min(edge / (var + edge * edge), BET_CAP / (1.0 - alpha))
         k *= 1.0 + lam * (alpha - x)
+        assert k >= 0.0, "betting capital went negative: bet cap violated"
         kmax = max(kmax, k)
         n += 1; d = x - mu; mu += d / n; var += (d * (x - mu) - var) / n
     return float(min(1.0, 1.0 / kmax))

@@ -761,3 +761,24 @@ draws for m in {20,40,60,100}; (c) a mutation check: restoring the old cap must 
     change no conclusion, and this is stated in the paper. All other analyses are descriptive or labelled exploratory.
 **D7. Release.** The published Zenodo record (v1, 10.5281/zenodo.23054413) contains the defective function. A v2 with a changelog
 naming D1 will be published, and the paper will cite the concept DOI.
+
+---
+
+## Addendum D-2 -- disclosure of the fix's effect on usefulness, and extension of the label-budget grid -- 2026-09-30, BEFORE the D3 rerun
+**What the corrected code does (preview, NOT the registered D3 evaluation).** A 100-draw check of the corrected betting rule on the
+OLD design (av2_gpu_full, AV2 -> nuScenes val, labels drawn from the same 138 scenes) returned an infinite threshold in 100% of draws at
+m = 30, 40 and 60 (Hoeffding-Bentkus was already infinite there). The earlier finite thresholds (1.6-1.9x oracle at m = 30-60,
+Addendum C outcome log and the confirmatory H16b entry) were therefore produced by the defect in D1, not by evidence. Those entries
+stay unedited and are superseded.
+**Why (mechanism).** With bets limited to lam <= 1/(1-alpha) ~ 1.1 (needed for a non-negative capital when L in [0,1]) and per-scene
+losses with large between-scene spread, log-capital grows by only ~0.03 per labelled scene when the tested threshold is slightly
+better than alpha; certification at level delta/2 = 0.05 needs log-capital ~3.0, i.e. on the order of 100 or more scenes.
+**Consequence for the registered design.** The D3 grid m in {20,30,40,60,80,100} would be all-infinite and uninformative for the
+budget question. Extended BEFORE the run to m in {20,30,40,60,80,100,150,200,300} (the nuScenes train pool has ~700 scenes and Waymo
+wmcal ~4300, so all m are feasible; at m >= 300 on nuScenes the evaluation pool stays the 138 val scenes). D4 is unchanged: validity
+criterion for every m tested, recommended budget = smallest m with median area <= 2.0x oracle, reported as "none within the tested
+range" if no m qualifies. Nothing about c = 0.5 (D2) or the criteria is changed after seeing results.
+**Additional pre-registered option (fixed now, reported either way).** Because a strict guarantee at alpha may need more scenes than a
+deployer can label, the analysis also reports the same rules at a relaxed target alpha' = 0.12 (i.e. guaranteeing scene-averaged
+coverage >= 0.88 at probability 0.90) as a sensitivity row. It is labelled a tolerance variant, never presented as the alpha = 0.10
+guarantee.
