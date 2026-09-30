@@ -153,3 +153,9 @@ main.pdf (588733 bytes, md5 95cd6ccf7eeccd6427941977ad9aaaa6) uploaded to the dr
 DOI 10.5281/zenodo.23053619) via the bucket API. Record is still UNSUBMITTED/draft: not public, not published,
 DOI does not resolve yet. Only the PDF is on Zenodo, per instruction -- no .tex source, no code. Publish only when
 told to.
+
+## ZENODO: PDF removed again (2026-09-30, correction)
+User clarified: the PDF should NOT be on Zenodo. Deleted main.pdf from the draft deposition's bucket (verified
+empty via GET .../files -> []). The DOI (10.5281/zenodo.23053619) stays reserved, record still unsubmitted/draft,
+nothing uploaded. What matters for the publisher is a proper CODE repository (GitHub), not a PDF mirror on Zenodo --
+that repository is the next real task.
