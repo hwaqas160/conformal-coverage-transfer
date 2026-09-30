@@ -170,3 +170,7 @@ Uploaded conformal-coverage-transfer-code.zip (git archive of paper01-coverage-t
 NO compiled PDF). Metadata set (title, description, 3 creators, CC BY 4.0, open access). This DOI is now the one
 cited in paper/main.tex's Data Availability section; the old deposition (23053619) is orphaned, empty, unreferenced.
 NEXT: publish this deposition only once the manuscript is final (publishing locks the DOI and makes files public).
+
+## REVISION R1 (2026-09-30)
+Plan: notes/REVISION_PLAN.md. Resume from the lowest step without results/rev1/<step>.ok.
+Root cause of the review's #1 risk: wsr_pvalue bet cap 0.5/alpha lets capital go negative (src/diag_betting_capital.py reproduces it). All betting-LTT numbers must be recomputed after Addendum D is registered.
