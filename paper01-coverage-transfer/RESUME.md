@@ -147,3 +147,9 @@ NEXT when the code repo is made public: upload the release archive to this depos
 via the API with the token, or via zenodo.org web UI while logged into the account that created it) and click
 Publish -- this locks the DOI permanently and it will resolve. Do this AFTER, not before, main.tex's numbers are
 final, since re-uploading to a published record requires a new version.
+
+## ZENODO: PDF uploaded (2026-09-30)
+main.pdf (588733 bytes, md5 95cd6ccf7eeccd6427941977ad9aaaa6) uploaded to the draft deposition (id 23053619,
+DOI 10.5281/zenodo.23053619) via the bucket API. Record is still UNSUBMITTED/draft: not public, not published,
+DOI does not resolve yet. Only the PDF is on Zenodo, per instruction -- no .tex source, no code. Publish only when
+told to.
