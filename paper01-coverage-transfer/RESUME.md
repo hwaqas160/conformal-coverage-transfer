@@ -174,3 +174,18 @@ NEXT: publish this deposition only once the manuscript is final (publishing lock
 ## REVISION R1 (2026-09-30)
 Plan: notes/REVISION_PLAN.md. Resume from the lowest step without results/rev1/<step>.ok.
 Root cause of the review's #1 risk: wsr_pvalue bet cap 0.5/alpha lets capital go negative (src/diag_betting_capital.py reproduces it). All betting-LTT numbers must be recomputed after Addendum D is registered.
+
+## ENGINEERING FIX (2026-09-30): cache-shape collision caught before Wayformer training started
+UniTraj's cache key is the DB path alone (last two path components), independent of method config. AutoBot
+(max_num_agents=15/max_num_roads=256/max_points_per_lane=20) and Wayformer (32/384/30) would silently share a
+cache built for the wrong shape if pointed at the same cache_root + DB path. The first Wayformer benchmark run
+(profile_steps=50, batch16) silently reused av2_gpu_full's existing AutoBot-shaped cache at C:\p01_cache\train\
+av2_scenarionet -- its timing numbers are INVALID (results/rev1/wayformer_bench_b16_INVALID_cache_collision.log,
+kept for the record, not used). No Wayformer model has been trained yet, so nothing downstream was affected.
+Fix: cache_guard/cache_mark (src/unitraj_bridge.py) now also record and check the method in the SOURCE_DB.txt
+marker; a mismatch raises CACHE SHAPE COLLISION instead of silently reusing. Verified: refuses wayformer against
+the existing autobot cache, still passes autobot (backward compatible with old single-line markers, treated as
+method=autobot since that's the only method used before today). Wayformer now uses a SEPARATE --cache_root
+(C:\p01_cache_wf) so it builds its own correctly-shaped cache; re-running the benchmark against it now.
+This is an engineering fix (no reported paper number was affected), logged here rather than in
+notes/falsification.md, which is reserved for defects that touched a reported result.

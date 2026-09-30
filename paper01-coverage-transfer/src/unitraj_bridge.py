@@ -77,10 +77,17 @@ def _cache_dir(db_path: str, cache_root) -> Path:
     return Path(cache_root) / p.name / p.parent.name
 
 
-def cache_guard(db_paths, cache_root) -> None:
+def cache_guard(db_paths, cache_root, method: str = "autobot") -> None:
     """Refuse to run if a DB would map onto a cache built from a DIFFERENT DB (found 2026-09-23: nuScenes
     `nuscenes_splits/val/cal` silently loaded the AV2 `av2_splits/val/cal` cache).  Every cache dir carries a
-    SOURCE_DB.txt marker; a cache dir without one is also refused (unknown provenance)."""
+    SOURCE_DB.txt marker; a cache dir without one is also refused (unknown provenance).
+
+    Found 2026-09-30 (revision R1, before any Wayformer training): UniTraj's cache key is the DB path alone
+    (base_dataset.py: cache_path = <cache_root>/<db basename>/<db parent basename>), with NO dependence on the
+    method config -- so AutoBot (max_num_agents=15, max_num_roads=256, max_points_per_lane=20) and Wayformer
+    (32, 384, 30) would silently share a cache built for the wrong shape if pointed at the same cache_root. The
+    marker now also records the method; a mismatch is refused (use a different --cache_root per method). Markers
+    written before this fix have no method line and are treated as 'autobot' (the only method used so far)."""
     for db in db_paths:
         c = _cache_dir(db, cache_root)
         if not c.exists():
@@ -89,18 +96,24 @@ def cache_guard(db_paths, cache_root) -> None:
         want = Path(db).resolve().as_posix()
         if not m.exists():
             raise RuntimeError(f"cache {c} has no {_MARKER}: provenance unknown, refusing to reuse it for {want}")
-        got = m.read_text().strip()
+        lines = m.read_text().splitlines()
+        got = lines[0].strip() if lines else ""
+        got_method = next((l.split("=", 1)[1] for l in lines[1:] if l.startswith("method=")), "autobot")
         if got != want:
             raise RuntimeError(f"CACHE COLLISION: {c} was built from {got}, not {want}. Rename the DB directory "
                                f"so its last two path components are unique.")
+        if got_method != method:
+            raise RuntimeError(f"CACHE SHAPE COLLISION: {c} was built for method={got_method!r}, not {method!r} -- "
+                               f"different methods use different max_num_agents/max_num_roads/max_points_per_lane, "
+                               f"so this cache has the wrong shape. Use a different --cache_root for {method!r}.")
 
 
-def cache_mark(db_paths, cache_root) -> None:
+def cache_mark(db_paths, cache_root, method: str = "autobot") -> None:
     """Record provenance after UniTraj (re)built a cache."""
     for db in db_paths:
         c = _cache_dir(db, cache_root)
         if c.exists() and not (c / _MARKER).exists():
-            (c / _MARKER).write_text(Path(db).resolve().as_posix())
+            (c / _MARKER).write_text(f"{Path(db).resolve().as_posix()}\nmethod={method}\n")
 
 
 def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
@@ -109,7 +122,7 @@ def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
     from torch.utils.data import DataLoader
     db_path = Path(db_path).resolve().as_posix()
     cache_root = Path(cache_root) if cache_root else DEFAULT_CACHE
-    cache_guard([db_path], cache_root)
+    cache_guard([db_path], cache_root, getattr(cfg, "model_name", "autobot"))
     cwd = os.getcwd()
     os.chdir(UNITRAJ_PKG)
     try:
@@ -121,7 +134,7 @@ def build_loader(db_path: str, cfg, batch_size: int = 32, num_workers: int = 8,
         # absolute, stable cache so it survives changing CWD between runs
         cfg.cache_path = str(cache_root)
         ds = build_dataset(cfg, val=is_validation)
-        cache_mark([db_path], cache_root)
+        cache_mark([db_path], cache_root, getattr(cfg, "model_name", "autobot"))
         loader = DataLoader(ds, batch_size=batch_size, shuffle=False, drop_last=False,
                             num_workers=num_workers, collate_fn=ds.collate_fn)
         return ds, loader

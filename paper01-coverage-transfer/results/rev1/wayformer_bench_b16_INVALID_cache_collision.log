@@ -1,0 +1,123 @@
+Global seed set to 0
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+F:\CLAUDE\AI1\shared\envs\unitraj\lib\site-packages\pytorch_lightning\trainer\configuration_validator.py:71: PossibleUserWarning: You defined a `validation_step` but have no `val_dataloader`. Skipping val loop.
+  rank_zero_warn(
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name                   | Type             | Params
+------------------------------------------------------------
+0 | road_pts_lin           | Sequential       | 7.7 K 
+1 | agents_dynamic_encoder | Sequential       | 10.2 K
+2 | perceiver_encoder      | PerceiverEncoder | 2.4 M 
+3 | perceiver_decoder      | PerceiverDecoder | 12.7 M
+4 | prob_predictor         | Sequential       | 257   
+5 | output_model           | Sequential       | 77.1 K
+6 | selu                   | SELU             | 0     
+7 | criterion              | Criterion        | 0     
+------------------------------------------------------------
+15.2 M    Trainable params
+0         Non-trainable params
+15.2 M    Total params
+60.739    Total estimated model params size (MB)
+Cannot import knn_cuda for MTR. Please check the cuda compilation.
+Cannot import attention_cuda for MTR. Please check the cuda compilation.
+Cannot import attention_cuda for MTR. Please check the cuda compilation.
+Loading training data...
+Warning: cache path C:\p01_cache\train\av2_scenarionet already exists, skip 
+Loaded 183333 samples from F:/CLAUDE/AI1/paper01-coverage-transfer/data/av2_scenarionet/train
+Data loaded
+Loading validation data...
+Warning: cache path C:\p01_cache\train\val already exists, skip 
+Loaded 13770 samples from F:/CLAUDE/AI1/paper01-coverage-transfer/data/av2_splits/val/train
+Data loaded
+[train] train=183333  val=13770
+Training: 0it [00:00, ?it/s]Training:   0%|          | 0/50 [00:00<?, ?it/s]Epoch 0:   0%|          | 0/50 [00:00<?, ?it/s] Epoch 0:   2%|▏         | 1/50 [00:52<43:07, 52.81s/it]Epoch 0:   2%|▏         | 1/50 [00:52<43:07, 52.81s/it, v_num=1]Epoch 0:   4%|▍         | 2/50 [00:53<21:17, 26.61s/it, v_num=1]Epoch 0:   4%|▍         | 2/50 [00:53<21:17, 26.61s/it, v_num=1]Epoch 0:   6%|▌         | 3/50 [00:53<13:58, 17.85s/it, v_num=1]Epoch 0:   6%|▌         | 3/50 [00:53<13:58, 17.85s/it, v_num=1]Epoch 0:   8%|▊         | 4/50 [00:53<10:19, 13.47s/it, v_num=1]Epoch 0:   8%|▊         | 4/50 [00:53<10:19, 13.47s/it, v_num=1]Epoch 0:  10%|█         | 5/50 [00:54<08:07, 10.84s/it, v_num=1]Epoch 0:  10%|█         | 5/50 [00:54<08:07, 10.84s/it, v_num=1]Epoch 0:  12%|█▏        | 6/50 [00:54<06:39,  9.09s/it, v_num=1]Epoch 0:  12%|█▏        | 6/50 [00:54<06:39,  9.09s/it, v_num=1]Epoch 0:  14%|█▍        | 7/50 [00:54<05:36,  7.83s/it, v_num=1]Epoch 0:  14%|█▍        | 7/50 [00:54<05:36,  7.83s/it, v_num=1]Epoch 0:  16%|█▌        | 8/50 [00:56<04:58,  7.10s/it, v_num=1]Epoch 0:  16%|█▌        | 8/50 [00:56<04:58,  7.10s/it, v_num=1]Epoch 0:  18%|█▊        | 9/50 [00:56<04:19,  6.33s/it, v_num=1]Epoch 0:  18%|█▊        | 9/50 [00:56<04:19,  6.33s/it, v_num=1]Epoch 0:  20%|██        | 10/50 [00:57<03:49,  5.73s/it, v_num=1]Epoch 0:  20%|██        | 10/50 [00:57<03:49,  5.73s/it, v_num=1]Epoch 0:  22%|██▏       | 11/50 [00:57<03:24,  5.24s/it, v_num=1]Epoch 0:  22%|██▏       | 11/50 [00:57<03:24,  5.24s/it, v_num=1]Epoch 0:  24%|██▍       | 12/50 [00:57<03:03,  4.83s/it, v_num=1]Epoch 0:  24%|██▍       | 12/50 [00:57<03:03,  4.83s/it, v_num=1]Epoch 0:  26%|██▌       | 13/50 [00:58<02:45,  4.48s/it, v_num=1]Epoch 0:  26%|██▌       | 13/50 [00:58<02:45,  4.48s/it, v_num=1]Epoch 0:  28%|██▊       | 14/50 [00:58<02:30,  4.18s/it, v_num=1]Epoch 0:  28%|██▊       | 14/50 [00:58<02:30,  4.18s/it, v_num=1]Epoch 0:  30%|███       | 15/50 [00:58<02:17,  3.93s/it, v_num=1]Epoch 0:  30%|███       | 15/50 [00:58<02:17,  3.93s/it, v_num=1]Epoch 0:  32%|███▏      | 16/50 [00:59<02:06,  3.71s/it, v_num=1]Epoch 0:  32%|███▏      | 16/50 [00:59<02:06,  3.71s/it, v_num=1]Epoch 0:  34%|███▍      | 17/50 [00:59<01:55,  3.50s/it, v_num=1]Epoch 0:  34%|███▍      | 17/50 [00:59<01:55,  3.50s/it, v_num=1]Epoch 0:  36%|███▌      | 18/50 [00:59<01:46,  3.33s/it, v_num=1]Epoch 0:  36%|███▌      | 18/50 [00:59<01:46,  3.33s/it, v_num=1]Epoch 0:  38%|███▊      | 19/50 [01:00<01:38,  3.17s/it, v_num=1]Epoch 0:  38%|███▊      | 19/50 [01:00<01:38,  3.17s/it, v_num=1]Epoch 0:  40%|████      | 20/50 [01:00<01:30,  3.02s/it, v_num=1]Epoch 0:  40%|████      | 20/50 [01:00<01:30,  3.02s/it, v_num=1]Epoch 0:  42%|████▏     | 21/50 [01:00<01:23,  2.90s/it, v_num=1]Epoch 0:  42%|████▏     | 21/50 [01:00<01:23,  2.90s/it, v_num=1]Epoch 0:  44%|████▍     | 22/50 [01:01<01:17,  2.78s/it, v_num=1]Epoch 0:  44%|████▍     | 22/50 [01:01<01:17,  2.78s/it, v_num=1]Epoch 0:  46%|████▌     | 23/50 [01:01<01:12,  2.67s/it, v_num=1]Epoch 0:  46%|████▌     | 23/50 [01:01<01:12,  2.67s/it, v_num=1]Epoch 0:  48%|████▊     | 24/50 [01:01<01:07,  2.58s/it, v_num=1]Epoch 0:  48%|████▊     | 24/50 [01:01<01:07,  2.58s/it, v_num=1]Epoch 0:  50%|█████     | 25/50 [01:02<01:02,  2.48s/it, v_num=1]Epoch 0:  50%|█████     | 25/50 [01:02<01:02,  2.48s/it, v_num=1]Epoch 0:  52%|█████▏    | 26/50 [01:02<00:57,  2.40s/it, v_num=1]Epoch 0:  52%|█████▏    | 26/50 [01:02<00:57,  2.40s/it, v_num=1]Epoch 0:  54%|█████▍    | 27/50 [01:02<00:53,  2.32s/it, v_num=1]Epoch 0:  54%|█████▍    | 27/50 [01:02<00:53,  2.32s/it, v_num=1]Epoch 0:  56%|█████▌    | 28/50 [01:03<00:49,  2.25s/it, v_num=1]Epoch 0:  56%|█████▌    | 28/50 [01:03<00:49,  2.25s/it, v_num=1]Epoch 0:  58%|█████▊    | 29/50 [01:03<00:45,  2.18s/it, v_num=1]Epoch 0:  58%|█████▊    | 29/50 [01:03<00:45,  2.18s/it, v_num=1]Epoch 0:  60%|██████    | 30/50 [01:03<00:42,  2.12s/it, v_num=1]Epoch 0:  60%|██████    | 30/50 [01:03<00:42,  2.12s/it, v_num=1]Epoch 0:  62%|██████▏   | 31/50 [01:03<00:39,  2.06s/it, v_num=1]Epoch 0:  62%|██████▏   | 31/50 [01:03<00:39,  2.06s/it, v_num=1]Epoch 0:  64%|██████▍   | 32/50 [01:04<00:36,  2.02s/it, v_num=1]Epoch 0:  64%|██████▍   | 32/50 [01:04<00:36,  2.02s/it, v_num=1]Epoch 0:  66%|██████▌   | 33/50 [01:04<00:33,  1.96s/it, v_num=1]Epoch 0:  66%|██████▌   | 33/50 [01:04<00:33,  1.96s/it, v_num=1]Epoch 0:  68%|██████▊   | 34/50 [01:04<00:30,  1.91s/it, v_num=1]Epoch 0:  68%|██████▊   | 34/50 [01:04<00:30,  1.91s/it, v_num=1]Epoch 0:  70%|███████   | 35/50 [01:05<00:27,  1.87s/it, v_num=1]Epoch 0:  70%|███████   | 35/50 [01:05<00:27,  1.87s/it, v_num=1]Epoch 0:  72%|███████▏  | 36/50 [01:05<00:25,  1.82s/it, v_num=1]Epoch 0:  72%|███████▏  | 36/50 [01:05<00:25,  1.82s/it, v_num=1]Epoch 0:  74%|███████▍  | 37/50 [01:05<00:23,  1.78s/it, v_num=1]Epoch 0:  74%|███████▍  | 37/50 [01:05<00:23,  1.78s/it, v_num=1]Epoch 0:  76%|███████▌  | 38/50 [01:06<00:20,  1.74s/it, v_num=1]Epoch 0:  76%|███████▌  | 38/50 [01:06<00:20,  1.74s/it, v_num=1]Epoch 0:  78%|███████▊  | 39/50 [01:06<00:18,  1.71s/it, v_num=1]Epoch 0:  78%|███████▊  | 39/50 [01:06<00:18,  1.71s/it, v_num=1]Epoch 0:  80%|████████  | 40/50 [01:07<00:16,  1.68s/it, v_num=1]Epoch 0:  80%|████████  | 40/50 [01:07<00:16,  1.68s/it, v_num=1]Epoch 0:  82%|████████▏ | 41/50 [01:07<00:14,  1.64s/it, v_num=1]Epoch 0:  82%|████████▏ | 41/50 [01:07<00:14,  1.64s/it, v_num=1]Epoch 0:  84%|████████▍ | 42/50 [01:07<00:12,  1.61s/it, v_num=1]Epoch 0:  84%|████████▍ | 42/50 [01:07<00:12,  1.61s/it, v_num=1]Epoch 0:  86%|████████▌ | 43/50 [01:07<00:11,  1.58s/it, v_num=1]Epoch 0:  86%|████████▌ | 43/50 [01:07<00:11,  1.58s/it, v_num=1]Epoch 0:  88%|████████▊ | 44/50 [01:08<00:09,  1.55s/it, v_num=1]Epoch 0:  88%|████████▊ | 44/50 [01:08<00:09,  1.55s/it, v_num=1]Epoch 0:  90%|█████████ | 45/50 [01:08<00:07,  1.52s/it, v_num=1]Epoch 0:  90%|█████████ | 45/50 [01:08<00:07,  1.52s/it, v_num=1]Epoch 0:  92%|█████████▏| 46/50 [01:08<00:05,  1.50s/it, v_num=1]Epoch 0:  92%|█████████▏| 46/50 [01:08<00:05,  1.50s/it, v_num=1]Epoch 0:  94%|█████████▍| 47/50 [01:09<00:04,  1.47s/it, v_num=1]Epoch 0:  94%|█████████▍| 47/50 [01:09<00:04,  1.47s/it, v_num=1]Epoch 0:  96%|█████████▌| 48/50 [01:09<00:02,  1.45s/it, v_num=1]Epoch 0:  96%|█████████▌| 48/50 [01:09<00:02,  1.45s/it, v_num=1]Epoch 0:  98%|█████████▊| 49/50 [01:09<00:01,  1.43s/it, v_num=1]Epoch 0:  98%|█████████▊| 49/50 [01:09<00:01,  1.43s/it, v_num=1]Epoch 0: 100%|██████████| 50/50 [01:10<00:00,  1.41s/it, v_num=1]Epoch 0: 100%|██████████| 50/50 [01:10<00:00,  1.41s/it, v_num=1]Epoch 0: 100%|██████████| 50/50 [01:10<00:00,  1.41s/it, v_num=1]`Trainer.fit` stopped: `max_epochs=1` reached.
+Epoch 0: 100%|██████████| 50/50 [01:10<00:00,  1.41s/it, v_num=1]FIT Profiler Report
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Action                                                	|  Mean duration (s)	|  Num calls      	|  Total time (s) 	|  Percentage %   	|
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Total                                                 	|  -              	|  1367           	|  75.625         	|  100 %          	|
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  run_training_epoch                                    	|  70.313         	|  1              	|  70.313         	|  92.976         	|
+|  run_training_batch                                    	|  0.68848        	|  50             	|  34.424         	|  45.519         	|
+|  [Strategy]SingleDeviceStrategy.training_step          	|  0.536          	|  50             	|  26.8           	|  35.438         	|
+|  [LightningModule]Wayformer.optimizer_step             	|  0.69671        	|  7              	|  4.877          	|  6.4489         	|
+|  [Strategy]SingleDeviceStrategy.backward               	|  0.09622        	|  50             	|  4.811          	|  6.3617         	|
+|  [LightningModule]Wayformer.configure_gradient_clipping	|  0.22329        	|  7              	|  1.563          	|  2.0668         	|
+|  [_TrainingEpochLoop].train_dataloader_next            	|  0.00718        	|  50             	|  0.359          	|  0.47471        	|
+|  [LightningModule]Wayformer.transfer_batch_to_device   	|  0.00186        	|  50             	|  0.093          	|  0.12298        	|
+|  [Strategy]SingleDeviceStrategy.batch_to_device        	|  0.00186        	|  50             	|  0.093          	|  0.12298        	|
+|  [Callback]TQDMProgressBar.on_train_epoch_end          	|  0.031          	|  1              	|  0.031          	|  0.040992       	|
+|  [Callback]TQDMProgressBar.on_train_batch_end          	|  0.00032        	|  50             	|  0.016          	|  0.021157       	|
+|  [LightningModule]Wayformer.configure_callbacks        	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.prepare_data               	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.setup                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.setup                       	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.setup                          	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.setup                      	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.configure_sharded_model    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.configure_optimizers       	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_fit_start            	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_fit_start                	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_fit_start                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_fit_start               	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_start          	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_start              	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_start                 	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_start             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_start         	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_epoch_start    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_epoch_start        	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_epoch_start           	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_epoch_start       	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_before_batch_transfer   	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_after_batch_transfer    	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_batch_start    	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_batch_start        	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_batch_start           	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_batch_start       	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_batch_start   	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_before_zero_grad     	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_before_zero_grad         	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_before_zero_grad            	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_before_zero_grad        	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.optimizer_zero_grad        	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_before_backward      	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_before_backward          	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_before_backward             	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_before_backward         	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_after_backward       	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_after_backward           	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_after_backward              	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_after_backward          	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_batch_end      	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_batch_end             	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_batch_end         	|  0.0            	|  50             	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_before_optimizer_step	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_before_optimizer_step    	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_before_optimizer_step       	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_before_optimizer_step   	|  0.0            	|  7              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.lr_scheduler_step          	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_epoch_end      	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_epoch_end             	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_epoch_end         	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_train_end            	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_train_end                	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_train_end                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_train_end               	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Strategy]SingleDeviceStrategy.on_train_end           	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.on_fit_end              	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.on_fit_end                  	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.on_fit_end                     	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.on_fit_end                 	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]LearningRateMonitor.teardown                	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]TQDMProgressBar.teardown                    	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [Callback]ModelSummary.teardown                       	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+|  [LightningModule]Wayformer.teardown                   	|  0.0            	|  1              	|  0.0            	|  0.0            	|
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+

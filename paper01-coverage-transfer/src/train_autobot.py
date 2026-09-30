@@ -82,7 +82,7 @@ def main():
     cfg.debug = False
     cfg.load_num_workers = a.num_workers
     cache_root = Path(a.cache_root).resolve() if a.cache_root else DEFAULT_CACHE
-    cache_guard(a.train_db + [a.val_db], cache_root)       # refuse silent cross-DB cache reuse
+    cache_guard(a.train_db + [a.val_db], cache_root, a.method)   # refuse silent cross-DB / cross-method cache reuse
     cfg.cache_path = str(cache_root)
     cfg.train_data_path = a.train_db
     cfg.val_data_path = [a.val_db]
@@ -108,7 +108,7 @@ def main():
         print(f"[train] initialised weights from {a.init_ckpt} (missing={len(_miss)}, unexpected={len(_unexp)})")
     train_set = build_dataset(cfg, val=False)
     val_set = build_dataset(cfg, val=True)
-    cache_mark(a.train_db + [a.val_db], cache_root)
+    cache_mark(a.train_db + [a.val_db], cache_root, a.method)
     if a.val_subset and len(val_set) > a.val_subset:
         from torch.utils.data import Subset
         import numpy as _np
