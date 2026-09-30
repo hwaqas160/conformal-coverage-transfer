@@ -22,11 +22,10 @@ placeholder remaining: the code/data repository URL).
 - [x] **Code archive DOI.** Reserved at Zenodo: `10.5281/zenodo.23053619` (deposition id 23053619, draft/unsubmitted,
       empty -- nothing has been uploaded, on purpose, until the code is ready to archive for real). Cited in the
       Data Availability section.
-- [ ] **Code repository URL.** Repo created at `github.com/hwaqas160/conformal-coverage-transfer`, currently
-      **private and empty** -- the push was blocked by a local safety check (see below) and needs to be completed
-      manually or with an explicit permission grant. Once pushed: make it public, add its URL to `main.tex`'s Data
-      Availability `\todo`, then upload a release archive to the Zenodo draft above and publish it (locks the DOI
-      in permanently).
+- [ ] **Code repository URL.** Pushed to `github.com/hwaqas160/conformal-coverage-transfer` (30 commits, all
+      project files, large data/cache excluded via `.gitignore`). Still **private**. When ready: flip it to
+      public, add its URL to `main.tex`'s Data Availability `\todo`, then upload a release archive to the Zenodo
+      draft above and publish it (locks the DOI in permanently).
 
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
