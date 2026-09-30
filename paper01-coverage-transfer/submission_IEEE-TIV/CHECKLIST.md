@@ -19,16 +19,17 @@ placeholder remaining: the code/data repository URL).
       once their photos arrive.
 - [x] **Conflict of interest disclosure.** Added as a `\section*{Conflict of Interest}` after Reproducibility:
       the authors declare no competing interests.
-- [x] **Code archive uploaded to Zenodo.** Draft deposition `10.5281/zenodo.23054413` (id 23054413) holds
-      `conformal-coverage-transfer-code.zip` (2.28 MB: code, configs, pre-registration log, aggregate result JSONs,
-      paper source; no raw third-party datasets, no compiled PDF), with title/description/creators/license set.
-      Still an unpublished draft -- the DOI does not resolve publicly until it is published. (An earlier deposition,
-      `10.5281/zenodo.23053619`, was created under a different access token and is now orphaned/unused; it stays
-      empty and is not referenced in the paper.) Cited in the Data Availability section.
+- [x] **Code archive published on Zenodo, publicly accessible.** `10.5281/zenodo.23054413`
+      (https://doi.org/10.5281/zenodo.23054413), holding `conformal-coverage-transfer-code.zip` (2.28 MB: code,
+      configs, pre-registration log, aggregate result JSONs, paper source; no raw third-party datasets, no compiled
+      PDF), with title/description/creators/license (CC BY 4.0) set. **This is permanent** -- the record cannot be
+      unpublished; further changes require a new version. (An earlier deposition, `10.5281/zenodo.23053619`, was
+      created under a different access token and is orphaned/unused, still empty, not referenced anywhere.)
 - [ ] **Code repository URL.** Pushed to `github.com/hwaqas160/conformal-coverage-transfer` (30 commits, all
-      project files, large data/cache excluded via `.gitignore`). Still **private**. When ready: flip it to
-      public, add its URL to `main.tex`'s Data Availability `\todo`, then publish the Zenodo record above (locks
-      the DOI in permanently -- do this last, after the manuscript numbers are final).
+      project files, large data/cache excluded via `.gitignore`). Still **private** -- flipping it to public was
+      blocked by a local safety check and needs the repo owner to do it (Settings -> Danger Zone -> Change
+      visibility) or an explicit permission grant. Once public, add its URL to `main.tex`'s Data Availability
+      `\todo`.
 
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
