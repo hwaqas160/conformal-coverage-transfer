@@ -19,13 +19,16 @@ placeholder remaining: the code/data repository URL).
       once their photos arrive.
 - [x] **Conflict of interest disclosure.** Added as a `\section*{Conflict of Interest}` after Reproducibility:
       the authors declare no competing interests.
-- [x] **Code archive DOI.** Reserved at Zenodo: `10.5281/zenodo.23053619` (deposition id 23053619, draft/unsubmitted,
-      empty -- nothing has been uploaded, on purpose, until the code is ready to archive for real). Cited in the
-      Data Availability section.
+- [x] **Code archive uploaded to Zenodo.** Draft deposition `10.5281/zenodo.23054413` (id 23054413) holds
+      `conformal-coverage-transfer-code.zip` (2.28 MB: code, configs, pre-registration log, aggregate result JSONs,
+      paper source; no raw third-party datasets, no compiled PDF), with title/description/creators/license set.
+      Still an unpublished draft -- the DOI does not resolve publicly until it is published. (An earlier deposition,
+      `10.5281/zenodo.23053619`, was created under a different access token and is now orphaned/unused; it stays
+      empty and is not referenced in the paper.) Cited in the Data Availability section.
 - [ ] **Code repository URL.** Pushed to `github.com/hwaqas160/conformal-coverage-transfer` (30 commits, all
       project files, large data/cache excluded via `.gitignore`). Still **private**. When ready: flip it to
-      public, add its URL to `main.tex`'s Data Availability `\todo`, then upload a release archive to the Zenodo
-      draft above and publish it (locks the DOI in permanently).
+      public, add its URL to `main.tex`'s Data Availability `\todo`, then publish the Zenodo record above (locks
+      the DOI in permanently -- do this last, after the manuscript numbers are final).
 
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote

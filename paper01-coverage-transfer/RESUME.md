@@ -159,3 +159,14 @@ User clarified: the PDF should NOT be on Zenodo. Deleted main.pdf from the draft
 empty via GET .../files -> []). The DOI (10.5281/zenodo.23053619) stays reserved, record still unsubmitted/draft,
 nothing uploaded. What matters for the publisher is a proper CODE repository (GitHub), not a PDF mirror on Zenodo --
 that repository is the next real task.
+
+## ZENODO: code archive uploaded to a NEW deposition (2026-09-30, corrected)
+The second token the user provided belongs to a DIFFERENT Zenodo account than the first (confirmed: it cannot see
+deposition 23053619; listing its depositions showed an unrelated paper, "Which Sensor to Believe?..." -- NOT
+touched, read-only check only). Created a fresh draft deposition under the new token instead of reusing the old one:
+  id 23054413, DOI 10.5281/zenodo.23054413, state unsubmitted/draft.
+Uploaded conformal-coverage-transfer-code.zip (git archive of paper01-coverage-transfer/ at HEAD, 2,280,552 bytes,
+213 files: code, configs, notes/falsification.md, results/*.json, paper source -- NO raw AV2/nuScenes/Waymo data,
+NO compiled PDF). Metadata set (title, description, 3 creators, CC BY 4.0, open access). This DOI is now the one
+cited in paper/main.tex's Data Availability section; the old deposition (23053619) is orphaned, empty, unreferenced.
+NEXT: publish this deposition only once the manuscript is final (publishing locks the DOI and makes files public).
