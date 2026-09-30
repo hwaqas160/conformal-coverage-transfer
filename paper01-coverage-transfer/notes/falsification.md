@@ -716,3 +716,48 @@ m=30/40 only, Waymo confirmatory passing m=30/40 only for one of two source mode
 (un-repaired baseline is 36.5% vs 84-93% repaired) and the practical operating point the paper recommends is
 **30-40 labelled scenes**, not 50-60. Recommending m up to 60 without qualification, as the exploratory-zoo text
 originally implied, is not what the confirmatory evidence supports, and the paper is corrected accordingly.
+
+---
+
+## Addendum D -- revision R1: defect declaration, corrected evaluation design, new analyses -- written 2026-09-30, BEFORE any corrected rerun
+**Status of earlier entries.** The outcome logs for H16, H16b (Addendum B-5 and its confirmatory outcome) and H19 (Addendum C)
+stay exactly as written and are SUPERSEDED for the betting-LTT rows by the results logged under this addendum. HB-LTT,
+agent-level C-or-R, direct SCP, and all coverage-gap results (H1, H4, H17, H18, H20) use different code paths and are unaffected.
+
+**D1. Defect.** `solutions.wsr_pvalue` capped the bet at lam <= 0.5/alpha (= 5). The test is H0: E[L] >= alpha with payoff
+(alpha - L), L in [0,1]. Capital K = prod(1 + lam_i (alpha - L_i)) stays non-negative only if lam_i <= 1/(1-alpha) (= 1.11), so
+with the old cap the capital could go negative and Ville's inequality no longer applied. Reproduced by `src/diag_betting_capital.py`
+on av2_gpu_full: rejections made while capital was negative -- Waymo m=40: 6346, m=60: 8842; nuScenes m=40: 2685, m=60: 5647.
+Found in an internal review before submission. Not visible earlier because the synthetic test used many agents per scene.
+**D2. Fix (fixed now, not tuned).** lam_i <= 0.5/(1-alpha); bets stay predictable (past losses only); assert capital >= 0.
+**D3. Evaluation design (fixed now).** Labelled pool and evaluation pool are disjoint by scene:
+  - AV2 -> nuScenes: labelled pool = nuScenes TRAIN scenes (predicted with the AV2 model, which never trained on nuScenes);
+    evaluation pool = all 138 nuScenes val scenes.
+  - AV2 -> Waymo and nuScenes -> Waymo: labelled pool = `wmcal` scenarios, evaluation pool = `wmtest` scenarios.
+  - nuScenes -> AV2: AV2 clips are single-agent, so the scene rule equals the agent rule; labelled pool = AV2 cal half, evaluation
+    pool = AV2 test half.
+  - m in {20,30,40,60,80,100} labelled scenes, 1000 draws per m. For each draw the threshold is computed from the m labelled
+    scenes and R(q_hat) is evaluated EXACTLY on the full evaluation pool (scene-averaged miscoverage). Reported: P[R(q_hat) <= alpha]
+    with a Wilson 95% interval, and the median area ratio vs the oracle threshold of the evaluation pool.
+**D4. Success criterion (fixed now).** Validity: for every m tested, point estimate of P[R <= alpha] >= 0.88 AND Wilson lower
+bound >= 0.85. Recommended budget: the smallest m whose median area ratio <= 2.0. If validity fails after the fix, the paper drops
+the betting variant and reports the Hoeffding-Bentkus variant only. If the exact synthetic validity test (D5) fails, no repair
+claim is written until it passes.
+**D5. Regression tests (fixed now).** (a) adversarial scenes with L in {0,1} never give negative capital; (b) exact-superpopulation
+validity: scenes drawn i.i.d. from a known distribution, true R(q) analytic, P[R(q_hat) <= alpha] >= 1 - delta - 2 SE over 2000
+draws for m in {20,40,60,100}; (c) a mutation check: restoring the old cap must make (a) fail.
+**D6. New analyses (each labelled).**
+  - H21 history confound (EXPLORATORY-MECHANISM): inject "AV2 history truncated to 1.1 s" (mask frames older than 1.1 s, as UniTraj
+    does for Waymo) into AV2 test inputs of av2_gpu_full and the 3 exploratory models; report coverage lost as a share of the
+    AV2 -> Waymo gap. Prediction: at least 25% of the gap. No claim is made if it is below 10%; whatever it is gets reported.
+  - H22 hierarchical baseline (CONFIRMATORY comparison): scene-level split CP after Dunn et al. 2023 -- (a) one random agent per
+    labelled scene, standard split CP quantile; (b) the pooled agent quantile. Prediction: neither reaches the D4 validity criterion
+    at m = 40 on nuScenes, and both are reported next to betting-LTT and HB-LTT.
+  - H23 mechanism (DESCRIPTIVE, n = number of models): q_src, q_oracle (metres) and q_oracle/q_src per model and target, against
+    minADE6; score CDFs source vs target. No test is run with n < 8.
+  - T-IV relevance (DESCRIPTIVE): region radius in metres (source vs repaired) and share of agents outside the region, by manoeuvre.
+  - Statistics: Wilson 95% intervals on every reported rate. Multiplicity: the primary confirmatory claims are the four
+    source->target gap tests (H17/H18), each with a cluster-bootstrap interval excluding 0 by a wide margin; Holm adjustment would
+    change no conclusion, and this is stated in the paper. All other analyses are descriptive or labelled exploratory.
+**D7. Release.** The published Zenodo record (v1, 10.5281/zenodo.23054413) contains the defective function. A v2 with a changelog
+naming D1 will be published, and the paper will cite the concept DOI.
