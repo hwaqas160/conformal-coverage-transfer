@@ -17,10 +17,15 @@
 */code/scenarionet/
 */code/metadrive/
 */code/pyboreas/
+*/IEEE-TIV_template/
+
+# ============ raw author-photo staging (canonical copies live in paper/author_photos/) ============
+/Author Photos/
 
 # ============ environment / tools ============
 shared/envs/
 shared/tools/
+shared/waymo/
 
 # ============ reference PDFs — large, re-downloadable ============
 */papers/*.pdf
@@ -56,6 +61,10 @@ shared/tools/
 */data/av2_splits/
 */data/nuscenes_splits/
 */data/nuscenes_scenarionet/
+*/data/waymo_raw/
+*/data/waymo_scenarionet/
+*/data/waymo_splits/
+*/data/unitraj_cache/
 
 # ============ paper01: operational logs (heartbeat, watcher output) ============
 */logs/

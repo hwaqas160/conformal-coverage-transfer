@@ -158,3 +158,68 @@
 {"ts": "2026-09-24T12:11:29", "id": "addB_av2_cpu_v2_forward", "event": "done", "detail": "results\\addB\\av2_cpu_v2__forward.json in 158s; k=1000 rate(cov>=.9): direct=0.60, pac=0.92, cor=0.97, cor_slack_EXPLORATORY=0.97", "sha": "6a95959"}
 {"ts": "2026-09-24T15:24:40", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "648094a"}
 {"ts": "2026-09-24T15:31:56", "id": "ns_cpu_v1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "648094a"}
+{"ts": "2026-09-24T15:53:52", "id": "predict_av2_gpu_dev_ep11", "event": "attempt_start", "detail": "ckpt=epoch11-minADE1.043.ckpt sets=['av2cal', 'av2test', 'ns']", "sha": "26ab24e"}
+{"ts": "2026-09-24T15:57:13", "id": "predict_av2_gpu_dev_ep11", "event": "artifact", "detail": "results\\preds2\\av2_gpu_dev_ep11\\av2cal.npz", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:00:30", "id": "predict_av2_gpu_dev_ep11", "event": "artifact", "detail": "results\\preds2\\av2_gpu_dev_ep11\\av2test.npz", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:06:50", "id": "predict_av2_gpu_dev_ep11", "event": "artifact", "detail": "results\\preds2\\av2_gpu_dev_ep11\\ns.npz", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:06:50", "id": "predict_av2_gpu_dev_ep11", "event": "done", "detail": "model=av2_gpu_dev_ep11 ckpt=epoch11-minADE1.043.ckpt -> results\\preds2\\av2_gpu_dev_ep11", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:07:01", "id": "run2_av2_gpu_dev_ep11_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:07:18", "id": "run2_av2_gpu_dev_ep11_forward", "event": "done", "detail": "results\\run2\\av2_gpu_dev_ep11__forward.json in 17s; raw gap@.10=+0.1096 norm gap=+0.0691", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:07:37", "id": "addB_av2_gpu_dev_ep11_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "26ab24e"}
+{"ts": "2026-09-24T16:09:55", "id": "addB_av2_gpu_dev_ep11_forward", "event": "done", "detail": "results\\addB\\av2_gpu_dev_ep11__forward.json in 140s; k=1000 rate(cov>=.9): direct=0.50, pac=0.90, cor=0.96, cor_slack_EXPLORATORY=0.96", "sha": "26ab24e"}
+{"ts": "2026-09-24T20:46:29", "id": "ns_cpu_v1_train", "event": "attempt_end", "detail": "attempt 1 exit 0", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:46:29", "id": "ns_cpu_v1_train", "event": "done", "detail": "exit 0, see F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\train_ns_cpu_v1.log", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:47:10", "id": "predict_ns_cpu_v1", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['nscal', 'nstest', 'av2cal', 'av2test']", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:50:14", "id": "predict_ns_cpu_v1", "event": "artifact", "detail": "results\\preds2\\ns_cpu_v1\\nscal.npz", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:52:29", "id": "predict_ns_cpu_v1", "event": "artifact", "detail": "results\\preds2\\ns_cpu_v1\\nstest.npz", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:54:46", "id": "predict_ns_cpu_v1", "event": "artifact", "detail": "results\\preds2\\ns_cpu_v1\\av2cal.npz", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:10", "id": "predict_ns_cpu_v1", "event": "artifact", "detail": "results\\preds2\\ns_cpu_v1\\av2test.npz", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:10", "id": "predict_ns_cpu_v1", "event": "done", "detail": "model=ns_cpu_v1 ckpt=last.ckpt -> results\\preds2\\ns_cpu_v1", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:14", "id": "run2_ns_cpu_v1_reverse", "event": "attempt_start", "detail": "n cal/same/tgt = 4279/4762/9209", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:23", "id": "run2_ns_cpu_v1_reverse", "event": "done", "detail": "results\\run2\\ns_cpu_v1__reverse.json in 9s; raw gap@.10=+0.0469 norm gap=+0.0711", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:24", "id": "addB_ns_cpu_v1_reverse", "event": "attempt_start", "detail": "n cal/same/tgt=4279/4762/9209", "sha": "90d3d79"}
+{"ts": "2026-09-24T20:57:46", "id": "addB_ns_cpu_v1_reverse", "event": "done", "detail": "results\\addB\\ns_cpu_v1__reverse.json in 23s; k=1000 rate(cov>=.9): direct=0.56, pac=0.91, cor=0.94, cor_slack_EXPLORATORY=1.00", "sha": "90d3d79"}
+{"ts": "2026-09-28T11:04:42", "id": "av2_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "402b5f4"}
+{"ts": "2026-09-28T13:02:11", "id": "waymo_download", "event": "attempt_start", "detail": "tick", "sha": "402b5f4"}
+{"ts": "2026-09-28T13:30:34", "id": "waymo_download", "event": "done", "detail": "30 shards in data\\waymo_raw\\validation", "sha": "75ac668"}
+{"ts": "2026-09-28T15:30:24", "id": "waymo_convert", "event": "attempt_start", "detail": "30 shards", "sha": "561e6c3"}
+{"ts": "2026-09-28T15:42:56", "id": "waymo_convert", "event": "done", "detail": "data\\waymo_scenarionet\\val", "sha": "561e6c3"}
+{"ts": "2026-09-28T21:51:15", "id": "av2_gpu_full_train", "event": "attempt_end", "detail": "attempt 1 exit 0", "sha": "561e6c3"}
+{"ts": "2026-09-28T21:51:15", "id": "av2_gpu_full_train", "event": "done", "detail": "exit 0, see F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\train_av2_gpu_full.log", "sha": "561e6c3"}
+{"ts": "2026-09-28T21:52:37", "id": "ns_gpu_full_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "561e6c3"}
+{"ts": "2026-09-28T21:59:49", "id": "post_av2_gpu_full", "event": "tick", "detail": "post-processing tick", "sha": "561e6c3"}
+{"ts": "2026-09-28T21:59:50", "id": "predict_av2_gpu_full", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['av2cal', 'av2test', 'ns']", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:02:00", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\av2cal.npz", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:04:13", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\av2test.npz", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:08:30", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\ns.npz", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:08:30", "id": "predict_av2_gpu_full", "event": "done", "detail": "model=av2_gpu_full ckpt=last.ckpt -> results\\preds2\\av2_gpu_full", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:08:34", "id": "run2_av2_gpu_full_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:08:46", "id": "run2_av2_gpu_full_forward", "event": "done", "detail": "results\\run2\\av2_gpu_full__forward.json in 12s; raw gap@.10=+0.1510 norm gap=+0.1102", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:08:47", "id": "addB_av2_gpu_full_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:10:30", "id": "addB_av2_gpu_full_forward", "event": "done", "detail": "results\\addB\\av2_gpu_full__forward.json in 104s; k=1000 rate(cov>=.9): direct=0.61, pac=0.94, cor=0.98, cor_slack_EXPLORATORY=0.98", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:10:33", "id": "inject_av2_gpu_full_hz2", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:11:54", "id": "inject_av2_gpu_full_hz2", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\inj_hz2.npz in 81s", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:11:54", "id": "inject_av2_gpu_full_map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:13:06", "id": "inject_av2_gpu_full_map", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\inj_map.npz in 73s", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:13:06", "id": "inject_av2_gpu_full_hz2map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:14:20", "id": "inject_av2_gpu_full_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\inj_hz2map.npz in 73s", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:14:25", "id": "inject_analysis_av2_gpu_full", "event": "result", "detail": "hz2: +2.3pt (15% of G=15.1); map: +1.8pt (12% of G=15.1); hz2map: +4.1pt (27% of G=15.1); comp: -1.0pt (-6% of G=15.1)", "sha": "561e6c3"}
+{"ts": "2026-09-28T22:14:26", "id": "post_av2_gpu_full", "event": "done", "detail": "all confirmatory analyses finished; next: update make_results CONFIRMATORY list and paper text", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:17:05", "id": "ns_gpu_full_train", "event": "attempt_end", "detail": "attempt 1 exit 0", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:17:05", "id": "ns_gpu_full_train", "event": "done", "detail": "exit 0, see F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\train_ns_gpu_full.log", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:19:52", "id": "post_ns_gpu_full", "event": "tick", "detail": "post-processing tick", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:19:52", "id": "predict_ns_gpu_full", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['nscal', 'nstest', 'av2cal', 'av2test']", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:22:13", "id": "predict_ns_gpu_full", "event": "artifact", "detail": "results\\preds2\\ns_gpu_full\\nscal.npz", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:24:33", "id": "predict_ns_gpu_full", "event": "artifact", "detail": "results\\preds2\\ns_gpu_full\\nstest.npz", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:26:32", "id": "predict_ns_gpu_full", "event": "artifact", "detail": "results\\preds2\\ns_gpu_full\\av2cal.npz", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:28:38", "id": "predict_ns_gpu_full", "event": "artifact", "detail": "results\\preds2\\ns_gpu_full\\av2test.npz", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:28:38", "id": "predict_ns_gpu_full", "event": "done", "detail": "model=ns_gpu_full ckpt=last.ckpt -> results\\preds2\\ns_gpu_full", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:28:41", "id": "run2_ns_gpu_full_reverse", "event": "attempt_start", "detail": "n cal/same/tgt = 4279/4762/9209", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:28:47", "id": "run2_ns_gpu_full_reverse", "event": "done", "detail": "results\\run2\\ns_gpu_full__reverse.json in 7s; raw gap@.10=+0.0771 norm gap=+0.0858", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:28:49", "id": "addB_ns_gpu_full_reverse", "event": "attempt_start", "detail": "n cal/same/tgt=4279/4762/9209", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:29:00", "id": "addB_ns_gpu_full_reverse", "event": "done", "detail": "results\\addB\\ns_gpu_full__reverse.json in 13s; k=1000 rate(cov>=.9): direct=0.56, pac=0.92, cor=0.96, cor_slack_EXPLORATORY=0.96", "sha": "561e6c3"}
+{"ts": "2026-09-29T10:29:00", "id": "post_ns_gpu_full", "event": "done", "detail": "reverse-direction confirmatory analyses finished", "sha": "561e6c3"}
+{"ts": "2026-09-29T13:25:34", "id": "addC_av2_gpu_full", "event": "attempt_start", "detail": "cal=av2cal", "sha": "561e6c3"}
+{"ts": "2026-09-29T13:27:36", "id": "addC_av2_gpu_full", "event": "done", "detail": "H17 gap=0.2339 CI=[0.2159452141884632, 0.2490823928675633] verdict=SUPPORTED; H18=SUPPORTED; H20=reduced, NOT removed -> F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\addC\\av2_gpu_full.json", "sha": "561e6c3"}
+{"ts": "2026-09-29T13:27:41", "id": "addC_ns_gpu_full", "event": "attempt_start", "detail": "cal=nscal", "sha": "561e6c3"}
+{"ts": "2026-09-29T13:29:44", "id": "addC_ns_gpu_full", "event": "done", "detail": "H17 gap=0.1834 CI=[0.16923191153389566, 0.204354320815804] verdict=SUPPORTED; H18=SUPPORTED; H20=reduced, NOT removed -> F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\addC\\ns_gpu_full.json", "sha": "561e6c3"}

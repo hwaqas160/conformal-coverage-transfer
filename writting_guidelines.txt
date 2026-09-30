@@ -1,0 +1,23 @@
+1. Use **natural, clear academic English**. Make the writing sound like a researcher explaining the work to other researchers, not overly polished or formulaic.
+
+2. Prefer **short and medium-length sentences**. Break unnecessarily long or multi-clause sentences into two or more sentences, while naturally varying sentence length.
+
+3. Avoid excessive **em dashes (—), double hyphens (--), semicolons, colons, and parentheses**. Prefer straightforward sentence structures.
+
+4. Remove **unnecessary commas**, especially before “and” or “or” when grammatically unnecessary. Use the Oxford comma only when it improves clarity or follows the journal style.
+
+5. Avoid repetitive sentence openings and structures. Do not repeatedly use phrases such as **“This study,” “The proposed method,” “Furthermore,” “Moreover,”** or **“Additionally.”**
+
+6. Prefer **simple, precise vocabulary** over unnecessarily sophisticated wording. Use “use” instead of “utilize” when both have the same meaning.
+
+7. Remove **filler, redundancy, and generic AI-style phrases** such as “it is worth noting that,” “it should be noted that,” “leveraging the power of,” “paves the way,” and “holds great promise.”
+
+8. Use **active voice where natural**, while retaining passive voice when appropriate for scientific writing.
+
+9. Keep the tone **objective, precise, and moderately confident**. Avoid exaggerated or promotional terms unless they are objectively justified.
+
+10. Preserve **all scientific meaning and technical details**, including terminology, equations, model names, datasets, numerical values, statistical results, citations, and important qualifications.
+
+11. **Do not mechanically paraphrase every sentence.** Keep sentences that are already clear and natural. Rewrite only where necessary to improve clarity, flow, and readability.
+
+12. Do not intentionally introduce mistakes or awkward wording. The goal is **natural human academic writing, not artificial imperfections**. Preserve the author's voice and scientific reasoning while improving the writing.

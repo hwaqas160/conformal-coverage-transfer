@@ -1,0 +1,217 @@
+IEEE Transactions on Intelligent Vehicles is a new journal for the field of ITS.​
+The IEEE Transactions on Intelligent Vehicles is published four times per year in IEEE Xplore.
+
+Editor-in-Chief
+Edward (Eddie) Tunstel
+R&D Robotics Department, Southwest Research Institute
+San Antonio,TX
+USA
+tiv-eic@ieee.org
+
+Scope
+The IEEE Transactions on Intelligent Vehicles (T-IV) publishes peer-reviewed articles that provide innovative research concepts and application results, report significant theoretical findings and application case studies, and raises awareness of pressing research and application challenges in the areas of intelligent vehicles, and in particular in automated vehicles.
+
+Topics
+Prospective authors are invited to submit original contributions or survey papers for review for publication in T-IV. Topics of interest include (but are not limited to):
+
+Advanced Driver Assistance Systems
+Automated Vehicles
+Active and Passive Vehicle Safety
+Vehicle Environment Perception
+Driver State and Intent Recognition
+Eco-driving and Energy-efficient Vehicles
+Cooperative Vehicle Systems
+Collision Avoidance
+Pedestrian Protection
+Proximity Detection Technology
+Assistive Mobility Systems
+Proximity Awareness Technology
+Autonomous / Intelligent Robotic Vehicles
+IV related Image, Radar, Lidar Signal Processing
+Information Fusion
+Vehicle Control
+Human Factors and Human Machine Interaction
+IV technologies in Electric and Hybrid Vehicles
+Novel Interfaces and Displays
+Intelligent Vehicle Software Security
+Submission Information: Information for Authors
+Submission Instructions for Authors
+All manuscripts must be submitted through the TIV Author Portal. If needed, contact the IEEE TIV Office at tiv-eic@ieee.org with any questions or concerns.
+
+Before Submission, Authors Must:
+Complete the format self-check by verifying and marking each item on the corresponding box of the checklist, which must be included with both new submissions and resubmissions.
+IEEE TIV Checklist
+☐ Disclose any Conflict of Interest (COI)
+
+☐ Institutional email address of all co-authors
+(Special request to TIV office if no institutional email address)
+
+☐ No non-English characters in the author’s information
+
+☐ Detailed response letter (Resubmission Only)
+
+☐ Highlighted revised manuscript (Resubmission Only)
+
+Manuscript Layout Format:
+
+☐ Use the IEEE Template Selector to access the TIV template and correctly format your manuscript
+
+☐ Font type and size
+
+☐ Double-column layout, standard line spacing/ paragraph spacing
+
+☐ Title and subtitle format
+
+☐ Author list without email address or affiliations (Under Title)
+
+☐ Standard format of figures and tables
+
+☐ Formatted references (Justified alignment, hanging indent, consistent journal name)
+
+☐ Short biographies for all authors
+
+Authors can choose among 4 kinds of submissions, each with its suggested length in IEEE style:
+
+Perspectives, Letters and Communications: normally limited to 5 pages
+Survey Papers: 18 pages
+Regular Papers: 10 pages
+Practitioner Papers: 6 pages
+An author may submit manuscripts that exceed the suggested length but after the final acceptance, provided they pay an overlength charge of $175.00USD for each extra page. Corresponding authors from low-income countries are eligible for waived or reduced open access APCs.
+
+Peer Review
+The articles in this journal are peer reviewed in accordance with the requirements set forth in the IEEE PSPB Operations Manual (sections 8.2.1.C & 8.2.2.A). Each published submission was reviewed by at least two independent reviewers through a single-blind peer review process. In this system, the identities of the reviewers remain confidential to the authors, while reviewers are aware of the authors’ identities. Additionally, all articles will be screened for plagiarism before initiating a formal TIV review process.
+
+Please note that TIV supports the AE’s decision to add reviewers whenever necessary. This is both the AE’s right and TIV’s policy.
+
+Abstract Description and Specifications
+For an abstract to be effective when displayed in IEEE Xplore® as well as through indexing services such as Compendex, INSPEC, Medline, ProQuest, and Web of Science, it must be concisely yet comprehensively reflect the article it describes. In particular, the abstract must be:
+
+Contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article.
+Between 150- 250 words.
+Written as one paragraph and should not contain displayed mathematical equations or tabular material.
+Include three or four different keywords or phrases. However, over-repetition of such phrases can result in a page being rejected by search engines.
+Grammatically correct.
+IEEE Author Center
+English language editing services can help refine the language of your article and reduce the risk of rejection without review. IEEE authors are eligible for discounts at several language editing services; visit the IEEE Author Center to learn more. Please note these services are fee-based and do not guarantee acceptance.
+
+Additional Resources for Authors
+
+IEEE Authoring Tools and Templates
+IEEE Create the Text of Your Article
+IEEE Create Graphics for Your Article
+Open Access Publishing option of the IEEE Transactions on Intelligent Vehicles
+IEEE Transactions on Intelligent Vehicles is a hybrid journal, allowing either traditional manuscript submission or Open Access (author-pays OA) manuscript submission. The OA option, if selected, enables unrestricted public access to the article via IEEE Xplore. The OA option will be offered to the author at the time the manuscript is submitted. If selected, the OA discounted fee of $2,495.00 must be paid before the article is published in the journal. If you have unusual circumstances about this, please contact the Editor-in-Chief. Any other applicable charges (such as the over-length page charge and/or charge for the use of color in the print format) will be billed separately once the manuscript formatting is complete but prior to the publication. The traditional option, if selected, enables access to all qualified subscribers and purchasers via IEEE Xplore. Corresponding authors from low-income countries are eligible for waived or reduced open access APCs.
+
+Alternative Option for Open Access Publishing in ITS
+The new Open Journal of ITS: OJ-ITS
+
+The IEEE Intelligent Transportation Systems Society has established the new IEEE Open Journal of Intelligent Transportation System (OJ-TS) for Open Access publications in the field of ITS. OJ-ITS is 100% open access, which means that all content is freely available without charge to users or their institutions. All articles are published under a CC BY 4.0 license, and the author retains copyright. The rapid peer review process of OJ-ITS is targeting a publication time frame of 10 weeks for most accepted papers. OJ-ITS has no page limit. Open access is provided through the payment of an Article Processing Charge (APC) of $2,045 paid after acceptance. Discount conditions are available. Publication is on-line through IEEE Xplore. Information about the IEEE Open Journal of Intelligent Transportation System can be found at: https://www.ieee-itss.org/oj-its
+
+Submitting Final Files: Information for authors of accepted papers
+Papers accepted for publication will be published both electronically on IEEE Xplore website and in the printed version of the Transactions.
+
+Authors must submit final files electronically using the submission web site requested items must be compressed in a ZIP file before uploading them on the Author Portal website.
+
+Requested items:
+A PDF version of the paper and an identical source version using either LaTeX or MSWord. Paper must be formatted using IEEE style (double column, single spaced) whose template is available here.
+Original versions of figures and tables (high definition) in separate files only if they aren’t embedded in the source paper file (accepted formats: PS, EPS, PDF, PNG, TIFF, DOC, PPT, XLS).
+Bio-sketches (in IEEE format) and high-resolutions photos of each of the authors (not required for Short and Practitioner Papers); bio-sketches can be included in the source file or alternatively saved in separate files.
+Few weeks after the submission of the final files, the contact author will be contacted by the publishing office to check the proofs of the paper. Authors will have 48 hours to return eventual corrections to the proofs.
+
+Once proofs are validated, the paper will be published in the “early papers” section of IEEE Xplore web site in few days and later in the first available printed issue.
+
+If after the proofs, paper length exceeds the suggested values (see Submit a Paper section), authors will be asked to pay an extra page charge of 175 US dollar for each extra page.
+
+Author Names in Native Languages
+IEEE supports the publication of Chinese, Japanese, and Korean (CJK) author names in the native language alongside the English versions of the names in the author list of an article. For more information, please visit the IEEE Author Center.
+
+Color Printing
+If a paper includes color figures, authors can decide to publish their paper in color (additional charges) or in gray tone.
+
+Papers printed in gray tone are published electronically in color on IEEE Xplore if color illustrations are included.
+
+IEEE Copyright
+IEEE policy requires that prior to publication all authors must transfer the copyright for their paper to the IEEE via the submission web site when submitting the final files.
+
+Overview
+All manuscripts must be submitted through the TIV Author Portal. If needed, contact the IEEE TIV Office at tiv-eic@ieee.org with any questions or concerns.
+
+English language editing services can help refine the language of your article and reduce the risk of rejection without review. IEEE authors are eligible for a 10% discount at American Journal Experts. Please note these services are fee-based and do not guarantee acceptance.
+
+Before submitting a manuscript, authors must:
+
+Format the paper using IEEE style of double column, single spaced. Templates are available here.
+Include a short biography for all authors at the end of the paper (only for Regular and Survey papers).
+Create an account for the submission site if they do not already possess one.
+Authors can choose among 4 kinds of papers, each with its suggested length in IEEE style:
+
+Regular Papers: 10 pages
+Short Papers: 6 pages
+Practitioner Papers: 6 pages
+Survey Papers: 18 pages
+Authors may submit papers that exceed the suggested length by no more than 6 additional pages. After the final acceptance, the authors will pay an overlength charge of $175.00 (US dollars) for each extra page.​
+
+Peer Review
+The articles in this journal are peer reviewed in accordance with the requirements set forth in the IEEE Publication Services and Products Board Operations Manual (https://pspb.ieee.org/images/files/files/opsmanual.pdf). Each published article was reviewed by a minimum of two independent reviewers using a single-blind peer review process, where the identities of the reviewers are not known to the authors, but the reviewers know the identities of the authors. Articles will be screened for plagiarism before acceptance.
+
+Abstract Description and Specifications
+For an abstract to be effective when displayed in IEEE Xplore® as well as through indexing services such as Compendex, INSPEC, Medline, ProQuest, and Web of Science, it must be concisely yet comprehensively reflect the article it describes. In particular, the abstract must be:
+
+Contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article.
+Between 150-250 words.
+Written as one paragraph and should not contain displayed mathematical equations or tabular material.
+Include three or four different keywords or phrases. However over-repetition of such phrases can result in a page being rejected by search engines.
+Grammatically correct.
+Open Access Transactions Option
+The Transactions on IV is a hybrid journal, allowing either traditional manuscript submission or Open Access (author-pays OA) manuscript submission. The OA option, if selected, enables unrestricted public access to the article via IEEE Xplore. The OA option will be offered to the author at the time the manuscript is submitted. The OA fee is $2,045. If you have unusual circumstances about this, please contact the Editor-in-Chief. Any other applicable charges (such as the over-length page charge and/or charge for the use of color in the print format) will be billed separately once the manuscript formatting is complete but prior to the publication. The traditional option, if selected, enables access to all qualified subscribers and purchasers via IEEE Xplore, no OA payment is required.
+
+IEEE Author Center
+English language editing services can help refine the language of your article and reduce the risk of rejection without review. IEEE authors are eligible for discounts at several language editing services; visit the IEEE Author Center to learn more. Please note these services are fee-based and do not guarantee acceptance.
+
+Additional Resources for Authors
+IEEE Authoring Tools and Templates
+IEEE Create the Text of Your Article
+IEEE Create Graphics for Your Article
+
+Create Graphics for Your Article
+Communicate visually. Articulate your data points with accuracy and clarity with high-quality graphics. Follow the IEEE graphic guidelines on resolution, size, and file formatting to create graphics for your article. 
+
+ 
+
+Lena Image
+IEEE’s diversity statement and supporting policies such as the IEEE Code of Ethics speak to IEEE’s commitment to promoting an inclusive and equitable culture that welcomes all.  In alignment with this culture and with respect to the wishes of the subject of the image, Lena Forsén, IEEE will no longer accept submitted papers which include the “Lena image.”
+
+Making Line Graphs More Accessible to All Readers
+Readers with Color Vision Deficiency (CVD) can have difficulty distinguishing between red and green, blue and green, or yellow and red. Evaluate your graphs by checking whether they can be interpreted correctly from a greyscale printout. If they cannot, follow these tips to communicate more effectively with all readers.
+
+Use both color and shape to convey the same meaning; for example, solid and dashed lines or different fill patterns can help readers understand the figure without relying solely on color.
+Make each line of your line graph a thick line with a unique data point symbol.
+Contrast different elements of the figure with both color and brightness.
+Connect the data label to the data line rather than relying on a color key.
+
+Authoring Tools and Templates
+Creating your journal article for IEEE should be seamless. Save time and effort with authoring tools and resources that will help you write, prepare, and share your research better. 
+
+Write
+Use IEEE article templates in Word or LaTeX to easily format your article for publication. Write collaboratively with your co-authors in Overleaf, an authoring tool for LaTeX and rich text documents. Overleaf is preloaded with IEEE templates for your convenience. Both Overleaf and LaTeX resources are available online for beginners and advanced users. Choose from a variety of quick guides, tutorials, webinars, and detailed documentation based upon your individual needs and level of expertise.
+
+Streamline your authoring process with IEEE Collabratec, a cloud-based hub for scholarly collaboration that integrates authoring and productivity tools with a global community dedicated to technology professionals. Overleaf is free to use by connecting it through your IEEE Collabratec account.
+
+Prepare
+Get your article ready for publication with IEEE Author Tools. Find the right publication for your article and validate your references, PDF, and LaTeX files. Claim your unique ORCID identifier to get full credit for your work. When you’re ready to submit, visit the IEEE Publishing Portal.
+
+Share
+Enhance your article by sharing associated data or code.
+Authoring Tools and Templates
+Creating your journal article for IEEE should be seamless. Save time and effort with authoring tools and resources that will help you write, prepare, and share your research better. 
+
+Write
+Use IEEE article templates in Word or LaTeX to easily format your article for publication. Write collaboratively with your co-authors in Overleaf, an authoring tool for LaTeX and rich text documents. Overleaf is preloaded with IEEE templates for your convenience. Both Overleaf and LaTeX resources are available online for beginners and advanced users. Choose from a variety of quick guides, tutorials, webinars, and detailed documentation based upon your individual needs and level of expertise.
+
+Streamline your authoring process with IEEE Collabratec, a cloud-based hub for scholarly collaboration that integrates authoring and productivity tools with a global community dedicated to technology professionals. Overleaf is free to use by connecting it through your IEEE Collabratec account.
+
+Prepare
+Get your article ready for publication with IEEE Author Tools. Find the right publication for your article and validate your references, PDF, and LaTeX files. Claim your unique ORCID identifier to get full credit for your work. When you’re ready to submit, visit the IEEE Publishing Portal.
+
+Share
+Enhance your article by sharing associated data or code.

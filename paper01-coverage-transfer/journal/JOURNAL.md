@@ -112,3 +112,6 @@ Paper draft extended (exploratory zoo, all numbers via generated macros): method
 
 ### 2026-09-24 15:53
 2026-09-24 15:55 status: GPU AV2 AutoBot at epoch 12 (44 min/epoch); val minADE6 1.241 (ep5) -> 1.075 (ep9) -> 1.043 (ep11) after the first LR decay at ep10; gate 0.98, further decays at 20/30/40/50. ns_cpu_v1 (CPU) epoch 8. Prepared the next jobs: (1) nuScenes caches relocated to SSD with verified index rewrite (src/relocate_cache.py, all 11 chunks + val + nscal/nstest); (2) run/train_ns_gpu_full.cmd = GPU AutoBot on full nuScenes, 100 epochs (~13 h), CHAINED behind av2_gpu_full via DONE/FAILED marker, registered as watchdog P01_TrainNsGpuFull (inert until then; data path smoke-tested on CPU); (3) Wayformer support: predict.py per-method predicted scale (Wayformer outputs LOG-std channels -> std=exp(clip(.,-1.609,5))), predict_all.py --method, train_autobot.py --method, UniTraj Wayformer OneCycle epochs patch. EMP rejected (needs a different dataset config). Wayformer GPU speed/memory still to be benchmarked when the GPU frees (15.2 M params; UniTraj default is 150 epochs on 8 A100 -> we will run a shortened but complete one-cycle schedule and report the epoch count and gate). plan
+
+### 2026-09-24 20:47
+ns_cpu_v1 training DONE; running reverse-direction predictions on last.ckpt chain
