@@ -138,3 +138,12 @@ User accepted the Waymo licence (h.waqas160@gmail.com); gcloud SDK installed at 
 Bucket gs://waymo_open_dataset_motion_v_1_2_1/uncompressed/scenario/validation (150 shards ~275 MB, ~294 scenarios each; we take the first 30).
 Watchdog P01_DownloadWaymo -> data/waymo_raw/validation, marker results/ckpts/waymo_dl/DONE, log results/download_waymo.log.
 NEXT: convert to ScenarioNet (needs tensorflow + waymo-open-dataset in a SEPARATE env, not the unitraj env), then scene-level cal/test split, predict with av2_gpu_full and ns_gpu_full, pre-register Waymo hypotheses (Addendum C) BEFORE looking at results.
+
+## ZENODO ARCHIVE (added 2026-09-30)
+Draft deposition created via the Zenodo API (user's personal access token, used once, not stored anywhere in the
+repo). Deposition id 23053619, reserved DOI 10.5281/zenodo.23053619, state unsubmitted/draft, NO files uploaded
+(by design, per user instruction). Cited in paper/main.tex's Data Availability section.
+NEXT when the code repo is made public: upload the release archive to this deposition (bucket URL retrievable again
+via the API with the token, or via zenodo.org web UI while logged into the account that created it) and click
+Publish -- this locks the DOI permanently and it will resolve. Do this AFTER, not before, main.tex's numbers are
+final, since re-uploading to a published record requires a new version.
