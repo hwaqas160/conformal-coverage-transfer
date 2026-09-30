@@ -782,3 +782,31 @@ range" if no m qualifies. Nothing about c = 0.5 (D2) or the criteria is changed 
 deployer can label, the analysis also reports the same rules at a relaxed target alpha' = 0.12 (i.e. guaranteeing scene-averaged
 coverage >= 0.88 at probability 0.90) as a sensitivity row. It is labelled a tolerance variant, never presented as the alpha = 0.10
 guarantee.
+
+---
+
+## Addendum E -- second architecture (Wayformer), revision R1 step 2 -- written 2026-09-30, BEFORE any Wayformer training
+**2.1 Pretrained checkpoints.** Checked the UniTraj upstream repository (README, releases) for an official pretrained AV2 or
+nuScenes checkpoint (Wayformer or MTR): none is offered. Training from scratch is the only option; recorded here so the
+decision is not re-litigated later.
+**Model and recipe.** Wayformer (UniTraj's implementation, `configs/method/wayformer.yaml`): 256 hidden, 2 encoder / 8 decoder
+layers, OneCycleLR (max_lr 2e-4, div_factor 100, final_div_factor 10), AdamW. Same full 183k-scene AV2 train cache, same
+val_db (`av2_splits/val/train`) as av2_gpu_full, so the two architectures are compared on identical data and splits. Epochs
+set by the benchmark (2.3) to complete a FULL one-cycle schedule within roughly 60 GPU-hours; never stopped early, since
+OneCycleLR's schedule is defined by the epoch count set at launch.
+**Gate (fixed now).** val minADE6 <= 0.98 (within 15% of UniTraj's reported Wayformer-on-AV2 result), identical rule and
+tolerance to av2_gpu_full's gate, checked against UniTraj's Table 8 Wayformer row (to be re-verified from the paper's own
+reference list; if UniTraj's Wayformer/AV2 number differs from AutoBot's 0.85, THIS gate is recomputed before training
+finishes, and the recomputation is logged here before the model is evaluated against it).
+**If the gate is missed (2.6, fixed now):** one extension only, +50% epochs as a fresh complete one-cycle schedule
+restarted from the last weights (not a partial resume that breaks the schedule). If still missed, Wayformer is reported as
+a second architecture with its measured accuracy stated plainly, labelled exploratory for the point-accuracy comparison,
+and every downstream analysis on it is still run and reported -- a missed gate is a disclosed limitation, not a reason to
+withhold results.
+**What is run on it once trained (registered now):** the same confirmatory battery as av2_gpu_full -- H1/H4 (AV2->nuScenes,
+AV2->Waymo), H17/H18/H20 (Waymo), and the corrected scene-level repair (Addendum D design, D5-tested code) on both targets.
+Injection experiments (Sec. inject) need velocity/acceleration recomputed for Wayformer, since it reads all object-trajectory
+features rather than position alone; this is implemented and unit-tested against AutoBot (must reproduce existing AutoBot
+injection numbers exactly) BEFORE it is run on Wayformer, so the two architectures cannot be run on inconsistent injection code.
+**Benchmark (2.3, to run before committing to an epoch count):** `--profile_steps 50 --method wayformer` at batch 16 and 32;
+s/step, peak memory; if OOM, batch 16 with grad accumulation 8 (effective 128, matching the AutoBot recipe).
