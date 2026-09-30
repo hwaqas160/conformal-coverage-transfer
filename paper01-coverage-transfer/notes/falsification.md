@@ -810,3 +810,19 @@ features rather than position alone; this is implemented and unit-tested against
 injection numbers exactly) BEFORE it is run on Wayformer, so the two architectures cannot be run on inconsistent injection code.
 **Benchmark (2.3, to run before committing to an epoch count):** `--profile_steps 50 --method wayformer` at batch 16 and 32;
 s/step, peak memory; if OOM, batch 16 with grad accumulation 8 (effective 128, matching the AutoBot recipe).
+
+---
+
+## Addendum E-1 -- Wayformer gate verified against the primary source -- 2026-09-30
+Checked directly (arXiv:2403.15098v1, PDF pages 21-24): UniTraj's Table 8 is continual learning (WOMD<->AV2 fine-tuning,
+AutoBot only, brier-minFDE) -- NOT a per-architecture accuracy table. The correct source is **Table 15** (Appendix B.2,
+"Cross-dataset generalization ... minADE metric"), Argoverse-2-trained / Argoverse-2-evaluated column (diagonal), K=6
+modes (confirmed minADE = minADE6 by their Sec. 3.3 definition): **MTR 0.85, Wayformer* 0.85, AutoBot 0.85** -- all
+three architectures report exactly 0.85 in UniTraj's own reimplementation. (Wayformer is marked with an asterisk because
+UniTraj re-implemented it: "the original code has not been released", Sec. 3.2 -- the same situation we are in, so the
+comparison is apples-to-apples.)
+**Consequence:** Wayformer's gate is identical to AutoBot's, val minADE6 <= 0.98 (within 15% of 0.85), with no
+recomputation needed. Addendum E's "to be re-verified" clause is resolved: the gate stated there was already correct by
+coincidence, now confirmed rather than assumed. refs.bib / refs_status.md unaffected (feng2024unitraj already verified);
+this only corrects the internal table citation ("Table 8" -> "Table 15") for the paper's own setup.tex wording, which
+does not currently name a table number and needs none added, but any future draft that cites one must say Table 15.
