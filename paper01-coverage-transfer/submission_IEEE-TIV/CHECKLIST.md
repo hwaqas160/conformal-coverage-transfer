@@ -1,7 +1,8 @@
 # IEEE T-IV submission checklist
 
-Built from `IEEE-TIV-Guidelines.txt`. Status as of the last rebuild (`main.pdf`, 10 pages, compiles clean, 1
-placeholder remaining: the code/data repository URL).
+Built from `IEEE-TIV-Guidelines.txt`. Status as of the last rebuild (`main.pdf`, 10 pages, compiles clean,
+**0 placeholders remaining**). Format self-check is fully complete; only the two items below `## Still to decide`
+are outstanding, and neither is a formatting requirement.
 
 ## Format self-check (required before submission)
 - [x] IEEE T-IV template (`\documentclass[lettersize,journal]{IEEEtran}`, matches `IEEE-TIV_template/`)
@@ -25,11 +26,13 @@ placeholder remaining: the code/data repository URL).
       PDF), with title/description/creators/license (CC BY 4.0) set. **This is permanent** -- the record cannot be
       unpublished; further changes require a new version. (An earlier deposition, `10.5281/zenodo.23053619`, was
       created under a different access token and is orphaned/unused, still empty, not referenced anywhere.)
-- [ ] **Code repository URL.** Pushed to `github.com/hwaqas160/conformal-coverage-transfer` (30 commits, all
-      project files, large data/cache excluded via `.gitignore`). Still **private** -- flipping it to public was
-      blocked by a local safety check and needs the repo owner to do it (Settings -> Danger Zone -> Change
-      visibility) or an explicit permission grant. Once public, add its URL to `main.tex`'s Data Availability
-      `\todo`.
+- [x] **Code repository URL.** `github.com/hwaqas160/conformal-coverage-transfer` is now **public**, and its URL
+      is in `main.tex`'s Data Availability section alongside the Zenodo DOI.
+
+## Still to decide (not a formatting blocker)
+- Rahat Zeeshan Saleem's and Hina Maryam's author photos: send them and I'll add
+  `IEEEbiography[{\includegraphics{...}}]` in place of the current `IEEEbiographynophoto` blocks.
+- A final proofread pass before uploading to the TIV Author Portal.
 
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
