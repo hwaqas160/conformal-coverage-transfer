@@ -17,13 +17,16 @@ placeholder remaining: the code/data repository URL).
       the bibliography. Hassan Waqas Saleem has a photo (`author_photos/saleem_hw.jpeg`); Rahat Zeeshan Saleem and
       Hina Maryam are text-only for now -- swap `IEEEbiographynophoto` for `IEEEbiography[{\includegraphics{...}}]`
       once their photos arrive.
-- [ ] **Conflict of interest disclosure.** Not yet drafted; needs the authors to confirm there is none (usual case)
-      before the standard one-line statement is added.
+- [x] **Conflict of interest disclosure.** Added as a `\section*{Conflict of Interest}` after Reproducibility:
+      the authors declare no competing interests.
 - [x] **Code archive DOI.** Reserved at Zenodo: `10.5281/zenodo.23053619` (deposition id 23053619, draft/unsubmitted,
-      no files uploaded yet, CC BY 4.0). Cited in the Data Availability section.
-- [ ] **Code repository URL.** No GitHub (or similar) repository has been created yet. The `\todo` in `main.tex`
-      tracks this; once the repo is public, add its URL, upload the code to the Zenodo draft above, and publish
-      the deposition (which locks in the reserved DOI permanently).
+      empty -- nothing has been uploaded, on purpose, until the code is ready to archive for real). Cited in the
+      Data Availability section.
+- [ ] **Code repository URL.** Repo created at `github.com/hwaqas160/conformal-coverage-transfer`, currently
+      **private and empty** -- the push was blocked by a local safety check (see below) and needs to be completed
+      manually or with an explicit permission grant. Once pushed: make it public, add its URL to `main.tex`'s Data
+      Availability `\todo`, then upload a release archive to the Zenodo draft above and publish it (locks the DOI
+      in permanently).
 
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
