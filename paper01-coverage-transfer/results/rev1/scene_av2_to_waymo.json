@@ -1,0 +1,667 @@
+{
+ "pair": "av2_to_waymo",
+ "model": "av2_gpu_full",
+ "alpha": 0.1,
+ "alpha_tol": 0.12,
+ "delta": 0.1,
+ "draws": 1000,
+ "n_label_scenes": 4331,
+ "n_eval_scenes": 4318,
+ "bet_cap": 0.5,
+ "q_src": 3.8052194118499756,
+ "R_src_on_eval": 0.3209334127350828,
+ "q_oracle": {
+  "0.10": 8.92672061920166,
+  "0.12": 8.031542778015137
+ },
+ "by_m": {
+  "20": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "agent_cor": {
+    "p_valid": 0.963,
+    "wilson95": [
+     0.9494173165894553,
+     0.9730389753195472
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 2.211930655698259,
+    "median_q_finite_m": 13.27631950378418
+   },
+   "direct": {
+    "p_valid": 0.744,
+    "wilson95": [
+     0.7160521973177114,
+     0.7700802761721302
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.3048114434400624,
+    "median_q_finite_m": 10.196845054626465
+   },
+   "hier_sub1": {
+    "p_valid": 0.862,
+    "wilson95": [
+     0.8392335563875687,
+     0.8819957690358847
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 2.645046180203073,
+    "median_q_finite_m": 14.518056869506836
+   }
+  },
+  "30": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.966,
+    "median_area_vs_oracle": 2.583210239335271,
+    "median_q_finite_m": 14.34726744138506
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.9,
+    "median_area_vs_oracle": 3.0607191322613936,
+    "median_q_finite_m": 14.051027712660515
+   },
+   "agent_cor": {
+    "p_valid": 0.958,
+    "wilson95": [
+     0.9437152767228901,
+     0.9687792841719761
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.888567691296259,
+    "median_q_finite_m": 12.267558097839355
+   },
+   "direct": {
+    "p_valid": 0.723,
+    "wilson95": [
+     0.6944492173416589,
+     0.749843985888811
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.2322287989390994,
+    "median_q_finite_m": 9.909177780151367
+   },
+   "hier_sub1": {
+    "p_valid": 0.826,
+    "wilson95": [
+     0.8012668269449458,
+     0.8482380351767277
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.7790134620754512,
+    "median_q_finite_m": 11.906423568725586
+   }
+  },
+  "40": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.913,
+    "median_area_vs_oracle": 2.601175283083021,
+    "median_q_finite_m": 14.397157380645284
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 1.0,
+    "median_area_vs_oracle": null,
+    "median_q_finite_m": null
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.739,
+    "median_area_vs_oracle": 2.997449479389647,
+    "median_q_finite_m": 13.90512549819236
+   },
+   "agent_cor": {
+    "p_valid": 0.969,
+    "wilson95": [
+     0.956334233864468,
+     0.9780761352614977
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.6895254674741707,
+    "median_q_finite_m": 11.603107452392578
+   },
+   "direct": {
+    "p_valid": 0.695,
+    "wilson95": [
+     0.6657622874602453,
+     0.7227452220910624
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.1428738820574293,
+    "median_q_finite_m": 9.543135643005371
+   },
+   "hier_sub1": {
+    "p_valid": 0.769,
+    "wilson95": [
+     0.7418771517803808,
+     0.7940639767801412
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.4999189111102624,
+    "median_q_finite_m": 10.932658195495605
+   }
+  },
+  "60": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.979,
+    "median_area_vs_oracle": 2.749999161395077,
+    "median_q_finite_m": 14.803289193998824
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.716,
+    "median_area_vs_oracle": 2.4948670742573795,
+    "median_q_finite_m": 14.099887533667703
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.512,
+    "median_area_vs_oracle": 2.9356296887374542,
+    "median_q_finite_m": 13.760904687150244
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.37,
+    "median_area_vs_oracle": 2.8352341366253553,
+    "median_q_finite_m": 13.523635022698658
+   },
+   "agent_cor": {
+    "p_valid": 0.96,
+    "wilson95": [
+     0.9459900625744302,
+     0.9704891907260906
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.5124815421210605,
+    "median_q_finite_m": 10.978347778320312
+   },
+   "direct": {
+    "p_valid": 0.665,
+    "wilson95": [
+     0.6351634928775167,
+     0.6935736305889746
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.0983150770155856,
+    "median_q_finite_m": 9.355250358581543
+   },
+   "hier_sub1": {
+    "p_valid": 0.736,
+    "wilson95": [
+     0.7078132051949546,
+     0.7623804986722691
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.3027106073294994,
+    "median_q_finite_m": 10.18863296508789
+   }
+  },
+  "80": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.5,
+    "median_area_vs_oracle": 2.3598503807702165,
+    "median_q_finite_m": 13.713053714704625
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.467,
+    "median_area_vs_oracle": 2.4264197936790235,
+    "median_q_finite_m": 13.90512549819236
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.1,
+    "median_area_vs_oracle": 2.366243124820213,
+    "median_q_finite_m": 12.35459915903716
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.146,
+    "median_area_vs_oracle": 2.536664573080745,
+    "median_q_finite_m": 12.79176577662451
+   },
+   "agent_cor": {
+    "p_valid": 0.95,
+    "wilson95": [
+     0.9346858639155304,
+     0.9618699273567182
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.4186058600421467,
+    "median_q_finite_m": 10.632192134857178
+   },
+   "direct": {
+    "p_valid": 0.628,
+    "wilson95": [
+     0.5976058983153016,
+     0.6574144156465824
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.068138920452883,
+    "median_q_finite_m": 9.225837707519531
+   },
+   "hier_sub1": {
+    "p_valid": 0.686,
+    "wilson95": [
+     0.6565682399199134,
+     0.7140081538059494
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.2073986391322284,
+    "median_q_finite_m": 9.808831691741943
+   }
+  },
+  "100": {
+   "bet": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.206,
+    "median_area_vs_oracle": 2.1409144765595554,
+    "median_q_finite_m": 13.061456314645497
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.287,
+    "median_area_vs_oracle": 2.3272537190962423,
+    "median_q_finite_m": 13.618015034663733
+   },
+   "bet_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.019,
+    "median_area_vs_oracle": 2.058979431235115,
+    "median_q_finite_m": 11.524576654798697
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.055,
+    "median_area_vs_oracle": 2.366243124820213,
+    "median_q_finite_m": 12.35459915903716
+   },
+   "agent_cor": {
+    "p_valid": 0.962,
+    "wilson95": [
+     0.9482727912457906,
+     0.9721911544603846
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.3626923774712687,
+    "median_q_finite_m": 10.420555114746094
+   },
+   "direct": {
+    "p_valid": 0.683,
+    "wilson95": [
+     0.6535063434106659,
+     0.7110930117067152
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.0875739399570388,
+    "median_q_finite_m": 9.30939245223999
+   },
+   "hier_sub1": {
+    "p_valid": 0.667,
+    "wilson95": [
+     0.6371992085584995,
+     0.6955226073136461
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.14396864470488,
+    "median_q_finite_m": 9.547704219818115
+   }
+  },
+  "150": {
+   "bet": {
+    "p_valid": 0.994,
+    "wilson95": [
+     0.9869716557675544,
+     0.9972473684290918
+    ],
+    "frac_infinite": 0.009,
+    "median_area_vs_oracle": 1.713750315020378,
+    "median_q_finite_m": 11.685995550843325
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.034,
+    "median_area_vs_oracle": 2.02505291557843,
+    "median_q_finite_m": 12.703112106909858
+   },
+   "bet_tol": {
+    "p_valid": 0.993,
+    "wilson95": [
+     0.9856215030730511,
+     0.996605174920768
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.6253971774357943,
+    "median_q_finite_m": 10.239499461270206
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.001,
+    "median_area_vs_oracle": 2.002490833389972,
+    "median_q_finite_m": 11.365387441273365
+   },
+   "agent_cor": {
+    "p_valid": 0.961,
+    "wilson95": [
+     0.9471303986994359,
+     0.971341200803912
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.2845543857646409,
+    "median_q_finite_m": 10.117383003234863
+   },
+   "direct": {
+    "p_valid": 0.64,
+    "wilson95": [
+     0.6097656739752435,
+     0.6691627944205671
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.045798860186888,
+    "median_q_finite_m": 9.128849029541016
+   },
+   "hier_sub1": {
+    "p_valid": 0.633,
+    "wilson95": [
+     0.6026700618124939,
+     0.6623119831635261
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.097278829789847,
+    "median_q_finite_m": 9.35083532333374
+   }
+  },
+  "200": {
+   "bet": {
+    "p_valid": 0.99,
+    "wilson95": [
+     0.981690334694608,
+     0.9945593046907295
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.5121014377617523,
+    "median_q_finite_m": 10.97696819782922
+   },
+   "hb": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.001,
+    "median_area_vs_oracle": 1.7867745367290337,
+    "median_q_finite_m": 11.932372984768591
+   },
+   "bet_tol": {
+    "p_valid": 0.987,
+    "wilson95": [
+     0.9778853478989854,
+     0.9923872528778702
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.4746004135209494,
+    "median_q_finite_m": 9.752953476278106
+   },
+   "hb_tol": {
+    "p_valid": 1.0,
+    "wilson95": [
+     0.9961731014136095,
+     1.0
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.7424614545895785,
+    "median_q_finite_m": 10.601823425621296
+   },
+   "agent_cor": {
+    "p_valid": 0.963,
+    "wilson95": [
+     0.9494173165894553,
+     0.9730389753195472
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.2365640438552525,
+    "median_q_finite_m": 9.926593780517578
+   },
+   "direct": {
+    "p_valid": 0.635,
+    "wilson95": [
+     0.6046966883157053,
+     0.6642700490659693
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.0466249739384925,
+    "median_q_finite_m": 9.132453918457031
+   },
+   "hier_sub1": {
+    "p_valid": 0.603,
+    "wilson95": [
+     0.5723357047362359,
+     0.6328759541549678
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.061827311430846,
+    "median_q_finite_m": 9.198539733886719
+   }
+  },
+  "300": {
+   "bet": {
+    "p_valid": 0.976,
+    "wilson95": [
+     0.9645368449129426,
+     0.9838199476328138
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.3528668050816222,
+    "median_q_finite_m": 10.382918933290428
+   },
+   "hb": {
+    "p_valid": 0.999,
+    "wilson95": [
+     0.9943572970398398,
+     0.9998234581709429
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.5765332453998309,
+    "median_q_finite_m": 11.20839711161699
+   },
+   "bet_tol": {
+    "p_valid": 0.974,
+    "wilson95": [
+     0.9621759154980226,
+     0.9821961846420791
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.3377938695491842,
+    "median_q_finite_m": 9.289526492015224
+   },
+   "hb_tol": {
+    "p_valid": 0.999,
+    "wilson95": [
+     0.9943572970398398,
+     0.9998234581709429
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.5589683351785162,
+    "median_q_finite_m": 10.028076167247537
+   },
+   "agent_cor": {
+    "p_valid": 0.972,
+    "wilson95": [
+     0.9598295551975795,
+     0.9805578525368679
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.1997841672703025,
+    "median_q_finite_m": 9.777852535247803
+   },
+   "direct": {
+    "p_valid": 0.641,
+    "wilson95": [
+     0.6107798878280525,
+     0.6701409267705855
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.032884881056346,
+    "median_q_finite_m": 9.072310447692871
+   },
+   "hier_sub1": {
+    "p_valid": 0.573,
+    "wilson95": [
+     0.5421198333410192,
+     0.6033214394653678
+    ],
+    "frac_infinite": 0.0,
+    "median_area_vs_oracle": 1.0290538773015765,
+    "median_q_finite_m": 9.055469989776611
+   }
+  }
+ }
+}

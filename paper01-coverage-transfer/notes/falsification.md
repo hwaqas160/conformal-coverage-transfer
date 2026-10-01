@@ -839,3 +839,49 @@ therefore exactly valid in the regime it is used in. Operationally: betting-LTT 
 of draws at m=20 and m=40 (matches the preview in Addendum D-2), ~98-100% at m=60, 100% at m>=100; once finite,
 median area is 1.4-3.4x the oracle region, falling as m grows (3.3-3.4x at m=60 -> 1.4-1.5x at m=200). Step 1.3 is
 complete; proceeding to 1.6 (corrected scene-repair rerun on real data, disjoint pools).
+
+---
+
+## Outcome log -- Addendum D3/D4 -- corrected scene-level repair, disjoint pools, real data (confirmatory) -- 2026-10-01
+All four source->target pairs (av2_to_nuscenes, av2_to_waymo, ns_to_waymo, ns_to_av2), confirmatory models
+(av2_gpu_full, ns_gpu_full), 1000 draws per m, m in {20,30,40,60,80,100,150,200,300}, labelled and evaluation
+pools disjoint by scene as fixed in D3. Full tables: `results/rev1/scene_<pair>.json`.
+
+**D4 validity criterion (point >= 0.88 AND Wilson lower bound >= 0.85) is met by the corrected betting-LTT rule
+AT EVERY SINGLE m TESTED, on all four pairs, with no exception.** Point estimates range 0.943-1.000; the single
+closest case is ns_to_waymo at m=300 (0.943, Wilson [0.927,0.956], still comfortably above the 0.85 floor). This
+fully resolves the external review's #1 finding (measured repair rate below 1-delta): that was entirely the D1
+code defect. The corrected, properly-evaluated (disjoint-pool) method is exactly valid, as D5's synthetic check
+already showed and this real-data run confirms.
+
+**What changes: the recommended label budget, not the validity.** At small m (20-40) the rule is valid but
+useless -- it returns an infinite (uncertifiable) threshold in 100% of draws, because log-capital grows too
+slowly under the corrected, conservative bet cap to certify anything from so few scenes. Thresholds start
+reliably finite around m=100-150 and the median area (vs. the evaluation-pool oracle) falls as m grows:
+  - av2_to_nuscenes: inf=0.06 at m=100, inf=0.00 from m=150 (area 1.91x); area 1.62x at m=200.
+  - av2_to_waymo:    inf=0.21 at m=100, inf=0.01 at m=150 (area 1.71x); area 1.51x at m=200.
+  - ns_to_waymo:     inf=0.07 at m=100, inf=0.00 at m=150 (area 1.60x); area 1.45x at m=200.
+  - ns_to_av2:       inf=0.03 at m=100, inf=0.00 at m=150 (area 2.14x, >2.0x); needs m=200 for area <=2.0x (1.85x).
+Applying D4's recommended-budget rule (smallest m with median area <= 2.0x oracle AND infinite-fraction <= 0.05,
+the latter clause added here as the natural reading of "a usable region most of the time", consistent with D4's
+intent though not spelled out as a separate number): **the practical operating point is m = 150 labelled scenes
+for three of the four pairs, and m = 200 for nuScenes -> AV2** (AV2's agent-sparse "scenes", one agent each,
+carry less information per labelled unit than nuScenes/Waymo's multi-agent scenes). This supersedes the
+exploratory-zoo and pre-D1-fix estimate of "30-40 scenes" everywhere it was stated; that number was an artifact
+of the betting capital defect (D1), not a property of the method. The paper is corrected accordingly.
+
+**Hoeffding-Bentkus comparison (also corrected):** at m=150/200 HB is valid throughout too (as it always was --
+D1 never affected HB) and its area is now only modestly larger than betting's (e.g. av2_to_nuscenes m=200:
+HB 2.11x vs bet 1.62x; ns_to_av2 m=200: HB 1.71x vs bet 1.85x, i.e. HB is slightly BETTER there). Betting's
+advantage over HB is real but smaller than the pre-fix numbers suggested.
+
+**New baselines (addressing the external review's missing-baseline point, D6/H22):**
+  - Agent-level certify-or-recalibrate (whole-scene-pooled labels, agent-level guarantee): fails badly only for
+    av2_to_nuscenes (valid rate falls from 0.58 at m=20 to 0.04 at m=300, the known nuScenes design-effect
+    story, ~65 correlated agents/scene). For the other three pairs it stays mostly valid (0.65-1.00), because
+    their agents-per-scene ratio is much smaller (Waymo ~3.7/scenario; AV2 reverse-direction scenes are
+    single-agent by construction). This sharpens the paper's mechanism claim: agent-level guarantees fail
+    specifically when agents-per-scene is large, not as a universal property of "scene-structured" labels.
+  - One-agent-per-scene hierarchical split CP (Dunn et al. 2023 style, H22): valid at small m by wide margins
+    (noise), but degrades below the 0.88 bar at larger m on every pair (e.g. av2_to_nuscenes 0.57 at m=300,
+    ns_to_waymo 0.45 at m=300) -- it is not a reliable alternative to scene-level LTT at the budgets that matter.
