@@ -189,3 +189,17 @@ method=autobot since that's the only method used before today). Wayformer now us
 (C:\p01_cache_wf) so it builds its own correctly-shaped cache; re-running the benchmark against it now.
 This is an engineering fix (no reported paper number was affected), logged here rather than in
 notes/falsification.md, which is reserved for defects that touched a reported result.
+
+## WAYFORMER TRAINING LAUNCHED (2026-10-01)
+Previous benchmark/cache-build attempts were run via ephemeral Bash background tasks and got killed by the tool's
+30-min limit (no damage: the profiler run's cache was tainted anyway by the collision bug fixed just before this;
+deleted and rebuilt). Switched to the project's proven resilient pattern instead: watchdog P01_TrainAv2Wayformer
+(run/train_av2_wayformer.cmd), installed via Task Scheduler, 10-min retry tick, idempotent, DONE/FAILED markers,
+resumes from last.ckpt every 200 steps. Epochs=27 (provisional, based on the earlier -- since-invalidated --
+0.69s/microbatch timing; real epoch-1 throughput will be read from results/train_av2_wayformer.log once it
+reports progress, and checked against the ~60 GPU-hour budget in notes/REVISION_PLAN.md Addendum E). Own cache
+root C:\p01_cache_wf (shape-isolated from AutoBot's C:\p01_cache). Gate: val minADE6 <= 0.98 (Addendum E-1,
+verified against UniTraj Table 15).
+NEXT: once results/train_av2_wayformer.log shows epoch-1 it/s, recompute total epoch time and confirm or adjust
+before epoch 2 (adjusting epochs later requires a fresh OneCycleLR schedule, i.e. restarting from epoch 0 -- so
+this check should happen EARLY, ideally before epoch 1 finishes if speed is visible from the progress bar).
