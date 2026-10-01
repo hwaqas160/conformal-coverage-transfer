@@ -1,0 +1,20 @@
+[D5a] adversarial {0,1} losses, no negative capital: OK
+[D5c] old cap makes (a) fail (mutation detected): OK
+[D5b] exact superpopulation validity (2000 draws each):
+  q_src far too small (R=.20)    m= 20: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=0.00/0.00  median betting area vs oracle=nan  OK
+  q_src far too small (R=.20)    m= 40: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=0.98/0.00  median betting area vs oracle=nan  OK
+  q_src far too small (R=.20)    m= 60: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/0.98  median betting area vs oracle=3.32  OK
+  q_src far too small (R=.20)    m=100: P[R<=alpha]  HB=1.000  betting=0.999 (+-0.001)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.80  OK
+  q_src far too small (R=.20)    m=200: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.42  OK
+  q_src borderline (R=.11)       m= 20: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=0.00/0.00  median betting area vs oracle=nan  OK
+  q_src borderline (R=.11)       m= 40: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/0.00  median betting area vs oracle=nan  OK
+  q_src borderline (R=.11)       m= 60: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/0.99  median betting area vs oracle=3.39  OK
+  q_src borderline (R=.11)       m=100: P[R<=alpha]  HB=1.000  betting=0.999 (+-0.001)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.79  OK
+  q_src borderline (R=.11)       m=200: P[R<=alpha]  HB=0.999  betting=0.991 (+-0.002)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.43  OK
+  q_src already valid (R=.05)    m= 20: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=0.00/0.00  median betting area vs oracle=nan  OK
+  q_src already valid (R=.05)    m= 40: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/0.00  median betting area vs oracle=nan  OK
+  q_src already valid (R=.05)    m= 60: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=3.41  OK
+  q_src already valid (R=.05)    m=100: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.75  OK
+  q_src already valid (R=.05)    m=200: P[R<=alpha]  HB=1.000  betting=1.000 (+-0.000)  need>=0.887  finite HB/bet=1.00/1.00  median betting area vs oracle=1.51  OK
+
+a_no_negative_capital:OK  c_mutation_detected:OK  b_exact_validity:OK

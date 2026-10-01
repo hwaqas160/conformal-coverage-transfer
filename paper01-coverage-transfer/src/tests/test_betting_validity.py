@@ -21,7 +21,8 @@ from scipy.stats import norm
 SRC = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SRC))
 import solutions  # noqa: E402
-from solutions import scene_ltt_threshold, wsr_pvalue  # noqa: E402
+from solutions import wsr_pvalue  # noqa: E402
+from analyze_rev1 import fast_scene_ltt, selfcheck  # noqa: E402 -- vectorised, checked equal to scene_ltt_threshold
 
 ALPHA, DELTA = 0.10, 0.10
 A, B, MU, SIG = 0.0, 0.35, 1.0, 0.45            # ln(scene difficulty) ~ N(A,B^2); ln(score | scene) ~ N(MU + ln d, SIG^2)
@@ -58,6 +59,7 @@ def test_a_no_negative_capital(rng) -> bool:
 
 
 def test_b_exact_validity(rng, draws=2000, ms=(20, 40, 60, 100, 200)) -> bool:
+    assert selfcheck(np.random.default_rng(3)), "fast_scene_ltt no longer matches scene_ltt_threshold -- fix before trusting this test"
     ok = True
     for label, R_src in (("q_src far too small (R=.20)", 0.20), ("q_src borderline (R=.11)", 0.11),
                          ("q_src already valid (R=.05)", 0.05)):
@@ -69,13 +71,11 @@ def test_b_exact_validity(rng, draws=2000, ms=(20, 40, 60, 100, 200)) -> bool:
             for _ in range(draws):
                 lab = draw_scenes(rng, m)
                 for j, pv in enumerate(("hb", "wsr")):
-                    q, _ = scene_ltt_threshold(q_src, lab, ALPHA, DELTA, pval=pv)
+                    q = fast_scene_ltt(q_src, lab, ALPHA, DELTA, pv)
                     hit[j] += true_R(q) <= ALPHA
                     fin[j] += np.isfinite(q)
                     if pv == "wsr" and np.isfinite(q):
                         areas.append(q / q_at(ALPHA))
-            if m == 200:                       # informational usefulness row (Addendum D-2), fewer draws in the loop below
-                pass
             rate = hit / draws
             se = np.sqrt(rate * (1 - rate) / draws)
             need = 1 - DELTA - 2 * np.sqrt((1 - DELTA) * DELTA / draws)

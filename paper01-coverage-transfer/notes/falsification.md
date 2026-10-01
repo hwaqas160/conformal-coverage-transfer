@@ -826,3 +826,16 @@ recomputation needed. Addendum E's "to be re-verified" clause is resolved: the g
 coincidence, now confirmed rather than assumed. refs.bib / refs_status.md unaffected (feng2024unitraj already verified);
 this only corrects the internal table citation ("Table 8" -> "Table 15") for the paper's own setup.tex wording, which
 does not currently name a table number and needs none added, but any future draft that cites one must say Table 15.
+
+---
+
+## Outcome log -- Addendum D5 regression tests (exact synthetic validity) -- 2026-10-01
+All three tests pass (`results/rev1/test_betting_validity.log`, `src/tests/test_betting_validity.py`):
+(a) adversarial {0,1}-loss scenes never drive the betting capital negative; (c) restoring the old 0.5/alpha cap
+makes (a) fail (mutation check confirms the test is sensitive); (b) exact-superpopulation validity holds at every
+m in {20,40,60,100,200} and every q_src tested (badly wrong / borderline / already valid): P[R(q_hat) <= alpha]
+is 0.991-1.000 against a required bound of 0.887, over 2000 draws each (30 cells, all OK). The corrected code is
+therefore exactly valid in the regime it is used in. Operationally: betting-LTT returns a finite threshold in 0%
+of draws at m=20 and m=40 (matches the preview in Addendum D-2), ~98-100% at m=60, 100% at m>=100; once finite,
+median area is 1.4-3.4x the oracle region, falling as m grows (3.3-3.4x at m=60 -> 1.4-1.5x at m=200). Step 1.3 is
+complete; proceeding to 1.6 (corrected scene-repair rerun on real data, disjoint pools).
