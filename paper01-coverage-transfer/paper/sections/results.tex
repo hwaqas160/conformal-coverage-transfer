@@ -66,15 +66,19 @@ its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFro
 agree with Proposition~\ref{prop:ident}: without target labels there is no general fix.
 
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
-\emph{Audit.} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
+Three label budgets answer three different questions: how many labels to \emph{detect} that the guarantee has failed,
+how many to return a threshold with a \emph{certified} (training-conditional) guarantee, and how many before that
+threshold is also \emph{small enough to be useful}. We report all three; the second does not imply the third.
+
+\emph{Audit (detect).} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
 with probability 1.00 on both confirmatory models, at a false-alarm rate of at most 7\% on a shift-free split
 (Table~\ref{tab:models}).
 
-\emph{Repair with exchangeable labels.} When $k=1000$ agents are labelled at random, certify-or-recalibrate
+\emph{Repair with exchangeable labels (certify).} When $k=1000$ agents are labelled at random, certify-or-recalibrate
 (Sec.~\ref{sec:cor}) covers $\ge90\%$ of held-out agents in \corCORMin--\corCORMax\% of label draws, against
 \corDirectMin--\corDirectMax\% for plain recalibration, at a region \corCORareaMin--\corCORareaMax$\times$ the oracle's.
 
-\emph{Repair with whole-scene labels.} Real labels arrive scene by scene, which breaks agent-level exchangeability. We
+\emph{Repair with whole-scene labels (certify at the scene level).} Real labels arrive scene by scene, which breaks agent-level exchangeability. We
 draw $m$ labelled scenes from a pool disjoint from the evaluation scenes (nuScenes train for AV2$\to$nuScenes, the
 Waymo calibration half for the Waymo targets) and evaluate the scene-averaged miscoverage $R(\hat q)$ exactly on the
 evaluation pool, 1000 draws per $m$ (Fig.~\ref{fig:scene}). The scene-level rule with the betting $p$-value is valid at
@@ -84,7 +88,7 @@ AV2$\to$nuScenes, with about 65 agents per scene, it is valid in \agentCorNsFort
 \hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
 \agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
 
-Validity is not usefulness. With $m\le40$ scenes the scene-level rule abstains in every draw, correctly reporting that
+\emph{Useful.} Validity is not usefulness. With $m\le40$ scenes the scene-level rule abstains in every draw, correctly reporting that
 it cannot certify any finite threshold rather than returning an unsupported one. The abstention rate falls with $m$
 but is not negligible close to the recommended budget: on AV2$\to$nuScenes it is \infAtEightyAvNs\% at $m=80$ and still
 \infAtHundredAvNs\% at $m=100$. It returns a usable region (at most twice the oracle area, abstaining in

@@ -51,7 +51,12 @@ $\alpha_{\mathrm{src}}<\alpha$.
 Driving datasets label many agents per scene, and agents in one scene share road, traffic and annotator. Labels drawn scene by scene are not
 exchangeable at the agent level, and Proposition~\ref{prop:cor} then fails (Sec.~\ref{sec:results}). We therefore make the \emph{scene} the unit.
 For a labelled scene $j$ with agent scores $\{s_{ji}\}$ let $L_j(q)=\frac1{n_j}\sum_i\mathbf 1[s_{ji}>q]\in[0,1]$, non-increasing in $q$, and
-control the scene-averaged miscoverage $R(q)=\mathbb E_j\,L_j(q)$. Given $m$ labelled scenes, scene-level certify-or-recalibrate
+control the scene-averaged miscoverage $R(q)=\mathbb E_j\,L_j(q)$, which weights every \emph{scene} equally regardless of
+how many agents it contains. This is a different quantity from the agent-pooled miss rate $\frac1{\sum_j n_j}\sum_{j,i}\mathbf
+1[s_{ji}>q]$, which weights every agent equally and so is dominated by whichever scenes happen to be largest; the two
+coincide only when every scene has the same agent count. We control $R(q)$ because it is the quantity the scene-level
+test (below) can be made valid for under scene-level exchangeability, and because it is the natural risk when scenes,
+not agents, are the unit a planner reasons about. Given $m$ labelled scenes, scene-level certify-or-recalibrate
 proceeds as in Sec.~\ref{sec:cor} but with Learn-then-Test \cite{angelopoulos2025ltt} over a \emph{fixed}, label-independent grid
 $q_1>q_2>\dots>q_G$ (log-spaced around the source threshold, $\hat q_{\mathrm{src}}\times[4,0.5]$, $G=300$): for each candidate we compute a $p$-value for
 $H_{q}:R(q)>\alpha$ from the $m$ per-scene losses, test candidates from the largest downwards at level $\delta/2$, and return the last $q$ rejected
