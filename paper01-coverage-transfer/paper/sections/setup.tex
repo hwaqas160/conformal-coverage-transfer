@@ -1,30 +1,27 @@
 \section{Experimental Setup}\label{sec:setup}
-\paragraph{Data.} Argoverse~2 \cite{wilson2021argoverse2}, nuScenes \cite{caesar2020nuscenes}, and Waymo Open Motion
-\cite{ettinger2021waymo} (30 of 150 validation shards, \wmNScenariosCalAvW\ calibration and \wmNScenariosAvW\ test
-scenarios after filtering, Sec.~\ref{sec:waymo}), converted with ScenarioNet \cite{li2023scenarionet}
-and loaded through UniTraj \cite{feng2024unitraj}. Argoverse~2 scenarios are independent 11\,s clips with one focal agent; their held-out split is divided by a fixed
-salted hash into a calibration half and a test half. nuScenes provides about 65 agent-scenarios per 20\,s scene (9041 from 138 scenes in its validation split), so its
-calibration/test split is made \emph{by scene} (64 and 74 scenes, disjoint), and every uncertainty statement on nuScenes uses scene-level resampling
-(Sec.~\ref{sec:cluster}). Waymo scenarios carry several agents each too (mean 3.7), so its split is also made by scenario. The AV2 test split has no labels and is not used.
-\paragraph{Forecasters.} AutoBot-Ego \cite{girgis2022autobots} (1.5M parameters), $K=6$ modes, is the only architecture trained in this paper; a second architecture
-was planned but dropped for time (Sec.~\ref{sec:limitations}). We distinguish two kinds of source model.
-\emph{Exploratory zoo}: three AutoBots trained on a single, shared CPU --- \textbf{av2\_cpu\_v1} (from scratch on 60k AV2 scenes, 10 epochs; val minADE\textsubscript{6} 1.349),
-\textbf{av2\_valsplit\_v1} (13.7k scenes, 20 epochs; 1.347) and \textbf{av2\_cpu\_v2} (fine-tuned from av2\_cpu\_v1 with a decaying learning rate; 1.092).
-UniTraj's own AutoBot-on-AV2 baseline (8$\times$A100, batch 128, the full 180k-scene set) reaches minADE\textsubscript{6} $0.85$ \cite{feng2024unitraj}, so these
-models are $+28\%$ to $+59\%$ worse and exceed the 15\% tolerance we pre-registered for calling a base model competitive; we report this as a triggered limitation,
-and used the zoo to design analyses, so every result on it is labelled exploratory. \emph{Confirmatory models}, trained \emph{after} the corresponding hypotheses were
-registered, one GPU each: AutoBot on the full 183k-scene AV2 training set with UniTraj's recipe (effective batch 128, learning rate $7.5\times10^{-4}$ halved at epochs
-10/20/30/40/50, 60 epochs), gated at validation minADE\textsubscript{6} within 15\% of $0.85$ (\textbf{av2\_gpu\_full}, reached \minADESixConf, gate $0.98$); the same
-recipe on the full nuScenes training split for the reverse direction, gated within 15\% of $1.21$ (\textbf{ns\_gpu\_full}, reached \minADESixConfRev, gate $1.39$). Both
-are the last training checkpoint, not the best-by-validation one, decided before either was trained (Addendum B-2).
-\paragraph{Protocol.} $\alpha=0.1$, $\delta=0.1$. Forward direction: calibrate on the AV2 calibration half; test on the AV2 test half (same-domain control), on all of
-nuScenes, and on the Waymo test half (cross-dataset). Reverse direction: the swap, calibrating on the nuScenes calibration scenes, tested on AV2 and on Waymo.
-Label-budget experiments draw $k$ labelled agents at random (exchangeable case) or $m$ whole scenes
-(clustered case) 200 times and evaluate on the disjoint remainder. Intervals are percentile bootstraps over scenes (over agents only for AV2, whose clips are independent).
-\paragraph{Pre-registration and disclosures.} Hypotheses and thresholds are written in \texttt{notes/falsification.md} before the runs they govern; later analyses were added as dated
-addenda and each outcome is appended, never edited. Two initial hypotheses about the shift were changed \emph{before} running because measurement showed them vacuous
-(Sec.~\ref{sec:inject}). Defects found during the work, none changing a reported number: a silent cache collision that made one validation set an Argoverse cache, per-agent (not per-scene)
-nuScenes splits, and truncated scenario identifiers in early prediction files. One intermediate checkpoint of the competitive AV2 model was evaluated during training to test the pipeline
-(a ``development dry run''); it informed no design decision, is excluded from all confirmatory tables and is disclosed here.
-\paragraph{Metrics.} Coverage, coverage gap $\Delta$, region-area proxy, label budget $k^\star$, audit power and false-alarm rate, the rate at which a repaired threshold
-covers $\ge 90\%$ of held-out scenes, region area relative to the oracle threshold, monitor AUC and Spearman correlation.
+\paragraph{Data} Argoverse~2 \cite{wilson2021argoverse2}, nuScenes \cite{caesar2020nuscenes} and Waymo Open Motion
+\cite{ettinger2021waymo} (30 of 150 validation shards), converted with ScenarioNet \cite{li2023scenarionet} and loaded
+through UniTraj \cite{feng2024unitraj}. AV2 scenarios are independent 11\,s clips with one focal agent; the labelled AV2
+validation split is divided by a fixed salted hash into a calibration half and a test half. nuScenes has about 65 agents per
+20\,s scene (9041 from 138 validation scenes), so its calibration/test split is made by scene (64/74 scenes). Waymo
+scenarios carry 3.7 agents on average and are split by scenario (\wmNScenariosCalAvW\ calibration, \wmNScenariosAvW\ test).
+\paragraph{Forecasters} AutoBot-Ego \cite{girgis2022autobots} with $K=6$ modes. The \emph{confirmatory} models were trained
+after the hypotheses about them were registered, with UniTraj's recipe (effective batch 128, learning rate
+$7.5\times10^{-4}$ halved at epochs 10--50): \textbf{av2\_gpu\_full} on the full 183k-scene AV2 training set and
+\textbf{ns\_gpu\_full} on the full nuScenes training split. Each had to reach validation minADE\textsubscript{6} within
+15\% of UniTraj's published value \cite{feng2024unitraj}; they reached \minADESixConf\ (gate 0.98, reference 0.85) and
+\minADESixConfRev\ (gate 1.39, reference 1.21). The final model is the last checkpoint, fixed in advance. Four
+\emph{reduced-budget} models (training-data subsets or shorter schedules; the three AV2 models reach minADE\textsubscript{6}
+1.09--1.35) were
+used to design the analyses and are labelled exploratory throughout.
+\paragraph{Protocol} $\alpha=\delta=0.1$. Forward: calibrate on the AV2 calibration half; test on the AV2 test half
+(same-domain control), nuScenes and Waymo. Reverse: calibrate on the nuScenes calibration scenes; test on nuScenes test
+scenes, AV2 and Waymo. Label-budget experiments draw $k$ agents or $m$ whole scenes 1000 times from a labelled pool that
+is disjoint from the evaluation pool. Intervals on multi-agent targets resample scenes.
+\paragraph{Registration and disclosures} Hypotheses, thresholds and success criteria were written to a
+version-controlled, timestamped log (released with the code) before the runs they govern; later analyses were added as dated
+addenda, and outcomes are appended, never edited. Defects found during the work are disclosed there: a cache collision,
+per-agent instead of per-scene nuScenes splits, and truncated scenario identifiers, none affecting a reported number; and
+a betting $p$-value whose bet cap allowed negative capital. That last defect was found in an internal review before
+submission, a regression test that detects it was added, and every repair result in Sec.~\ref{sec:repair-scene} was
+recomputed with the corrected code under a design registered before the rerun.

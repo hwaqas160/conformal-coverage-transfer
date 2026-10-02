@@ -1,218 +1,108 @@
 \section{Results}\label{sec:results}
-\emph{Status: \nModelsDone/\nModelsTotal\ forward-direction models analysed, \nReverseDone/1 reverse-direction
-models. Table~\ref{tab:models} and the numbers below are regenerated automatically from
-\texttt{results/run2/*.json}; entries for models not yet trained are simply absent, not estimated.}
+Confirmatory results come first, organised by the four questions of Sec.~\ref{sec:problem}. The reduced-budget
+models on which the analyses were designed are summarised in Sec.~\ref{sec:expl}.
 
-\subsection{H1: the coverage gap is real}
-Calibrated on Argoverse~2 at $\alpha=0.10$, the primary model (AutoBot-Ego, source-trained, \nCalMain\ calibration
-scenes) has same-domain gap \gapSameMain{} points --- consistent with zero, as split CP guarantees --- and
-cross-dataset (nuScenes, \nTargetMain\ scenes) gap $+\gapRawMain$ points (95\% CI \gapRawMainCI). This replicates the
-preliminary Run~1 measurement (+3.4pt) on an independent calibration/test split. Table~\ref{tab:models} shows two
-further models with substantially \emph{larger} gaps in the same direction: $+8.0$pt (av2\_valsplit\_v1, trained on
-less data) and $+10.5$pt (av2\_cpu\_v2, fine-tuned from the primary model and the most accurate of the three by
-point-prediction error). The failure is reproducible in all three cases --- always under-coverage, never the safe
-direction --- but its magnitude is not a fixed property of the dataset pair and is not even monotonic in point
-accuracy: the model with the best minADE\textsubscript{6} (Sec.~\ref{sec:setup}) has the worst coverage gap of the
-three. We report this without averaging it away.
-
-\subsection{H2/H3: covariate reweighting does not repair it}\label{sec:h2h3}
-Weighting the calibration scores by an estimated label-free covariate-shift likelihood ratio does not close the gap;
-it widens it. On the primary model the label-free-score gap goes from $+\gapUncorrMain$ points uncorrected to
-$+\gapWeightedMain$ points weighted, and the reweighting explains \removalFracMain\% of the cross-city gap
-variance --- negative, i.e.\ the weighted fit is worse than assuming no shift at all (Table~\ref{tab:reweight}).
-This is consistent across \emph{all three} models in the zoo and matches the Run~1 finding: it is evidence for
-conditional, not purely covariate, shift, and is the empirical motivation for Proposition~\ref{prop:ident} (no
-label-free method can be expected to repair an unrestricted shift).
-
-\input{generated/table_reweight}
-
-\subsection{H4: the normalised score (label-free)}
-The model-uncertainty-normalised score (Sec.~\ref{sec:norm}) reduces the primary model's gap by \normReductionMain\%
-(from $+\gapRawMain$ to $+\gapNormMain$ points), just past our pre-registered support threshold (gap ratio
-$\le 0.5$) and far from the pre-registered refutation threshold ($>0.75$). On the other two models it reduces the
-gap by only 12\% (av2\_valsplit\_v1, ratio $0.877$, \emph{past} the refutation threshold) and 31\%
-(av2\_cpu\_v2, ratio $0.691$, in between --- neither supported nor refuted). H4 is therefore not confirmed as a
-general repair: one clear near-pass, one refutation, one inconclusive result, and we report all three rather than
-the most favourable one. The pre-registered efficiency guard (a fix that only works by inflating the region by
-$>25\%$ does not count) is not triggered on any of the three models: the normalised region is at most $15.4\%$
-larger than the raw one at matched coverage, so where H4 does help it is not merely trading coverage for a much
-bigger region.
-
-\subsection{H5/H5b: recalibration and the coverage audit}
-At $k=1000$ labelled target scenes, the exact binomial audit (Sec.~\ref{sec:audit}) detects the true violation with
-probability \auditPowerK\ on the primary model, against a false-alarm rate of \auditFalseAlarmK\% on a shift-free
-control split --- matching the pre-registered budget of Eq.~\eqref{eq:budget} ($k\approx750$ for the analogous
-$\delta=0.034$ case) to the same order of magnitude. Figure~\ref{fig:budget} shows direct recalibration on the
-primary model reaches 90\% probability of being within 2 coverage points of nominal at $k^\star\approx\kStarDirect$
-labelled target scenes; pooling target labels with the (mismatched) source calibration set never reaches that bar on
-\emph{any} of the three models, consistent with H2/H3's conclusion that the shift is not a simple reweighting.
-Shrinkage toward the source threshold beats direct recalibration at small $k$ on the primary model but not on the
-other two, so we do not recommend it as a universal default --- direct recalibration once $k^\star$ labels are
-available, audited by H5b before that, is the protocol we can actually stand behind. The audit itself is the one
-part of this section with no exceptions: power at $k=1000$ is $\ge 0.95$ and false-alarm is $\le 6.2\%$ on all three
-models.
+\subsection{Q1: How large is the gap?}\label{sec:confirm}
+On its own test split each confirmatory model is calibrated as promised: the same-domain gap is \gapSameConf\ points
+for the AV2 model and \gapSameConfRev\ points for the nuScenes model (Fig.~\ref{fig:gap}). On every other dataset it
+under-covers. Calibrated on AV2, coverage falls by \gapRawConf\ points on nuScenes and by \wmGapAvW\ points on Waymo.
+Calibrated on nuScenes, it falls by \gapRawConfRev\ points on AV2 and by \wmGapNsW\ points on Waymo. All four
+intervals exclude zero by a wide margin, so a Holm correction over the four registered tests changes no conclusion.
+The Waymo tests were registered before any Waymo prediction was computed. In metres, the AV2-calibrated tube has radius
+\qSrcAvNs\,m, while 90\% coverage needs \qOracleAvNs\,m on nuScenes and \qOracleAvWm\,m on Waymo: the source region is
+less than half as wide as the target requires.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\linewidth]{generated/fig_label_budget_av2_cpu_v1.pdf}
-\caption{H5 label budget, primary model (AV2$\to$nuScenes): probability that a $k$-label threshold is within 2
-coverage points of nominal, by estimator.}
-\label{fig:budget}
+\includegraphics[width=\linewidth]{generated/fig_gap.pdf}
+\caption{Coverage of the source-calibrated region ($\alpha=0.1$) on the source test split and on the target dataset,
+confirmatory models. Error bars: 95\% intervals, resampled by scene where targets have several agents per scene
+(nuScenes, Waymo).}
+\label{fig:gap}
 \end{figure}
 
-\subsection{H6/H7: label-free monitor and per-city coverage}
-Within-dataset, a domain classifier trained on label-free scene features to separate one AV2 city from the rest gives
-an AUC that we correlate (Spearman) against that city's coverage gap magnitude across all city pairs. Across the
-three models: $\rho=0.37$ ($p=0.04$), $\rho=0.10$ ($p=0.61$), $\rho=0.39$ ($p=0.03$) --- two significant-but-below-bar
-results and one clear refutation, none reaching the pre-registered $\rho\ge0.5$ support threshold on any model.
-\textbf{H6 is not supported on any of the three models, and refuted on one.} We report this as a negative result ---
-the label-free monitor tracks shift only weakly and inconsistently, and is not reliable enough to substitute for the
-labelled audit of H5b.
-
-\subsection{Where does the coverage loss come from?}\label{sec:where}
-\emph{Evidence status: this and the following subsections are computed on the three-model CPU exploratory zoo, on
-which the analyses in this paper were designed. Section~\ref{sec:confirm} reports the same quantities on the
-gate-passing confirmatory model and finds they replicate.}
-
-\paragraph{Turns, not straight driving} Split by UniTraj's manoeuvre taxonomy \cite{feng2024unitraj} (Fig.~\ref{fig:traj}), coverage on straight driving falls by
-only \dropStraightMin--\dropStraightMax\ points from the AV2 same-domain test to nuScenes, whereas right turns lose \dropRightMin--\dropRightMax\ points and
-straight-right manoeuvres (right-hand lane changes) \dropStraightRightMin--\dropStraightRightMax\ points. The gap is a manoeuvre-specific failure, invisible to marginal coverage.
-
-\paragraph{Driving side} nuScenes contains left-hand-traffic scenes (Singapore) that AV2 lacks. The right-turn coverage drop is
-\sgExtraRightMin--\sgExtraRightMax\ points \emph{larger} in Singapore than in Boston (scene-clustered 95\% intervals exclude zero for two of the three models),
-while straight driving differs by at most 1.8 points (range \sgExtraStraightMin\ to \sgExtraStraightMax\ points): what AV2-trained forecasters miss is the wide, across-traffic turn of
-left-hand traffic.
-
-\paragraph{Input-level differences explain a minority} Table~\ref{tab:inject} injects one measured AV2--nuScenes difference at a time into AV2 test inputs. Re-sampling the
-history to nuScenes' 2\,Hz reproduces \injHzMin--\injHzMax\% of the real gap, dropping lanes at the measured density \injMapMin--\injMapMax\%, both together \injBothMin--\injBothMax\%
-(only \injBothMin\% for the two models with the largest gaps). Re-weighting AV2 scenes to the nuScenes scene mix, which isolates pure covariate shift, moves coverage by
-\injCompMin\ to \injCompMax\ points, i.e.\ it \emph{raises} coverage: nuScenes' mix of speeds and manoeuvres is easier, so composition works against the observed gap. Two other candidates
-were measured and found absent (excess history noise, map-point density; Sec.~\ref{sec:inject}). Together with Sec.~\ref{sec:h2h3}, the loss is largely a \emph{conditional} shift that
-scene statistics do not reveal.
-
-\input{generated/table_inject}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.95\textwidth]{generated/fig_traj_type.pdf}
-\caption{Coverage of the AV2-calibrated threshold ($\alpha=0.1$, dashed = nominal) by manoeuvre type, AV2 same-domain test vs.\ nuScenes, with Wilson 95\% intervals.
-Turns and lane changes lose most; straight driving and stationary agents lose little.}
-\label{fig:traj}
-\end{figure*}
-
-\subsection{Statistics under scene clustering}\label{sec:cluster}
-The 9041 nuScenes agent-scenarios come from only 138 scenes, so they are strongly dependent. Resampling whole scenes widens every gap interval (design effect \designEffMin--\designEffMax, Table~\ref{tab:cluster});
-the gap remains significantly positive for all three models (lower interval bounds from \clusterLoMin\ to \clusterLoMax\ points).
-
-\input{generated/table_cluster}
-
-\subsection{Repair with exchangeable labels}\label{sec:repair-iid}
-With $k=1000$ labelled target scenes drawn at random (Table~\ref{tab:repair}), plain direct recalibration reaches coverage $\ge 90\%$ on held-out scenes in only
-\corDirectMin--\corDirectMax\% of label draws --- marginal, not training-conditional, validity. The PAC threshold does so in \corPACMin--\corPACMax\% of draws, and certify-or-recalibrate
-(Sec.~\ref{sec:cor}) in \corCORMin--\corCORMax\%, at a median region \corCORareaMin--\corCORareaMax$\times$ the size of the oracle region.
-
-\input{generated/table_repair}
-
-\subsection{Repair with whole-scene labels}\label{sec:repair-scene}
-Labels are collected scene by scene, and then exchangeability at the agent level is false. With $m=40$ labelled \emph{scenes} the agent-level certify-or-recalibrate rule covers
-$\ge 90\%$ of held-out scenes in only \sceneAgentFortyMin--\sceneAgentFortyMax\% of draws (Table~\ref{tab:scene}): its guarantee is not merely loose but wrong. Scene-level Learn-then-Test
-(Sec.~\ref{sec:scene}) restores it. With the Hoeffding--Bentkus $p$-value it is valid but returns an infinite region for the smallest budgets and a region
-\sceneHBAreaSixtyMin--\sceneHBAreaSixtyMax$\times$ the oracle's at $m=60$ scenes; with the betting $p$-value it covers $\ge 90\%$ of held-out scenes in \sceneBetFortyMin--\sceneBetFortyMax\% of draws at $m=40$
-(region \sceneBetAreaFortyMin--\sceneBetAreaFortyMax$\times$ the oracle's) and \sceneBetSixtyMin--\sceneBetSixtyMax\% at $m=60$ (\sceneBetAreaSixtyMin--\sceneBetAreaSixtyMax$\times$), i.e.\ at the nominal level
-up to the sampling noise of the small held-out scene pool. These rates are \emph{exploratory}; Sec.~\ref{sec:confirm}
-reports the pre-registered confirmatory test and narrows the recommended budget to 30--40 scenes.
-
-\input{generated/table_scene}
-
-\subsection{Comparison with an online method}
-Adaptive conformal inference \cite{gibbs2021adaptive} needs a stream of labels. Its running coverage stays within 2 points of nominal after a median of \aciFastMin--\aciFastMax\ labels
-with $\gamma=0.05$ but only after \aciSlowMin--\aciSlowMax\ labels with $\gamma=0.005$. Frozen after 1000 labels, its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFrozenMax\% of streams
-(like plain recalibration): ACI gives long-run, not finite-sample, control, which is what an audit-then-deploy workflow needs.
-
-\subsection{H8: robustness across a model zoo}
-Table~\ref{tab:models} lists every model run to date, \nModelsDone\ in the forward direction and \nReverseDone\ in
-reverse. Within the three-model exploratory zoo that H8 was registered against, the under-coverage direction is
-consistent (gap $\ge 0.02$ at $\alpha=0.10$, the pre-registered pass condition, met every time), but the size is not:
-3.3 to 10.5 points, a $3.2\times$ range, with no monotonic link to point-prediction accuracy. Neither is the effect
-of any repair attempted on it: H4's gap reduction ranges 12--49\%, and H6's $\rho$ ranges 0.10--0.39. H8 is therefore
-supported on the narrow clause it was registered for (the gap replicates, the sign never flips) and is itself the
-paper's main qualification for the exploratory zoo: an effect size measured on one model should not be assumed to
-transfer to another, even within the same architecture and training recipe. Section~\ref{sec:confirm} asks the same
-question of the two gate-passing models trained after that registration.
-
-\subsection{H9: reverse direction (nuScenes $\to$ Argoverse~2)}
-The exploratory reverse-direction model (ns\_cpu\_v1, \nCalRevExpl\ nuScenes calibration scenes) shows the same
-failure with the source and target swapped: same-domain gap \gapSameRevExpl\ points, cross-dataset gap
-$+\gapRawRevExpl$ points (95\% CI \gapRawRevExplCI). H9's pre-registered condition, a positive gap that survives the
-swap, is met. The normalised score does not help here: it moves the gap to $+\gapNormRevExpl$ points, worse than raw.
-The confirmatory reverse model is reported in Sec.~\ref{sec:confirm}.
+The nuScenes test agents come from only 138 scenes, so they are strongly dependent. Resampling whole scenes inflates the
+variance of the coverage estimate by a design effect of \designEffConf; all intervals on multi-agent targets therefore
+resample scenes, not agents. The more accurate model has the larger gap. The confirmatory AV2 model, within 0.5\% of
+UniTraj's published accuracy, loses \gapRawConf\ points, against 3.3 to 10.5 points for the three reduced-budget AV2
+models (Table~\ref{tab:models}). With four models of one architecture family this is an association, not a causal claim.
 
 \input{generated/table_models}
 
-\subsection{Confirmatory replication on competitive models}\label{sec:confirm}
-The exploratory zoo above was used to design every analysis in this paper, so a critical reader can reasonably ask
-whether its findings are an artefact of weak, CPU-trained models. Two models trained after every hypothesis in this
-section was registered answer that question: \textbf{av2\_gpu\_full}, trained on the full 183k-scene AV2 set
-(val minADE\textsubscript{6} \minADESixConf, against a 0.98 gate), and \textbf{ns\_gpu\_full}, trained on the full
-nuScenes set (val minADE\textsubscript{6} \minADESixConfRev, against a 1.39 gate). Both pass their pre-registered
-accuracy gate (Sec.~\ref{sec:setup}).
+\subsection{Q2: Does covariate reweighting fix it?}\label{sec:h2h3}
+No. Weighting the calibration scores by an estimated, label-free likelihood ratio increased the gap on every
+forward model by about two points (column ``rew.'' in Table~\ref{tab:models}) and left the reverse direction unchanged.
+Reweighting AV2 scenes to the nuScenes mix of speeds and manoeuvres even moves coverage the other way
+(Table~\ref{tab:inject}): nuScenes' scene mix is easier, so composition cannot explain the loss. This is the pattern
+expected when the conditional distribution of the future given the scene changes, which no reweighting on the scene
+can repair (Proposition~\ref{prop:ident}).
 
-The gap does not shrink. Calibrated on AV2 and tested on nuScenes, av2\_gpu\_full has same-domain gap
-\gapSameConf\ points and cross-dataset gap $+\gapRawConf$ points (95\% CI \gapRawConfCI\ points), \emph{larger}
-than any model in the exploratory zoo. The normalised score reduces it to $+\gapNormConf$ points, a
-\normReductionConf\% reduction, in the same range as the zoo's weakest repair. The reverse-direction model shows the
-same pattern: same-domain gap \gapSameConfRev\ points, cross-dataset gap $+\gapRawConfRev$ points (CI
-\gapRawConfRevCI), and here normalisation makes things worse, not better ($+\gapNormConfRev$ points).
+\subsection{Where does the loss come from?}\label{sec:where}
+The loss is concentrated in turns. On the confirmatory model, right-turn coverage falls by \dropRightConf\ points from
+AV2 to nuScenes, against \dropStraightConf\ points for straight driving (Fig.~\ref{fig:traj}). It is largest in
+Singapore, where traffic drives on the left: the right-turn drop there exceeds the drop in Boston by
+\sgExtraRightConf\ points. What AV2-trained forecasters miss is the wide, across-traffic turn of left-hand traffic.
+Injecting one measured input difference at a time into AV2 test inputs reproduces only part of the gap
+(Table~\ref{tab:inject}): a 2\,Hz history explains \injHzConf\%, lane dropout \injMapConf\%, and both together about
+a quarter. Excess annotation noise and map-point density were measured and found absent.
 
-The manoeuvre-level and injection findings of Sec.~\ref{sec:where} also replicate on av2\_gpu\_full. Right-turn
-coverage falls by \dropRightConf\ points from AV2 to nuScenes (compared with straight driving's \dropStraightConf),
-and the Singapore-minus-Boston gap in that drop is \sgExtraRightConf\ points. Re-sampling AV2 inputs to nuScenes'
-2\,Hz history reproduces \injHzConf\% of the real gap, lane dropout \injMapConf\%, and re-weighting to nuScenes' scene
-mix moves the gap by \injCompConf\ points, i.e.\ it works against the observed gap, matching the exploratory zoo's
-\injCompMin\ to \injCompMax\ points. The scene-cluster
-design effect is \designEffConf, close to the zoo's \designEffMin--\designEffMax\ range.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{generated/fig_traj_conf.pdf}
+\caption{Coverage by manoeuvre for the confirmatory AV2 model ($\alpha=0.1$, dashed = nominal). nuScenes is split
+by city; Singapore drives on the left. Error bars: agent-level Wilson 95\% intervals.}
+\label{fig:traj}
+\end{figure}
 
-The scene-level repair (Sec.~\ref{sec:repair-scene}) also replicates, with one qualification. Agent-level
-certify-or-recalibrate still fails under scene clustering (only \corDirectConf\% direct, \corCORConf\% agent-level
-C-or-R reach 90\% coverage at $k=1000$ i.i.d.\ labels\footnote{These two numbers are i.i.d.-label results, included
-here only as the baseline the scene-level method is compared against; the whole-scene numbers that follow are the
-relevant test.}), and the betting scene-level LTT reaches \sceneBetThirtyConf\% and \sceneBetFortyConf\% of draws at
-$m=30$ and $m=40$ labelled scenes, both above the pre-registered 88\% bar, at \sceneBetAreaFortyConf$\times$ the
-oracle region. At $m=50$ and $m=60$ the rate falls to \sceneBetFiftyConf\% and \sceneBetSixtyConf\%, below the 88\%
-bar we pre-registered for every $m$ in that range. The method is still statistically valid at every $m$ (the
-guarantee is a proof, not an estimate), and still far ahead of the un-repaired baseline, but the confirmatory evidence
-supports a practical recommendation of \textbf{30--40 labelled scenes}, not the wider 30--60 range the exploratory
-zoo appeared to support.
+\input{generated/table_inject}
 
-Taken together, nothing in the paper's qualitative story needed the exploratory zoo's weaker models to hold. The one
-correction the confirmatory run forces is quantitative: the safe operating point for the scene-level fix is narrower
-than first estimated.
+\subsection{Q3: What can label-free methods do?}
+Little, and not reliably. The model-normalised score (Sec.~\ref{sec:norm}) reduces the AV2$\to$nuScenes gap by
+\normReductionConf\% (to \gapNormConf\ points) but widens the reverse gap (to \gapNormConfRev\ points). On the
+reduced-budget models its effect ranges from a 49\% reduction to a 52\% increase. A domain-classifier shift monitor
+correlates with per-city coverage loss at Spearman $\rho\le0.47$ on every model, below the registered bar of 0.5.
+Adaptive conformal inference \cite{gibbs2021adaptive} converges only with a stream of labels; frozen after 1000 labels,
+its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFrozenMax\% of streams. These results
+agree with Proposition~\ref{prop:ident}: without target labels there is no general fix.
 
-\subsection{A third dataset: Waymo Open Motion}\label{sec:waymo}
-Two datasets leave open whether the failure is a property of AV2 and nuScenes specifically or of dataset shift in
-general. We pre-registered four hypotheses (H17--H20, Addendum C) against a third dataset, Waymo Open Motion
-v1.2.1, before running either confirmatory model on it. Waymo was split by scenario into \wmNScenariosAvW\
-calibration and a matching test half; no Waymo-trained model was built, since the question concerns a
-source-calibrated forecaster meeting new data, not a new forecaster.
+\subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
+\emph{Audit.} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
+with probability 1.00 on both confirmatory models, at a false-alarm rate of at most 7\% on a shift-free split
+(Table~\ref{tab:models}).
 
-\input{generated/table_waymo}
+\emph{Repair with exchangeable labels.} When $k=1000$ agents are labelled at random, certify-or-recalibrate
+(Sec.~\ref{sec:cor}) covers $\ge90\%$ of held-out agents in \corCORMin--\corCORMax\% of label draws, against
+\corDirectMin--\corDirectMax\% for plain recalibration, at a region \corCORareaMin--\corCORareaMax$\times$ the oracle's.
 
-Both source models fail on Waymo, and by more than on nuScenes or AV2 (H17, H18). Calibrated on AV2, the gap on
-Waymo is $+\wmGapAvW$ points (CI \wmGapAvWCI), larger than the same model's \gapRawConf-point gap on nuScenes.
-Calibrated on nuScenes, the Waymo gap is $+\wmGapNsW$ points (CI \wmGapNsWCI), again larger than that model's
-\gapRawConfRev-point gap on AV2. Every source-target pair tested in this paper under-covers, never over-covers, and
-Waymo is the hardest target of the three we tried, not the easiest. The normalised score
-reduces the gap on both models (to $+\wmGapNormAvW$ and $+\wmGapNormNsW$ points respectively, H20) but leaves it far
-from zero, the same pattern as on nuScenes.
+\emph{Repair with whole-scene labels.} Real labels arrive scene by scene, which breaks agent-level exchangeability. We
+draw $m$ labelled scenes from a pool disjoint from the evaluation scenes (nuScenes train for AV2$\to$nuScenes, the
+Waymo calibration half for the Waymo targets) and evaluate the scene-averaged miscoverage $R(\hat q)$ exactly on the
+evaluation pool, 1000 draws per $m$ (Fig.~\ref{fig:scene}). The scene-level rule with the betting $p$-value is valid at
+every $m$ on all four transfers ($\Pr[R(\hat q)\le\alpha]\ge\betValidMin$). The agent-level rule is not: on
+AV2$\to$nuScenes, with about 65 agents per scene, it is valid in \agentCorNsForty\% of draws at $m=40$ and
+\agentCorNsThreeHundred\% at $m=300$, and one-agent-per-scene split CP \cite{dunn2023hierarchical} in
+\hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
+\agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
 
-\input{generated/table_waymo_scene}
+Validity is not usefulness. With $m\le40$ scenes the scene-level rule cannot certify any finite threshold and returns
+the whole space, which is valid but uninformative. It returns a usable region (at most twice the oracle area, finite in
+$\ge95\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo and nuScenes$\to$Waymo, and from
+$m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less information each. At that budget the repaired
+AV2$\to$nuScenes radius is \recQAvNs\,m against an oracle of \qOracleAvNs\,m. The betting $p$-value gives smaller regions
+than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaNsTwoHundred$\times$ the oracle area at
+$m=200$ on AV2$\to$nuScenes).
 
-The scene-level fix (H19) transfers only in part. For AV2$\to$Waymo it clears the pre-registered 88\% bar at $m=30$
-and $m=40$ labelled scenarios (\wmSceneAvWThirty\% and \wmSceneAvWForty\%) and falls short at $m=50$ and $m=60$
-(\wmSceneAvWFifty\% and \wmSceneAvWSixty\%). For nuScenes$\to$Waymo it falls short at every $m$ tested
-(\wmSceneNsWThirty\%--\wmSceneNsWSixty\%, all below 88\%). The method stays statistically valid throughout, since the
-guarantee holds by construction rather than by the measured rate, and it still raises coverage from roughly 70\% to
-80--90\% at every budget tested. But the numeric bar we committed to in advance is not met in every case, and we
-report that plainly rather than only the cases where it is. Combined with Sec.~\ref{sec:confirm}'s finding on
-nuScenes, the practical recommendation across all three datasets is the same: budget for 30--40 labelled target
-scenes, and treat anything claimed at larger budgets as untested until it is measured directly.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{generated/fig_scene_repair.pdf}
+\caption{Repair with $m$ whole labelled scenes, disjoint label and evaluation pools, 1000 draws per $m$. (a) Probability
+that the repaired threshold controls scene-averaged miscoverage at $\alpha$ (dotted line: $1-\delta$). (b) Median
+region area relative to the oracle; hollow markers: threshold infinite in $>5\%$ of draws.}
+\label{fig:scene}
+\end{figure}
+
+\subsection{Exploratory models}\label{sec:expl}
+Three reduced-budget AV2 models and one reduced-budget nuScenes model (Table~\ref{tab:models}) were analysed before
+the confirmatory models existed. Each reproduces the sign of every confirmatory finding: under-coverage on the
+target, no help from reweighting, losses concentrated in turns, and agent-level failure under scene clustering. The
+magnitudes vary by a factor of three, which is why the claims above rest on the confirmatory models alone.

@@ -1,17 +1,15 @@
 \begin{abstract}
-A conformal prediction region promises to contain a vehicle's true future path a fixed fraction of the time. We ask
-what happens to that promise when a trajectory forecaster is calibrated on one driving dataset and deployed, without
-new labels, on another. Using AutoBot-Ego forecasters calibrated on Argoverse 2 and evaluated on nuScenes and on
-Waymo Open Motion, and the reverse direction with nuScenes as the source, we measure a coverage gap of up to 23
-percentage points at a 90\% nominal level. The gap is confirmed on models trained to match published state-of-the-art
-accuracy and is pre-registered on the third dataset before it was touched. Stronger point prediction makes the gap
-larger, not smaller. Reweighting the calibration set by an estimated covariate-shift likelihood ratio makes it worse,
-and a label-free normalised score only partially repairs it. We give a training-conditional guarantee that holds
-even when labels arrive scene by scene rather than one agent at a time, the realistic case for driving data, where a
-naive per-agent guarantee is shown to fail outright. With 30 to 40 labelled target scenes it restores coverage close
-to nominal at roughly 1.5 to 2 times the size of an oracle region, a result that replicates across both transfer
-directions and all three datasets. We also localise the failure to turning manoeuvres and left-hand traffic, and
-show that several measured input-level differences between the datasets explain only a minority of it. The results
-argue that conformal guarantees for trajectory prediction should not be assumed to transfer across datasets without
-an explicit, budgeted recalibration step.
+A conformal prediction region promises to contain a road user's true future path a fixed fraction of the time. We ask
+whether that promise survives when a trajectory forecaster is calibrated on one driving dataset and deployed, without
+new labels, on another. Using forecasters calibrated on Argoverse 2 or nuScenes and evaluated on each other and on
+Waymo Open Motion, we measure coverage losses of 8 to 23 percentage points at a 90 percent nominal level. The losses
+are confirmed on models that match published accuracy and were registered in advance for the third dataset. The most
+accurate model loses the most coverage. Reweighting the calibration data by an estimated covariate-shift likelihood
+ratio makes the loss worse, and we show that no label-free method can repair an unrestricted shift. The loss
+concentrates in turns, most of all in left-hand traffic, and measured input differences between the datasets explain
+only about a quarter of it. Labelled target data can repair it, but labels arrive one scene at a time, and a guarantee
+that treats agents as independent fails when scenes contain many agents. A scene-level Learn-then-Test rule with a
+betting test restores the guarantee at every labelling budget we tested, and returns a region within twice the oracle
+size from about 150 to 200 labelled scenes. Conformal guarantees for trajectory prediction should therefore not be
+assumed to transfer across datasets without an audit and a scene-level recalibration.
 \end{abstract}

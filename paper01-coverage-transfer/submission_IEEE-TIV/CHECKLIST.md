@@ -37,13 +37,13 @@ are outstanding, and neither is a formatting requirement.
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
 - [x] Declaration of Generative-AI use in manuscript preparation (required disclosure, kept, not removed)
-- [x] Abstract: one paragraph, 247 words (within the 150-250 word requirement), no citations/equations/tables
-- [x] 5 keywords (guideline suggests 3-4; a couple extra rarely causes rejection, trim if the AE flags it)
+- [x] Abstract: one paragraph, 224 words (within the 150-250 word requirement), no citations/equations/tables
+- [x] 4 keywords (guideline: 3-4)
 - [x] Reproducibility statement (code, pre-registration, experiment log)
 
 ## Length
-Regular paper suggested length: 10 pages. Current build (with photo and all three biographies): still 10 pages.
-No overlength charge expected.
+Regular paper suggested length: 10 pages. Current build: 9 pages including 71 references, all three biographies,
+4 figures (pipeline diagram, coverage-gap bars, manoeuvre coverage, scene-level repair) and 2 tables. No overlength charge.
 
 ## What's in this folder
 - `main.pdf` -- the compiled manuscript

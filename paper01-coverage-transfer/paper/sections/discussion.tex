@@ -1,60 +1,40 @@
-\section{Discussion and Limitations}
-A planner that trusts a source-calibrated region on unseen deployment data is, on this evidence, trusting a region
-that is too small. At $\alpha=0.10$, the confirmatory models' cross-dataset gap is $+\gapRawConf$ points on nuScenes,
-$+\gapRawConfRev$ points on AV2, and $+\wmGapAvW$ to $+\wmGapNsW$ points on Waymo, never zero. The gap is silent:
-nothing in the deployed system signals it. That is why we treat measurement and audit as first-class contributions
-rather than a prelude to the fix. Four results bear directly on practice.
+\section{Discussion}
+A planner that trusts a source-calibrated region on a new dataset trusts a region that is too small. At $\alpha=0.1$
+the confirmatory models lose \gapRawConf, \gapRawConfRev, \wmGapAvW\ and \wmGapNsW\ points of coverage on the four
+transfers we tested, and the loss is silent: nothing observable without labels signals it. Three results bear
+directly on practice.
 
-Covariate reweighting is not a safe default. It widened the gap on every exploratory model we tried it on
-(Sec.~\ref{sec:h2h3}), so a practitioner who reweights and stops is worse off than one who does nothing. The
-label-free normalised score is not a substitute for labels either. It repaired the gap by 12--49\% on the exploratory
-zoo and by 27\% on the confirmatory AV2 model, but made the confirmatory reverse-direction gap slightly worse. Nothing
-observable at deployment time, without target labels, currently tells a practitioner which regime they are in.
+\emph{Label-free fixes are not safe defaults.} Covariate reweighting made the gap larger on every forward model, and
+the normalised score helped in one direction and hurt in the other. A practitioner who applies either and stops can be
+worse off than one who does nothing.
 
-The coverage audit (Sec.~\ref{sec:audit}) is the one method that behaved as pre-registered without exception, on every
-model we tried it on: with on the order of $10^3$ labelled target scenes it detects a violation of this size reliably
-and at a low false-alarm rate. The scene-level repair (Sec.~\ref{sec:scene}) is the one that turns a broken guarantee
-into a working one, but its practical operating point is narrower than we first thought. Across three independent
-confirmatory tests of the same pre-registered bar, on two datasets and two source models (Sec.~\ref{sec:confirm},
-Sec.~\ref{sec:waymo}), the rule clears 88\% of draws reaching 90\% held-out coverage at 30--40 labelled scenes and
-falls short at 50--60. We recommend the smaller budget, not the wider range the exploratory zoo appeared to support,
-and we report the shortfall rather than the version of the story that would have looked cleaner.
+\emph{Auditing is cheap; repairing is not.} About $10^3$ labelled target agents suffice to detect a gap of this size
+with high power. Repairing it with a guarantee that holds under scene clustering needs whole labelled scenes: roughly
+\recMMin\ to \recMMax\ of them before the region is both finite and within twice the oracle area. Below that budget the
+correct behaviour is to abstain, which the scene-level rule does.
 
-The practical recommendation these four results support is concrete. Budget for 30--40 labelled target scenes,
-collected as whole scenes rather than as a fixed count of agents, and recalibrate with the scene-level betting rule.
-Treat covariate reweighting and the normalised score as diagnostics worth trying, not guarantees worth relying on.
-Audit with a few hundred to a thousand labelled scenes before trusting any transferred region that has not been
-recalibrated this way.
+\emph{The unit of labelling matters.} Agent-level guarantees failed exactly where scenes are large (nuScenes, about 65
+agents per scene) and held where they are small (Waymo, AV2). Any certification protocol for driving data should
+state its labelling unit and resample at that unit.
 
-\paragraph{Does a stronger model fix it?} No. The confirmatory AV2 model is a properly resourced AutoBot, trained on
-the full 183k-scene set and within 0.5\% of UniTraj's published accuracy, and its coverage gap (+15.1 points) is
-larger than any model in the exploratory zoo (3.3 to 10.5 points). Four models now show the same pattern: point
-accuracy and coverage validity are not the same property, and improving one does not repair the other. We do not have
-a causal account of why the gap grows with accuracy. A larger model zoo, spanning architectures and training
-recipes, would be needed to explain it, and we report the pattern as an open question rather than force an
-explanation onto five data points.
+\paragraph{Mechanism} Two observations narrow the cause. The measured input differences explain about a quarter of
+the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain. Both point to a change
+in the conditional behaviour of road users rather than in the scenes themselves, consistent with
+Proposition~\ref{prop:ident}. That the most accurate model shows the largest gap is consistent with a sharper,
+more confident source fit that extrapolates worse; testing this needs more architectures than we trained.
 
-\paragraph{Does it generalise beyond one dataset pair?} Largely yes. Waymo Open Motion (Sec.~\ref{sec:waymo}) was
-never touched during method design: every hypothesis about it was fixed before any Waymo prediction was computed.
-The direction of the failure, under-coverage, held for both source models and was larger than on nuScenes or AV2.
-The repair transferred at the same budget that worked on nuScenes, for one of the two source models, and fell short
-of the pre-registered bar for the other. We read this as qualified support: the failure mode generalises across three
-independently collected datasets, and the fix generalises at the smaller label budget, but a practitioner should not
-assume the 50--60-scene operating point without measuring it directly on their own data.
+\paragraph{Limitations} (i) One architecture family; the conclusion that accuracy and coverage validity can diverge
+should be tested on others. (ii) The measured input differences leave most of the gap unexplained, and unmeasured
+causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
+manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
+(v) The repair budget is measured on three datasets and may differ on others; the registered evaluation design
+(disjoint pools, exact evaluation) should be reused rather than the numbers.
 
-\paragraph{Limitations.}\label{sec:limitations}
-(i) One architecture family (AutoBot). A second architecture, Wayformer, was planned and is supported by the
-prediction and injection code, but training it within the time available for this submission would not have left
-room for the pre-registered confirmatory and Waymo runs above, so it is left for future work rather than included
-half-finished. (ii) The observed gap is an association. Its cause, whether annotation convention, sampling rate, or
-agent mix, is not fully isolated: Sec.~\ref{sec:where} tests several candidates directly and finds that the measured
-ones explain a minority of the gap, but unmeasured candidates cannot be ruled out. (iii) Coverage is marginal, not
-conditional on any single scene; Sec.~\ref{sec:where}'s manoeuvre-level breakdown is a diagnostic, not itself a
-guarantee. (iv) Hypotheses added after the first measurement pass are labelled post-hoc throughout and were
-registered before the runs that tested them, but they were still informed by having seen Run~1. (v)
-Proposition~\ref{prop:ident} covers scale shifts only; a more general shift could in principle be label-free
-repairable in ways our injection experiments did not test for. (vi) The exploratory zoo's CPU-trained models remain
-quantifiably below published state-of-the-art point accuracy, and every exploratory-only result (Sec.~\ref{sec:where}
-and Sec.~\ref{sec:repair-scene}) should be read as designed-on rather than confirmed-on evidence until Sec.~\ref{sec:confirm}
-and Sec.~\ref{sec:waymo} report the same quantity on a gated model, which they now do for the great majority of the
-paper's claims.
+\section{Conclusion}
+A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets and four
+transfer pairs, a forecaster calibrated at 90\% covered between \covTgtMin\ and \covTgtMax\% of target futures, and a
+more accurate forecaster lost more coverage, not less. Reweighting does not repair the loss and no label-free method can
+in general. Labelled target data can: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value
+restores the guarantee at every budget we tested and gives a usable region from about \recMMin\ labelled scenes. We
+recommend that any transferred conformal region be audited on target labels and, where it fails, recalibrated at the
+scene level before it is used for planning.

@@ -65,9 +65,8 @@ Learn-then-Test \cite{angelopoulos2025ltt} give finite-sample control of a monot
 set of thresholds, and betting-based $p$-values \cite{waudbysmith2024betting} make such tests far tighter than
 Hoeffding-type bounds when losses are small. We combine the two ideas for a setting those works do not address:
 dataset shift in trajectory prediction, where the natural labelling unit is the \emph{scene} and the risk to be
-controlled is the scene-averaged miscoverage of a fixed, source-calibrated forecaster; our Addendum~D (revision R1,
-reported in Sec.~\ref{sec:confirm}) is itself a cautionary case study in exactly the betting-validity failure mode
-that \cite{alvarez2024pvalue} studies in general, for bounded-variable $p$-values.
+controlled is the scene-averaged miscoverage of a fixed, source-calibrated forecaster. Valid $p$-values for bounded
+losses need care \cite{alvarez2024pvalue}; our own implementation needed a corrected bet cap (Sec.~\ref{sec:scene}).
 
 \paragraph{Risk control and betting, more generally.}
 Beyond Learn-then-Test, risk control has been extended to adaptive, data-dependent tradeoffs among several risks at

@@ -182,3 +182,13 @@ Register all of these in Addendum D (step 1.1) before running. Mark each as conf
 | Wayformer misses the gate | Rule 2.6. Never with resource wording. |
 | Machine interrupted | Watchdogs plus `.ok` markers; resume from the lowest missing marker |
 | Added figures push the paper past 10 pages | Move the exploratory material and the qualitative figure to Supplementary first |
+
+## Progress log
+- 2026-10-02: Phase 1 done (1.1-1.7). Literature expanded to 71 verified refs (42 new, 2024+).
+- 2026-10-02: Phase 4 structure done early to fit 10 pages: Results reorganised as Q1-Q4, confirmatory first;
+  8 tables -> 2 (compact model table, injection table); new figures: Fig.1 TikZ pipeline, Fig.2 gap bars (4
+  transfers, scene-clustered CIs), Fig.3 manoeuvre coverage by city (confirmatory model), Fig.4 corrected scene repair
+  (rev1, disjoint pools); Conclusion added; resource wording removed; AI disclosure moved to Acknowledgment; 4
+  keywords; all scene-repair claims corrected to the rev1 numbers (~150-200 scenes). 9 pages.
+- Still open: Wayformer (Phase 2, training), Phase 3 analyses (history-length confound, mechanism), Zenodo v2 with
+  corrected code (cite concept DOI), GitHub push of these commits (needs go-ahead).

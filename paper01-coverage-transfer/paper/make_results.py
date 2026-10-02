@@ -205,42 +205,37 @@ def main():
             reduction = 100 * (1 - norm_tgt["gap"] / raw_tgt["gap"]) if raw_tgt["gap"] else float("nan")
             power = dj["audit"]["target"]["reject_prob"].get(K_HEADLINE)
             fa = dj["audit"]["same_domain"]["reject_prob"].get(K_HEADLINE)
-            cj = load_cities(m)
-            rho, _ = h6_rho(cj)
+            h3 = dj["H3_label_free"]
             rows.append({
                 "model": m.replace("_", r"\_"), "status": "conf." if m in (CONF_MODEL, CONF_REVERSE_MODEL) else "expl.",
-                "direction": direction, "target": dj["target"],
-                "n_cal": dj["n"]["cal"], "n_tgt": dj["n"]["target"],
-                "gap_raw": pct(raw_tgt["gap"]), "ci": fmt_ci(raw_tgt["ci95"]),
-                "gap_norm": pct(norm_tgt["gap"]), "reduction": f"{reduction:.0f}",
+                "direction": "fwd" if direction == "forward" else "rev",
+                "gap_raw": pct(raw_tgt["gap"]),
+                "ci": f"{pct(raw_tgt['ci95'][0])}--{pct(raw_tgt['ci95'][1])}",
+                "gap_norm": pct(norm_tgt["gap"]),
+                "rew": f"{100 * (h3['weighted']['gap'] - h3['uncorrected']['gap']):+.1f}",
                 "power": f"{power:.2f}" if power is not None else "--",
-                "fa": pct(fa) if fa is not None else "--",
-                "rho": f"{rho:.2f}" if rho is not None else "--",
+                "fa": f"{100 * fa:.0f}" if fa is not None else "--",
             })
     tex = [
-        r"\begin{table*}[t]",
+        r"\begin{table}[t]",
         r"\centering",
-        (r"\caption{Coverage transfer by model and direction, $\alpha=0.10$. Status: conf.\ = gate-passing model "
-         r"trained on the full dataset after the hypothesis was registered; expl.\ = CPU-trained exploratory zoo, "
-         r"used to design the analyses (Sec.~\ref{sec:setup}). "
-         r"``red.'' = \%% reduction in gap from the label-free normalised score (H4); "
-         r"``power/FA'' = audit reject probability at $k=%s$ target labels on the shifted / same-domain split (H5b); "
-         r"$\rho$ = Spearman correlation between the label-free domain-monitor AUC and the per-city miscoverage (H6).}" % K_HEADLINE),
+        (r"\caption{Coverage gap by model ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). "
+         r"conf.: gated full-data model; expl.: reduced-budget model used to design the analyses. norm.: gap of "
+         r"the normalised score. rew.: change in gap from covariate reweighting (positive = worse). audit: reject "
+         r"probability / false-alarm \%% at $k=%s$ labels.}" % K_HEADLINE),
         r"\label{tab:models}",
-        r"\begin{tabular}{lllrrrrrrrr}",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\resizebox{\columnwidth}{!}{\begin{tabular}{lllrcrrc}",
         r"\toprule",
-        (r"Model & Status & Dir. & $n_\text{cal}$ & $n_\text{tgt}$ & gap (pt) & 95\% CI & norm.\ gap & red.\ (\%) & "
-         r"power/FA @" + K_HEADLINE + r" & $\rho$ \\"),
+        r"Model & St. & Dir. & gap & 95\% CI & norm. & rew. & audit \\",
         r"\midrule",
     ]
-    for r in rows:
-        tex.append(
-            f"{r['model']} & {r['status']} & {r['direction']} & {r['n_cal']} & {r['n_tgt']} & {r['gap_raw']} & {r['ci']} & "
-            f"{r['gap_norm']} & {r['reduction']} & {r['power']}/{r['fa']} & {r['rho']} \\\\"
-        )
+    for r in sorted(rows, key=lambda r: (r["status"] != "conf.", r["direction"])):
+        tex.append(f"{r['model']} & {r['status']} & {r['direction']} & {r['gap_raw']} & {r['ci']} & "
+                   f"{r['gap_norm']} & {r['rew']} & {r['power']}/{r['fa']} \\\\")
     if not rows:
-        tex.append(r"\multicolumn{11}{c}{no results yet} \\")
-    tex += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
+        tex.append(r"\multicolumn{8}{c}{no results yet} \\")
+    tex += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
     (OUT / "table_models.tex").write_text("\n".join(tex) + "\n")
 
     # ---- H2/H3 reweighting table: does covariate reweighting repair the gap? ------------------
@@ -286,6 +281,10 @@ def main():
     # Addendum-C tables/macros (Waymo, third dataset)
     import make_results_addC
     print("addC tables/macros for:", make_results_addC.write_all())
+
+    # Revision R1 figures/macros (gap bars, corrected scene-level repair)
+    import make_results_rev1
+    print("rev1 figures/macros for:", make_results_rev1.write_all())
 
 
 if __name__ == "__main__":
