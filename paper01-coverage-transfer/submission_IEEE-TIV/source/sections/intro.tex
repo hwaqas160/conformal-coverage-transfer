@@ -18,18 +18,22 @@ label-free, dataset-to-dataset case that Fig.~\ref{fig:pipeline} illustrates.
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[font=\scriptsize, node distance=3mm and 3.4mm,
-  box/.style={draw, rounded corners=1.5pt, align=center, inner sep=2pt, minimum height=6.5mm},
-  res/.style={draw, rounded corners=1.5pt, align=center, inner sep=2pt, fill=black!6, text width=24mm},
+  box/.style={draw=okBlue!70!black, rounded corners=1.5pt, align=center, inner sep=2pt, minimum height=6.5mm, fill=okSky!18},
+  mbox/.style={draw=black!55, rounded corners=1.5pt, align=center, inner sep=2pt, minimum height=6.5mm, fill=black!5},
+  res/.style={draw=black!55, rounded corners=1.5pt, align=center, inner sep=2pt, text width=24mm},
+  noneSty/.style={res, draw=okVermillion!80!black, fill=okVermillion!12},
+  audSty/.style={res, draw=okOrange!80!black, fill=okOrange!16},
+  repSty/.style={res, draw=okGreen!70!black, fill=okGreen!14},
   arr/.style={-{Stealth[length=1.6mm]}, semithick}]
 \node[box] (src) {source data\\(AV2 / nuSc.)};
-\node[box, right=of src] (cp) {forecaster\\+ split CP};
-\node[box, right=of cp] (q) {threshold\\$\hat q_{\mathrm{src}}$};
+\node[mbox, right=of src] (cp) {forecaster\\+ split CP};
+\node[mbox, right=of cp] (q) {threshold\\$\hat q_{\mathrm{src}}$};
 \node[box, right=of q] (tgt) {target data\\(new dataset)};
 \coordinate (mid) at ($(src.west)!0.5!(tgt.east)$);
-\node[res, below=8.5mm of mid, anchor=north] (aud) {$k$ labelled agents:\\binomial audit\\detects the gap};
-\node[res, left=2mm of aud] (none) {no labels:\\coverage $<1-\alpha$,\\silently (Q1--Q3)};
-\node[res, right=2mm of aud] (rep) {$m$ labelled scenes:\\scene-level LTT,\\certified $\hat q$ (Q4)};
-\draw[arr] (src) -- (cp); \draw[arr] (cp) -- (q); \draw[arr] (q) -- (tgt);
+\node[audSty, below=8.5mm of mid, anchor=north] (aud) {$k$ labelled agents:\\binomial audit\\detects the gap};
+\node[noneSty, left=2mm of aud] (none) {no labels:\\coverage $<1-\alpha$,\\silently (Q1--Q3)};
+\node[repSty, right=2mm of aud] (rep) {$m$ labelled scenes:\\scene-level LTT,\\certified $\hat q$ (Q4)};
+\draw[arr, okBlue!70!black] (src) -- (cp); \draw[arr] (cp) -- (q); \draw[arr, okBlue!70!black] (q) -- (tgt);
 \coordinate (j) at ($(aud.north)+(0,2.4mm)$);
 \draw[semithick] (tgt.south) -- (tgt.south |- j) -- (none.north |- j);
 \draw[arr] (none.north |- j) -- (none.north);

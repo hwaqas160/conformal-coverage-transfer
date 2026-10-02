@@ -57,8 +57,8 @@ def fig_gap():
     x = range(len(rows))
     w = 0.36
     for i, (lab, cs, cis, ct, cit) in enumerate(rows):
-        ax.bar(i - w / 2, cs, w, color="0.82", edgecolor="0.25", lw=0.5, label="source test split" if i == 0 else None)
-        ax.bar(i + w / 2, ct, w, color="0.35", edgecolor="0.1", lw=0.5, hatch="////",
+        ax.bar(i - w / 2, cs, w, color="#56B4E9", edgecolor="#0072B2", lw=0.5, label="source test split" if i == 0 else None)
+        ax.bar(i + w / 2, ct, w, color="#D55E00", edgecolor="#7a3000", lw=0.5, hatch="////",
                label="target dataset" if i == 0 else None)
         for xx, c, ci in ((i - w / 2, cs, cis), (i + w / 2, ct, cit)):
             ax.errorbar(xx, c, yerr=[[c - ci[0]], [ci[1] - c]], fmt="none", ecolor="k", elinewidth=0.6, capsize=1.5)
@@ -92,12 +92,12 @@ def fig_traj():
               "straight_left": "lane ch. L", "right_turn": "right turn", "left_turn": "left turn"}
     fig, ax = plt.subplots(figsize=(3.45, 1.7))
     x = np.arange(len(types)); w = 0.27
-    series = [("same", "n_same", "AV2 test", "0.85", ""), ("boston", "n_boston", "nuSc. Boston", "0.55", "...."),
-              ("singapore", "n_singapore", "nuSc. Singapore", "0.25", "////")]
+    series = [("same", "n_same", "AV2 test", "#0072B2", ""), ("boston", "n_boston", "nuSc. Boston", "#E69F00", "...."),
+              ("singapore", "n_singapore", "nuSc. Singapore", "#D55E00", "////")]
     for j, (k, nk, lab, col, hatch) in enumerate(series):
         v = np.array([b[t][k] for t in types]); n = np.array([b[t][nk] for t in types])
         lo, hi = zip(*[_wilson(p, nn) for p, nn in zip(v, n)])
-        ax.bar(x + (j - 1) * w, v, w, color=col, edgecolor="k", lw=0.4, hatch=hatch, label=lab,
+        ax.bar(x + (j - 1) * w, v, w, color=col, edgecolor="0.15", lw=0.4, hatch=hatch, label=lab,
                yerr=[v - np.array(lo), np.array(hi) - v], error_kw={"elinewidth": 0.5, "capsize": 1.2})
     ax.axhline(1 - ALPHA, color="k", lw=0.6, ls="--")
     ax.set_xticks(x); ax.set_xticklabels([labels[t] for t in types])
@@ -124,8 +124,8 @@ def fig_scene_repair(scene):
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(3.45, 1.85))
     d = scene["av2_to_nuscenes"]
     ms = sorted(map(int, d["by_m"]))
-    styles = [("bet", "scene LTT, betting", "o", "-", "k"), ("hb", "scene LTT, HB", "s", "--", "0.35"),
-              ("agent_cor", "agent-level C-or-R", "^", ":", "0.25"), ("hier_sub1", "one agent / scene", "v", "-.", "0.55")]
+    styles = [("bet", "scene LTT, betting", "o", "-", "#0072B2"), ("hb", "scene LTT, HB", "s", "--", "#009E73"),
+              ("agent_cor", "agent-level C-or-R", "^", ":", "#D55E00"), ("hier_sub1", "one agent / scene", "v", "-.", "#E69F00")]
     for k, lab, mk, ls, c in styles:
         a1.plot(ms, [d["by_m"][str(m)][k]["p_valid"] for m in ms], marker=mk, ms=2.6, ls=ls, color=c, label=lab)
     a1.axhline(1 - 0.10, color="k", lw=0.6, ls=(0, (1, 1)))
@@ -135,7 +135,8 @@ def fig_scene_repair(scene):
     fig.legend(*a1.get_legend_handles_labels(), loc="lower center", ncol=4, frameon=False, fontsize=5,
                handlelength=2.2, columnspacing=0.8, bbox_to_anchor=(0.5, 0.0))
     marks = ["o", "s", "^", "D"]; lss = ["-", "--", ":", "-."]
-    for (pk, plab), mk, ls in zip(PAIRS, marks, lss):
+    cols = ["#0072B2", "#D55E00", "#009E73", "#CC79A7"]
+    for (pk, plab), mk, ls, col in zip(PAIRS, marks, lss, cols):
         dd = scene[pk]
         xs, ys, hollow = [], [], []
         for m in sorted(map(int, dd["by_m"])):
@@ -143,9 +144,9 @@ def fig_scene_repair(scene):
             if b["median_area_vs_oracle"] is None:
                 continue
             xs.append(m); ys.append(b["median_area_vs_oracle"]); hollow.append(b["frac_infinite"] > 0.05)
-        line, = a2.plot(xs, ys, ls=ls, color="k", lw=0.8, label=plab)
+        line, = a2.plot(xs, ys, ls=ls, color=col, lw=0.8, label=plab)
         for x_, y_, h in zip(xs, ys, hollow):
-            a2.plot(x_, y_, marker=mk, ms=2.8, color="k", mfc="white" if h else "k", ls="none")
+            a2.plot(x_, y_, marker=mk, ms=2.8, color=col, mfc="white" if h else col, ls="none")
     a2.axhline(2.0, color="k", lw=0.6, ls=(0, (1, 1)))
     a2.set_xscale("log"); a2.set_xticks([60, 100, 200, 300]); a2.set_xticklabels(["60", "100", "200", "300"])
     a2.set_xlabel("labelled scenes $m$"); a2.set_ylabel("area / oracle")
