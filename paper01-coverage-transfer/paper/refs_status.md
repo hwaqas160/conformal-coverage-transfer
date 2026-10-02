@@ -56,3 +56,59 @@ from memory alone.
 | key | status | source checked |
 |---|---|---|
 | ettinger2021waymo | V 2026-09-29 | arxiv.org/abs/2104.10133 (title/authors confirmed via fetch); venue ICCV 2021 corroborated by the CVF open-access URL pattern (content/ICCV2021/papers/Ettinger_..._ICCV_2021_paper.pdf, request blocked by bot protection, 403 not 404) and by prior knowledge; no page numbers available from either source so `pages` is omitted, matching the convention used for angelopoulos2025ltt above |
+
+## Added 2026-10-02 (literature expansion, 2024+ only, per user request) -- all V via arXiv abs-page fetch
+Verified by fetching each arxiv.org/abs/<id> page directly and reading title/author list/date/venue off it
+(not from memory, not from the search snippet alone). Two candidates found during the same search were already
+in refs.bib under a different key (shu2025scenario = arXiv:2512.05682; binny2025moved = arXiv:2511.11567) and
+were not re-added. One candidate (arXiv:2310.14293, "Testing exchangeability by pairwise betting") was excluded
+for being a 2023 submission, outside the 2024+ requirement.
+
+| key | arXiv id | status | venue (if beyond arXiv) |
+|---|---|---|---|
+| doula2025safepath | 2505.09427 | V | -- |
+| chen2024v2i | 2408.00374 | V | -- |
+| mei2024perceive | 2403.08185 | V | -- |
+| yao2025crowdnav | 2508.05634 | V | CoRL 2025 |
+| pouria2026gaussian | 2603.10407 | V | -- |
+| feldman2025robotsafety | 2501.04823 | V | -- |
+| binny2026stable | 2511.20593 | V | IEEE RA-L (accepted) |
+| mirzaeedodangeh2025interactive | 2511.10586 | V | -- |
+| lindemann2024formal | 2409.00536 | V | -- |
+| abdelmadjid2025survey | 2503.03262 | V | -- |
+| song2025unimotion | 2602.00566 | V | NeurIPS 2025 |
+| zhou2026modeseq | 2605.24037 | V | -- |
+| demmler2025dataset | 2507.05098 | V | -- |
+| aolaritei2025levy | 2502.14105 | V | -- |
+| xu2025wasserstein | 2501.13430 | V | -- |
+| correia2025nonexchangeable | 2507.10425 | V | NeurIPS 2025 |
+| liu2026certify | 2608.10893 | V | -- |
+| alvarez2024pvalue | 2405.08975 | V | -- |
+| nguyen2024tradeoffs | 2403.19605 | V | -- |
+| einbinder2024semisupervised | 2412.11174 | V | -- |
+| joshi2026riskcontrolled | 2605.06479 | V | -- |
+| mortier2025hierarchicalclass | 2501.19038 | V | -- |
+| principato2024hierarchicaldata | 2411.13479 | V | -- |
+| bhattacharyya2024groupweighted | 2401.17452 | V | -- |
+| mallick2026generalizedhcp | 2608.15500 | V | -- |
+| gauthier2025evalues | 2503.13050 | V | -- |
+| prinster2025watch | 2505.04608 | V | ICML 2025 |
+| vovk2025randomness | 2501.11689 | V | -- |
+| jun2026retrospective | 2511.04275 | V | Pattern Recognition vol. 180 (2026) |
+| liu2026portfolio | 2602.03168 | V | -- |
+| liang2026optimalregret | 2602.16537 | V | -- |
+| min2026unifiedtheory | 2605.11602 | V | -- |
+| zhou2026cpassessment | 2603.27189 | V | -- |
+| braun2025diagnostics | 2512.11779 | V | -- |
+| bairaktari2025kandinsky | 2502.17264 | V | -- |
+| zhong2026fairness | 2608.04254 | V | -- |
+| luo2025conditionalrisk | 2504.07611 | V | -- |
+| wu2025visuallocalization | 2506.15851 | V | ICRA 2025 |
+| manchingal2025uncertaintyaware | 2510.22680 | V | -- |
+| wang2025collaborative | 2504.12696 | V | -- |
+| qiu2026crosssensor | 2606.11573 | V | -- |
+| kong2025largead | 2501.04005 | V | IEEE TPAMI (2025) |
+
+Conference/journal acceptances above are stated as reported in the fetched arXiv page or its "Comments" field at
+verification time; since this is a fast-moving set (several still mid-review-cycle as of today), re-check venue
+details against the camera-ready at proofing time if the paper is still cited then.

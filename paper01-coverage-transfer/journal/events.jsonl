@@ -223,3 +223,26 @@
 {"ts": "2026-09-29T13:27:36", "id": "addC_av2_gpu_full", "event": "done", "detail": "H17 gap=0.2339 CI=[0.2159452141884632, 0.2490823928675633] verdict=SUPPORTED; H18=SUPPORTED; H20=reduced, NOT removed -> F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\addC\\av2_gpu_full.json", "sha": "561e6c3"}
 {"ts": "2026-09-29T13:27:41", "id": "addC_ns_gpu_full", "event": "attempt_start", "detail": "cal=nscal", "sha": "561e6c3"}
 {"ts": "2026-09-29T13:29:44", "id": "addC_ns_gpu_full", "event": "done", "detail": "H17 gap=0.1834 CI=[0.16923191153389566, 0.204354320815804] verdict=SUPPORTED; H18=SUPPORTED; H20=reduced, NOT removed -> F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\addC\\ns_gpu_full.json", "sha": "561e6c3"}
+{"ts": "2026-09-30T14:27:59", "id": "predict_av2_gpu_full", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['nstrain_c00', 'nstrain_c01', 'nstrain_c02', 'nstrain_c03', 'nstrain_c04', 'nstrain_c05', 'nstrain_c06', 'nstrain_c07', 'nstrain_c08', 'nstrain_c09', 'nstrain_c10']", "sha": "69a3c57"}
+{"ts": "2026-09-30T14:47:19", "id": "predict_av2_gpu_full", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['nstrain_c00', 'nstrain_c01', 'nstrain_c02', 'nstrain_c03', 'nstrain_c04', 'nstrain_c05', 'nstrain_c06', 'nstrain_c07', 'nstrain_c08', 'nstrain_c09', 'nstrain_c10']", "sha": "8abb165"}
+{"ts": "2026-09-30T14:55:57", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c00.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:02:34", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c01.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:07:10", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c02.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:09:26", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c03.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:10:49", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c04.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:12:32", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c05.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:14:25", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c06.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:15:43", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c07.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:17:03", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c08.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:18:22", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c09.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:19:23", "id": "predict_av2_gpu_full", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\nstrain_c10.npz", "sha": "8abb165"}
+{"ts": "2026-09-30T15:19:23", "id": "predict_av2_gpu_full", "event": "done", "detail": "model=av2_gpu_full ckpt=last.ckpt -> results\\preds2\\av2_gpu_full", "sha": "8abb165"}
+{"ts": "2026-10-01T14:44:58", "id": "av2_wayformer_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "61fc0bc"}
+{"ts": "2026-10-01T14:48:43", "id": "rev1_scene_av2_to_nuscenes", "event": "attempt_start", "detail": "draws=1000", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:51:37", "id": "rev1_scene_av2_to_nuscenes", "event": "done", "detail": "results\\rev1\\scene_av2_to_nuscenes.json", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:51:38", "id": "rev1_scene_av2_to_waymo", "event": "attempt_start", "detail": "draws=1000", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:54:17", "id": "rev1_scene_av2_to_waymo", "event": "done", "detail": "results\\rev1\\scene_av2_to_waymo.json", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:54:18", "id": "rev1_scene_ns_to_waymo", "event": "attempt_start", "detail": "draws=1000", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:56:51", "id": "rev1_scene_ns_to_waymo", "event": "done", "detail": "results\\rev1\\scene_ns_to_waymo.json", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:56:52", "id": "rev1_scene_ns_to_av2", "event": "attempt_start", "detail": "draws=1000", "sha": "5bc1052"}
+{"ts": "2026-10-01T14:59:09", "id": "rev1_scene_ns_to_av2", "event": "done", "detail": "results\\rev1\\scene_ns_to_av2.json", "sha": "5bc1052"}
