@@ -46,9 +46,10 @@ Without labels the coverage loss is invisible; $k$ labelled agents detect it; $m
 \end{figure}
 
 \paragraph*{Contributions}
-(i) The first measurement of zero-label conformal coverage transfer between real driving datasets, in both directions
-between Argoverse~2 and nuScenes and, registered before it was run, on Waymo Open Motion. Coverage falls by up to
-\wmGapAvW\ points at a nominal 90\%, on models that match published accuracy, and the most accurate model loses the most.
+(i) A direct measurement of zero-label conformal coverage transfer between real driving datasets, in both directions
+between Argoverse~2 and nuScenes and, registered before it was run, on Waymo Open Motion, which to our knowledge no
+prior work has quantified at this scale. Coverage falls by up to \wmGapAvW\ points at a nominal 90\%, on models that
+match published accuracy, and the most accurate model loses the most.
 (ii) A diagnosis. Covariate reweighting makes the loss worse, a non-identifiability result
 (Proposition~\ref{prop:ident}) shows why label-free repair is limited in principle, and controlled input perturbations
 localise the loss to turns in left-hand traffic. (iii) A repair with a finite-sample, training-conditional guarantee

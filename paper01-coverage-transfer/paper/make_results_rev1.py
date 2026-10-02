@@ -178,6 +178,8 @@ def macros(scene):
         put(f"nLabScenes{tag}", d["n_label_scenes"])
         recs.append(m)
     put("recMMin", min(r for r in recs if r)); put("recMMax", max(r for r in recs if r))
+    put("infAtEightyAvNs", f"{100 * scene['av2_to_nuscenes']['by_m']['80']['bet']['frac_infinite']:.0f}")
+    put("infAtHundredAvNs", f"{100 * scene['av2_to_nuscenes']['by_m']['100']['bet']['frac_infinite']:.0f}")
     ns = scene["av2_to_nuscenes"]["by_m"]
     put("agentCorNsForty", f"{100 * ns['40']['agent_cor']['p_valid']:.0f}")
     put("agentCorNsThreeHundred", f"{100 * ns['300']['agent_cor']['p_valid']:.0f}")

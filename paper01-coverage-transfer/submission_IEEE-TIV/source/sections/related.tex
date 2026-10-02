@@ -40,8 +40,13 @@ adaptive conformal inference \cite{gibbs2021adaptive}, conformal PID control \ci
 trajectories in CUQDS \cite{huang2025cuqds}, and adaptive nonconformity scores with a replay buffer
 \cite{tumu2026adaptnc}. More recent online variants retroactively revise past predictions for faster adaptation
 \cite{jun2026retrospective}, cast the threshold update as a universal-portfolio game \cite{liu2026portfolio}, or give
-training-conditional (not just time-averaged) regret bounds under drift \cite{liang2026optimalregret}; all of these
-still need a stream of ground-truth labels after deployment, which is exactly what our zero-label setting excludes.
+training-conditional (not just time-averaged) regret bounds under drift \cite{liang2026optimalregret}. The closest
+trajectory-specific instance of this family is CUQDS \cite{huang2025cuqds}, which pairs a learned Gaussian-process
+uncertainty module with online conformal PID control; like the other online methods above, it needs a running stream
+of ground-truth labels at deployment time, so it answers a different question from ours and is not a baseline we can
+run in the zero-label or fixed-labelled-batch settings this paper studies. Our ACI comparison (Sec.~\ref{sec:repair-scene})
+covers the same methodological category --- adapt the threshold from realised errors --- without requiring CUQDS's
+architecture-specific uncertainty module.
 Other work conditions on an observable nuisance parameter and generates synthetic data with a diffusion model
 \cite{rahaman2026shift} or treats the shift the ego vehicle itself induces in other agents \cite{binny2025moved}
 (both preprints). We study a different point in this space: no feedback, no generative model, and three real driving

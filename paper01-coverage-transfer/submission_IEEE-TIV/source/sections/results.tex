@@ -84,9 +84,11 @@ AV2$\to$nuScenes, with about 65 agents per scene, it is valid in \agentCorNsFort
 \hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
 \agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
 
-Validity is not usefulness. With $m\le40$ scenes the scene-level rule cannot certify any finite threshold and returns
-the whole space, which is valid but uninformative. It returns a usable region (at most twice the oracle area, finite in
-$\ge95\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo and nuScenes$\to$Waymo, and from
+Validity is not usefulness. With $m\le40$ scenes the scene-level rule abstains in every draw, correctly reporting that
+it cannot certify any finite threshold rather than returning an unsupported one. The abstention rate falls with $m$
+but is not negligible close to the recommended budget: on AV2$\to$nuScenes it is \infAtEightyAvNs\% at $m=80$ and still
+\infAtHundredAvNs\% at $m=100$. It returns a usable region (at most twice the oracle area, abstaining in
+$\le5\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo and nuScenes$\to$Waymo, and from
 $m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less information each. At that budget the repaired
 AV2$\to$nuScenes radius is \recQAvNs\,m against an oracle of \qOracleAvNs\,m. The betting $p$-value gives smaller regions
 than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaNsTwoHundred$\times$ the oracle area at
