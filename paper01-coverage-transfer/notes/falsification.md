@@ -885,3 +885,35 @@ advantage over HB is real but smaller than the pre-fix numbers suggested.
   - One-agent-per-scene hierarchical split CP (Dunn et al. 2023 style, H22): valid at small m by wide margins
     (noise), but degrades below the 0.88 bar at larger m on every pair (e.g. av2_to_nuscenes 0.57 at m=300,
     ns_to_waymo 0.45 at m=300) -- it is not a reliable alternative to scene-level LTT at the budgets that matter.
+
+---
+
+## Addendum F -- geometric relevance metric: design fixed BEFORE any computation -- written 2026-10-02
+
+A second external review flagged a real risk ahead of time: the "downstream relevance" number proposed in the
+revision plan (region radius in metres; share of agents whose true path falls outside a repaired region) is
+naturally **agent-weighted** (one count per agent), while Proposition 3 and the scene-level LTT procedure control
+the **scene-weighted** risk $R(q)=\mathbb E_j L_j(q)$ (Addendum D / Sec.~method, "scene-level risk control"). These
+are different estimands, exactly as flagged for $R(q)$ vs.\ the agent-pooled miss rate. Fixed now, before the metric
+is computed, so it cannot be framed after the fact to look more connected to the formal guarantee than it is:
+
+**H24 -- geometric relevance (DESCRIPTIVE only, no guarantee claimed).**
+- **Definition.** For a fixed, already-chosen threshold $\hat q$ (the source threshold, or a repaired one from
+  Sec.~repair-scene), report (a) the region radius in metres; (b) the agent-weighted share
+  $\frac1{\sum_j n_j}\sum_{j,i}\mathbf 1[s_{ji}>\hat q]$ of individual agents whose true path falls outside the
+  region. (b) is the agent-pooled miss rate already named and distinguished from $R(q)$ in Sec.~method; this
+  addendum only fixes that the SAME distinction applies here, before the number exists.
+- **What this is NOT.** Neither quantity is a quantity Proposition 2 or 3 bounds. Proposition 3 bounds
+  $\Pr[R(\hat q)\le\alpha]$, the scene-weighted average. The agent-weighted share in (b) can differ from $1-R(\hat q)$'s
+  complement whenever scenes have unequal agent counts (nuScenes ~65/scene, Waymo ~3.7/scenario, AV2 1/scene), which
+  they do. No sentence in the manuscript may say the scene-level guarantee "covers", "implies" or "guarantees" the
+  agent-weighted number; the two are reported side by side, each labelled with its own weighting, and the gap between
+  them (if any) is itself reported as a number, not elided.
+- **Notation (fixed now).** The scene-weighted guaranteed quantity keeps using $R(q)$ / $\hat q$ as already defined.
+  The new descriptive quantity uses a distinct symbol, $M(\hat q)$ (agent-weighted miss share), never $R$, never
+  presented in the same inline sentence as a $\Pr[\cdot]\ge 1-\delta$ statement without the word "descriptive" or
+  "no guarantee" attached.
+- **Status.** Exploratory/descriptive in every case; not run on any model as of this addendum. When it is computed,
+  the outcome (including the size of the gap between $M(\hat q)$ and $1-R(\hat q)$'s complement, which is itself an
+  informative number about how unevenly agents are distributed across scenes) is logged here before being written
+  into the paper.
