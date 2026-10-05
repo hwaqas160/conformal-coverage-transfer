@@ -917,3 +917,18 @@ is computed, so it cannot be framed after the fact to look more connected to the
   the outcome (including the size of the gap between $M(\hat q)$ and $1-R(\hat q)$'s complement, which is itself an
   informative number about how unevenly agents are distributed across scenes) is logged here before being written
   into the paper.
+
+---
+
+## Outcome log -- Addendum F (descriptive, no guarantee claimed) -- 2026-10-05
+Computed by `src/analyze_addF.py` for the confirmatory models at the standard source split-CP threshold (q at 90% of the
+source calibration scores). R = scene-weighted miss rate (the quantity Prop. 3 controls); M = agent-weighted miss share.
+- AV2->nuScenes: R=0.269, M=0.253 (scenes 138, agents 9041; agents/scene median 53, mean 65, max 288)
+- AV2->Waymo:    R=0.323, M=0.335 (scenes 4318, agents 16096; median 3, max 8)
+- nuScenes->AV2: R=0.181, M=0.181 (single-agent scenes, so R=M by construction)
+- nuScenes->Waymo: R=0.279, M=0.284
+**Reading.** The two weightings differ by at most 1.6 points, in opposite directions on different datasets, so the
+scene-vs-agent distinction changes the numbers only slightly here; all four give miss rates 2-3x the 10% nominal, and the
+qualitative conclusion is identical under either weighting. Note for the text: nuScenes' agents-per-scene is mean 65 but
+median 53 with a heavy tail (max 288), so "about 65" should be stated as "mean 65 (median 53)". No claim is made that
+Prop. 3 covers M; M is reported side by side with R only. Descriptive result; reported as such.
