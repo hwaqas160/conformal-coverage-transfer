@@ -2,7 +2,7 @@
 \paragraph{Data} Argoverse~2 \cite{wilson2021argoverse2}, nuScenes \cite{caesar2020nuscenes} and Waymo Open Motion
 \cite{ettinger2021waymo} (30 of 150 validation shards), converted with ScenarioNet \cite{li2023scenarionet} and loaded
 through UniTraj \cite{feng2024unitraj}. AV2 scenarios are independent 11\,s clips with one focal agent; the labelled AV2
-validation split is divided by a fixed salted hash into a calibration half and a test half. nuScenes has about 65 agents per
+validation split is divided by a fixed salted hash into a calibration half and a test half. nuScenes has a mean of 65 agents per
 20\,s scene (9041 from 138 validation scenes), so its calibration/test split is made by scene (64/74 scenes). Waymo
 scenarios carry 3.7 agents on average and are split by scenario (\wmNScenariosCalAvW\ calibration, \wmNScenariosAvW\ test).
 \paragraph{Forecasters} AutoBot-Ego \cite{girgis2022autobots} with $K=6$ modes. The \emph{confirmatory} models were trained

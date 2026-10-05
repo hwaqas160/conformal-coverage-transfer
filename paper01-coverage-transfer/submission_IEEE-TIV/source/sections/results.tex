@@ -83,7 +83,7 @@ draw $m$ labelled scenes from a pool disjoint from the evaluation scenes (nuScen
 Waymo calibration half for the Waymo targets) and evaluate the scene-averaged miscoverage $R(\hat q)$ exactly on the
 evaluation pool, 1000 draws per $m$ (Fig.~\ref{fig:scene}). The scene-level rule with the betting $p$-value is valid at
 every $m$ on all four transfers ($\Pr[R(\hat q)\le\alpha]\ge\betValidMin$). The agent-level rule is not: on
-AV2$\to$nuScenes, with about 65 agents per scene, it is valid in \agentCorNsForty\% of draws at $m=40$ and
+AV2$\to$nuScenes, with a mean of 65 agents per scene (median 53), it is valid in \agentCorNsForty\% of draws at $m=40$ and
 \agentCorNsThreeHundred\% at $m=300$, and one-agent-per-scene split CP \cite{dunn2023hierarchical} in
 \hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
 \agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
