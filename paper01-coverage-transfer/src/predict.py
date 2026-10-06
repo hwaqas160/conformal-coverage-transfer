@@ -49,7 +49,8 @@ def predicted_scale(full: np.ndarray, method: str) -> np.ndarray:
 
 @torch.no_grad()
 def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
-         batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None, transform=None):
+         batch_size=32, num_workers=8, method="autobot", out_file=None, limit_batches=None, transform=None,
+         cache_root=None):
     """transform: optional callable(input_dict_on_device) -> None, applied IN PLACE to the model inputs before
     prediction (used by shift_inject.py for controlled input perturbations).  Ground truth is never touched."""
     os.makedirs(out_dir, exist_ok=True)
@@ -60,7 +61,7 @@ def dump(ckpt, db, dataset_key, tag, out_dir, n=None, device="cuda",
         out_file = str(Path(out_file).resolve())
     model, cfg = build_model(method, ckpt, device)
     ds, loader = build_loader(db, cfg, batch_size=batch_size,
-                              num_workers=num_workers, max_data_num=n)
+                              num_workers=num_workers, max_data_num=n, cache_root=cache_root)
     print(f"[predict] {tag}: {len(ds)} samples, ckpt={'none' if not ckpt else Path(ckpt).name}")
 
     PT, PP, G, GM, FI, FE, FL, PS, SID, DN, TT, KD = [], [], [], [], [], [], [], [], [], [], [], []

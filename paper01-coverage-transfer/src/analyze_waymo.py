@@ -55,10 +55,13 @@ def run(model: str, cal_name: str) -> None:
     journal.event(f"addC_{model}", "attempt_start", f"cal={cal_name}")
     cal = load(model, cal_name)
     same = load(model, "av2test" if cal_name == "av2cal" else "nstest")
-    tag = "av2gpu" if model == "av2_gpu_full" else "nsgpu"
-    wm_cal = load(model, f"wm_{tag}_cal")     # unused for calibration (source cal is used, per Addendum C design);
-    wm_test = load(model, f"wm_{tag}_test")   # kept so wm_cal.npz existing is verified, and for an n-check
-    assert wm_test is not None, f"missing results/preds2/{model}/wm_{tag}_test.npz"
+    if model == "av2_wayformer":          # predict_all names: wmcal / wmtest (own cache root, see predict.py)
+        wm_cal, wm_test = load(model, "wmcal"), load(model, "wmtest")
+    else:
+        tag = "av2gpu" if model == "av2_gpu_full" else "nsgpu"
+        wm_cal = load(model, f"wm_{tag}_cal")     # unused for calibration (source cal is used, per Addendum C design);
+        wm_test = load(model, f"wm_{tag}_test")
+    assert wm_test is not None, f"missing wm test predictions for {model}"
     clusters = clusters_of(wm_test)
 
     out = {"model": model, "target": "waymo", "n": {"cal": len(cal["scores"]), "same": len(same["scores"]),
