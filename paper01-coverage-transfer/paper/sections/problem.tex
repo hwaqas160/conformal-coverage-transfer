@@ -18,7 +18,7 @@ threshold on the target is
 \end{equation}
 positive when the guarantee fails (under-coverage). We ask (Q1) how large $\Delta$ is on real data; (Q2) whether
 covariate-shift reweighting \cite{tibshirani2019covariate} removes it; (Q3) whether anything label-free can; and (Q4) how
-many labelled target scenes are needed to audit or to repair it.
+many labelled target agents are needed to detect it, and how many labelled target scenes to repair it.
 
 \subsection{What label-free repair can and cannot do}
 Covariate reweighting is valid when $P_T(y\mid x)=P_S(y\mid x)$. If the conditional differs---annotation pipelines, sensor
@@ -43,7 +43,7 @@ be complemented by a label-based audit (Sec.~\ref{sec:audit}).
 \end{remark}
 
 \subsection{Cost of using target labels}
-If $k$ labelled target scenes are used directly, the resulting empirical coverage is Beta-distributed around
+If $k$ labelled target agents are used directly, the resulting empirical coverage is Beta-distributed around
 $1-\alpha$ \cite{vovk2012conditional}, with standard deviation about $\sqrt{\alpha(1-\alpha)/k}$, so $\approx 1000$
 labels are needed for $\pm 2$ points at $\alpha=0.1$.
 Detecting a shortfall $\delta$ with an exact one-sided binomial test at level $\ell$ and power $1-\beta$ needs
