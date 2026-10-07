@@ -45,6 +45,10 @@ PAIRS = {
     "av2_to_waymo":    ("av2_gpu_full", "av2cal", ["wm_av2gpu_cal"], "wm_av2gpu_test"),
     "ns_to_waymo":     ("ns_gpu_full", "nscal", ["wm_nsgpu_cal"], "wm_nsgpu_test"),
     "ns_to_av2":       ("ns_gpu_full", "nscal", ["av2cal"], "av2test"),
+    # second architecture (Addendum E): predict_all used plain 'wmcal'/'wmtest' names for Wayformer (see
+    # analyze_waymo.py's model=="av2_wayformer" branch); no reverse (nuScenes-source) Wayformer model was trained.
+    "wayformer_to_nuscenes": ("av2_wayformer", "av2cal", [f"nstrain_c{i:02d}" for i in range(11)], "ns"),
+    "wayformer_to_waymo":    ("av2_wayformer", "av2cal", ["wmcal"], "wmtest"),
 }
 
 

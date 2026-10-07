@@ -947,3 +947,34 @@ closer to UniTraj's reference than av2_gpu_full's own confirmatory result (0.859
 definition -- see Addendum E-1 for why these two metrics, minADE6 vs the 5-mode/2Hz diagnostic, are not the same
 number). No extension (2.6) is needed. Proceeding to post-processing (predictions, run2, addB, addC) on
 `av2_wayformer`/`last.ckpt`.
+
+---
+
+## Outcome log -- Addendum E, Wayformer confirmatory results -- 2026-10-07
+All pre-registered confirmatory tests (H1/H4, H17/H18/H20, corrected scene-repair design D3/D4) run on
+`av2_wayformer` (last.ckpt, gate passed per the entry above). No reverse-direction (nuScenes-source) Wayformer
+model was trained, so H9/H18's reverse-target check is not available for this architecture (reported as such,
+not estimated).
+
+**H1 (AV2->nuScenes).** Same-domain coverage 89.9% (CI crosses 0 on the gap, as expected). Target (nuScenes)
+coverage 83.6%, raw gap **+6.4 points** (CI [5.0, 7.9]), smaller than av2_gpu_full's +15.1 points on the SAME
+transfer. Normalised gap +1.3 points (80% reduction) -- much larger repair effect than AutoBot's 27% reduction on
+this transfer.
+**H17/H20 (AV2->Waymo).** Target coverage 65.0%, raw gap **+25.0 points** (CI [23.5, 26.9]), slightly LARGER than
+av2_gpu_full's +23.4 points on the same transfer. Normalised gap +8.4 points (66% reduction).
+**Reading: architecture changes the magnitude on nuScenes a lot (15.1 -> 6.4 pt) but barely on Waymo (23.4 -> 25.0
+pt), while the direction (under-coverage, never over) and the general shape (Waymo harder than nuScenes) replicate
+on both architectures.** This complicates the exploratory-zoo "more accurate model, larger gap" pattern reported
+for AutoBot: Wayformer's accuracy (minADE6 0.928) is comparable to av2_gpu_full's (0.859, different metric
+definitions noted in Addendum E-1) and competitive with UniTraj's own reference, yet shows a SMALLER nuScenes gap
+than AutoBot while showing a similar-or-larger Waymo gap. The "accuracy predicts gap size" association therefore
+does not hold across architectures, only within the single-architecture AutoBot zoo it was observed on; the paper
+must soften this claim to be AutoBot-specific, not general, now that it is directly contradicted by a second
+architecture's within-dataset comparison.
+
+**Scene-level repair, AV2->Waymo (corrected design, D3/D4, 1000 draws, m up to 300).** Valid at every m (point
+estimate 0.981-1.000, all above the 0.88 floor). Same qualitative shape as av2_gpu_full: uninformative (always
+infinite) below m~60, reliably finite from m~150 (area 1.62x oracle), falling to 1.35x at m=300. Agent-level C-or-R
+stays valid throughout (0.97-0.99) because Waymo's agents-per-scene is small, confirming the mechanism finding
+(agent-level failure is specific to large agents-per-scene, i.e. nuScenes) on a second architecture.
+AV2->nuScenes scene repair for Wayformer: predictions in progress, outcome to follow in a separate entry.
