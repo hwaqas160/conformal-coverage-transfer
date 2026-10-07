@@ -932,3 +932,18 @@ scene-vs-agent distinction changes the numbers only slightly here; all four give
 qualitative conclusion is identical under either weighting. Note for the text: nuScenes' agents-per-scene is mean 65 but
 median 53 with a heavy tail (max 288), so "about 65" should be stated as "mean 65 (median 53)". No claim is made that
 Prop. 3 covers M; M is reported side by side with R only. Descriptive result; reported as such.
+
+---
+
+## Outcome log -- Addendum E, Wayformer gate -- 2026-10-07
+Training finished (27/27 epochs, `results/ckpts/av2_wayformer/DONE`). check_val_every_n_epoch=2 landed on odd
+epochs (1,3,...,25), so the true final checkpoint (`last.ckpt`, end of epoch 26) was never validated during
+training; the best LOGGED checkpoint was epoch 25 (val minADE6 0.955). Per setup.tex's registered rule ("the final
+model is the last checkpoint, fixed in advance"), `last.ckpt` is the model used downstream, not epoch 25, so its
+actual validation score was measured directly (`src/validate_ckpt.py`, same val split/subset/seed as training,
+2000 of 13770 AV2 val scenes, seed 0): **val minADE6 = 0.9275**, val minFDE6 = 2.006, miss rate 0.378.
+**Gate (Addendum E/E-1): val minADE6 <= 0.98, reference 0.85. PASSED, with 9% headroom** (0.9275 vs 0.98), and
+closer to UniTraj's reference than av2_gpu_full's own confirmatory result (0.859/1.084 depending on metric
+definition -- see Addendum E-1 for why these two metrics, minADE6 vs the 5-mode/2Hz diagnostic, are not the same
+number). No extension (2.6) is needed. Proceeding to post-processing (predictions, run2, addB, addC) on
+`av2_wayformer`/`last.ckpt`.
