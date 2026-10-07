@@ -22,7 +22,12 @@ R = ROOT / "results"
 ALPHA = 0.10
 PAIRS = [("av2_to_nuscenes", r"AV2$\to$nuSc."), ("av2_to_waymo", r"AV2$\to$Waymo"),
          ("ns_to_av2", r"nuSc.$\to$AV2"), ("ns_to_waymo", r"nuSc.$\to$Waymo")]
-MACRO_TAG = {"av2_to_nuscenes": "AvNs", "av2_to_waymo": "AvWm", "ns_to_av2": "NsAv", "ns_to_waymo": "NsWm"}
+# second architecture (Addendum E): same recommended-budget treatment, kept out of fig_gap/fig_scene_repair's
+# AutoBot-only panels (see fig_scene_repair) to avoid crowding, but in the same `scene` dict / macro loop so
+# recMWfNs/recMWfWm etc. are generated uniformly.
+PAIRS_WF = [("wayformer_to_nuscenes", r"Wayf.$\to$nuSc."), ("wayformer_to_waymo", r"Wayf.$\to$Waymo")]
+MACRO_TAG = {"av2_to_nuscenes": "AvNs", "av2_to_waymo": "AvWm", "ns_to_av2": "NsAv", "ns_to_waymo": "NsWm",
+            "wayformer_to_nuscenes": "WfNs", "wayformer_to_waymo": "WfWm"}
 
 plt.rcParams.update({"font.size": 7, "axes.labelsize": 7, "legend.fontsize": 6, "xtick.labelsize": 6.5,
                      "ytick.labelsize": 6.5, "axes.linewidth": 0.6, "lines.linewidth": 1.1})
@@ -134,9 +139,10 @@ def fig_scene_repair(scene):
     a1.set_title("(a) validity, AV2$\\to$nuSc.", fontsize=6.5)
     fig.legend(*a1.get_legend_handles_labels(), loc="lower center", ncol=4, frameon=False, fontsize=5,
                handlelength=2.2, columnspacing=0.8, bbox_to_anchor=(0.5, 0.0))
-    marks = ["o", "s", "^", "D"]; lss = ["-", "--", ":", "-."]
-    cols = ["#0072B2", "#D55E00", "#009E73", "#CC79A7"]
-    for (pk, plab), mk, ls, col in zip(PAIRS, marks, lss, cols):
+    marks = ["o", "s", "^", "D", "P", "X"]; lss = ["-", "--", ":", "-.", "-", "--"]
+    cols = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00"]
+    all_pairs = PAIRS + [p for p in PAIRS_WF if p[0] in scene]
+    for (pk, plab), mk, ls, col in zip(all_pairs, marks, lss, cols):
         dd = scene[pk]
         xs, ys, hollow = [], [], []
         for m in sorted(map(int, dd["by_m"])):
@@ -151,7 +157,7 @@ def fig_scene_repair(scene):
     a2.set_xscale("log"); a2.set_xticks([60, 100, 200, 300]); a2.set_xticklabels(["60", "100", "200", "300"])
     a2.set_xlabel("labelled scenes $m$"); a2.set_ylabel("area / oracle")
     a2.set_title("(b) betting LTT, region size", fontsize=6.5)
-    a2.legend(loc="upper right", frameon=False, fontsize=5, handlelength=2.2)
+    a2.legend(loc="upper right", frameon=False, fontsize=4.3, handlelength=1.8, labelspacing=0.25)
     for a in (a1, a2):
         for s in ("top", "right"):
             a.spines[s].set_visible(False)
@@ -189,19 +195,77 @@ def macros(scene):
     others = [scene[p]["by_m"]["300"]["agent_cor"]["p_valid"] for p in ("av2_to_waymo", "ns_to_waymo", "ns_to_av2")]
     put("agentCorOtherMin", f"{100 * min(others):.0f}")
     tgt = [r[3] for r in gap_rows()]
+    wf_run2, wf_addc = R / "run2/av2_wayformer__forward.json", R / "addC/av2_wayformer.json"
+    if wf_run2.exists() and wf_addc.exists():
+        tgt = tgt + [_j(wf_run2)["H1_H4"]["0.10"]["raw"]["target"]["coverage"],
+                    1 - _j(wf_addc)["H17_gap_waymo"]["gap"]]
     put("covTgtMin", f"{100 * min(tgt):.0f}")
     put("covTgtMax", f"{100 * max(tgt):.0f}")
     return "\n".join(L) + "\n"
 
 
+def macros_wf(scene) -> str:
+    """Second architecture (Wayformer, Addendum E). Gap/reweighting/manoeuvre numbers from run2+addB json
+    (same quantities already reported for the AutoBot confirmatory models); scene-repair from `scene` (rev1,
+    corrected design, same as the AutoBot pairs)."""
+    L = []
+    put = lambda k, v: L.append(r"\newcommand{\%s}{%s}" % (k, v))
+    pct = lambda x: f"{100 * x:.1f}"
+
+    fwd = _j(R / "run2/av2_wayformer__forward.json")
+    h = fwd["H1_H4"]["0.10"]["raw"]
+    hn = fwd["H1_H4"]["0.10"]["norm"]
+    put("minADESixWayformer", "0.928")   # measured directly on last.ckpt, Addendum E outcome log (not in a ckpt filename)
+    put("gapSameWayformer", pct(h["same"]["gap"]))
+    put("gapRawWayformer", pct(h["target"]["gap"]))
+    put("gapRawWayformerCI", f"[{pct(h['target']['ci95'][0])}, {pct(h['target']['ci95'][1])}]")
+    put("gapNormWayformer", pct(hn["target"]["gap"]))
+    put("normReductionWayformer", f"{100 * (1 - hn['target']['gap'] / h['target']['gap']):.0f}")
+    h3 = fwd["H3_label_free"]
+    put("rewWayformer", f"{100 * (h3['weighted']['gap'] - h3['uncorrected']['gap']):+.1f}")
+    audit = fwd["audit"]
+    put("auditPowerWayformer", f"{audit['target']['reject_prob'].get('1000'):.2f}")
+    put("auditFaWayformer", f"{100 * audit['same_domain']['reject_prob'].get('1000'):.0f}")
+
+    wa = _j(R / "addC/av2_wayformer.json")
+    put("wmGapWf", pct(wa["H17_gap_waymo"]["gap"]))
+    put("wmGapWfCI", f"[{pct(wa['H17_gap_waymo']['ci95_cluster'][0])}, {pct(wa['H17_gap_waymo']['ci95_cluster'][1])}]")
+    put("wmGapNormWf", pct(wa["H20_normalized_gap_waymo"]["gap"]))
+
+    b = _j(R / "addB/av2_wayformer__forward.json")
+    tt = lambda dom, t: b["B7"]["raw"][dom]["trajectory_type"][t]["coverage"]
+    put("dropRightWf", f"{100 * (tt('same', 'right_turn') - tt('target', 'right_turn')):.0f}")
+    put("dropStraightWf", f"{100 * (tt('same', 'straight') - tt('target', 'straight')):.1f}")
+    put("designEffWf", f"{b['B10_target_clustered']['design_effect']:.1f}")
+    put("sgExtraRightWf", f"{100 * b['B11_driving_side']['by_type']['right_turn']['drop_diff_sg_minus_bos']:.0f}")
+
+    # agent-level C-or-R: SAME nuScenes target, compare severity directly against av2_gpu_full (AutoBot)
+    ab = scene["av2_to_nuscenes"]; wf = scene["wayformer_to_nuscenes"]
+    put("rSrcAutobot", f"{100 * ab['R_src_on_eval']:.1f}")
+    put("rSrcWayformer", f"{100 * wf['R_src_on_eval']:.1f}")
+    put("agentCorWfForty", f"{100 * wf['by_m']['40']['agent_cor']['p_valid']:.0f}")
+    put("agentCorWfThreeHundred", f"{100 * wf['by_m']['300']['agent_cor']['p_valid']:.0f}")
+    for pk, _ in PAIRS_WF:
+        d = scene[pk]
+        m, b = recommended(d)
+        tag = MACRO_TAG[pk]
+        put(f"recM{tag}", m if m else "--")
+        put(f"recArea{tag}", f"{b['median_area_vs_oracle']:.1f}" if b else "--")
+    return "\n".join(L) + "\n"
+
+
 def write_all():
     OUT.mkdir(exist_ok=True)
-    scene = {pk: _j(R / f"rev1/scene_{pk}.json") for pk, _ in PAIRS if (R / f"rev1/scene_{pk}.json").exists()}
+    scene = {pk: _j(R / f"rev1/scene_{pk}.json") for pk, _ in PAIRS + PAIRS_WF
+             if (R / f"rev1/scene_{pk}.json").exists()}
     fig_gap()
     fig_traj()
-    if len(scene) == len(PAIRS):
+    if all(pk in scene for pk, _ in PAIRS):
         fig_scene_repair(scene)
-        (OUT / "numbers_rev1.tex").write_text(macros(scene))
+        macro_text = macros(scene)
+        if all(pk in scene for pk, _ in PAIRS_WF):
+            macro_text += macros_wf(scene)
+        (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 
 

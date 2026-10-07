@@ -102,10 +102,40 @@ $m=200$ on AV2$\to$nuScenes).
 \centering
 \includegraphics[width=\linewidth]{generated/fig_scene_repair.pdf}
 \caption{Repair with $m$ whole labelled scenes, disjoint label and evaluation pools, 1000 draws per $m$. (a) Probability
-that the repaired threshold controls scene-averaged miscoverage at $\alpha$ (dotted line: $1-\delta$). (b) Median
-region area relative to the oracle; hollow markers: threshold infinite in $>5\%$ of draws.}
+that the repaired threshold controls scene-averaged miscoverage at $\alpha$ (dotted line: $1-\delta$), AutoBot only.
+(b) Median region area relative to the oracle, all five source models; hollow markers: threshold infinite in
+$>5\%$ of draws.}
 \label{fig:scene}
 \end{figure}
+
+\subsection{A second architecture: Wayformer}\label{sec:wf}
+Every result above uses AutoBot. We trained Wayformer \cite{nayakanti2023wayformer} on the same full AV2 set under
+the same gate (val minADE\textsubscript{6} \minADESixWayformer, within 15\% of UniTraj's reference, matching
+AutoBot's gate) to ask whether the findings are AutoBot-specific. No reverse-direction Wayformer was trained.
+
+The direction replicates everywhere: same-domain gap \gapSameWayformer\ points; AV2$\to$nuScenes gap
+$+\gapRawWayformer$ points (CI \gapRawWayformerCI); AV2$\to$Waymo gap $+\wmGapWf$ points (CI \wmGapWfCI). Reweighting
+again makes the nuScenes gap worse (\rewWayformer\ points). The audit again has power \auditPowerWayformer\ at a
+\auditFaWayformer\% false-alarm rate. The loss again concentrates in turns (right-turn drop \dropRightWf\ points vs.\
+\dropStraightWf\ for straight) and in Singapore (\sgExtraRightWf\ points more than Boston), with a similar scene-cluster
+design effect (\designEffWf\ vs.\ AutoBot's \designEffConf). The scene-level repair is valid at every $m$ on both
+Wayformer transfers (Fig.~\ref{fig:scene}b) and reaches the same operating point, $m=\recMWfNs$ scenes for
+AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo (area \recAreaWfWm$\times$), as the
+AutoBot models.
+
+Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's confirmatory
+\gapRawConf\ points, while its AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$). This breaks the
+exploratory zoo's ``more accurate model, larger gap'' pattern (Sec.~\ref{sec:confirm}): Wayformer's accuracy is
+comparable to AutoBot's confirmatory model, yet its nuScenes gap is far smaller. We also find a second,
+unregistered difference worth reporting rather than hiding. On the \emph{same} nuScenes target, agent-level
+certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
+\agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer (\agentCorWfForty\% at $m=40$,
+\agentCorWfThreeHundred\% at $m=300$), on identically structured scenes (same mean 65 agents/scene). The difference
+tracks the size of the underlying miscalibration: the source threshold misses \rSrcAutobot\% of AutoBot's
+evaluation agents against only \rSrcWayformer\% of Wayformer's, so the same scene clustering has more room to hurt
+a method that was already more wrong. Scene size is therefore not a sufficient predictor of agent-level failure on
+its own, which is itself a reason to prefer the scene-level guarantee always, rather than judge case by case
+whether agent-level recalibration happened to get lucky.
 
 \subsection{Exploratory models}\label{sec:expl}
 Three reduced-budget AV2 models and one reduced-budget nuScenes model (Table~\ref{tab:models}) were analysed before

@@ -13,28 +13,38 @@ with high power. Repairing it with a guarantee that holds under scene clustering
 \recMMin\ to \recMMax\ of them before the region is both finite and within twice the oracle area. Below that budget the
 correct behaviour is to abstain, which the scene-level rule does.
 
-\emph{The unit of labelling matters.} Agent-level guarantees failed exactly where scenes are large (nuScenes, mean 65 and median 53
-agents per scene) and held where they are small (Waymo, AV2). Any certification protocol for driving data should
-state its labelling unit and resample at that unit.
+\emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean 65 agents
+per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at $m=40$) but mostly
+valid for Wayformer on the identical scenes (\agentCorWfForty\%, Sec.~\ref{sec:wf}), tracking how badly each
+model's source threshold was miscalibrated there (\rSrcAutobot\% vs.\ \rSrcWayformer\% missed), not the scene
+structure, which was the same for both. Agent-level guarantees did hold on Waymo and AV2, where scenes are small,
+for every model we tried. A practitioner cannot know in advance which case they are in without the audit of
+Sec.~\ref{sec:repair-scene}, which is the practical argument for using the scene-level guarantee by default rather
+than hoping agent-level recalibration happens to be close enough.
 
 \paragraph{Mechanism} Two observations narrow the cause. The measured input differences explain about a quarter of
 the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain. Both point to a change
 in the conditional behaviour of road users rather than in the scenes themselves, consistent with
-Proposition~\ref{prop:ident}. That the most accurate model shows the largest gap is consistent with a sharper,
-more confident source fit that extrapolates worse; testing this needs more architectures than we trained.
+Proposition~\ref{prop:ident}, and both replicate on Wayformer (Sec.~\ref{sec:wf}). The exploratory AutoBot zoo showed
+the most accurate model losing the most coverage; Wayformer breaks this pattern, with accuracy comparable to the
+confirmatory AutoBot model but under half its nuScenes gap. Accuracy is therefore not a general predictor of gap
+size across architectures, only a pattern observed within one architecture family trained several ways.
 
-\paragraph{Limitations} (i) One architecture family; the conclusion that accuracy and coverage validity can diverge
-should be tested on others. (ii) The measured input differences leave most of the gap unexplained, and unmeasured
+\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms every direction
+and mechanism finding but was only trained forward, so its reverse-direction and injection results are untested.
+(ii) The measured input differences leave most of the gap unexplained, and unmeasured
 causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
 manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
 (v) The repair budget is measured on three datasets and may differ on others; the registered evaluation design
 (disjoint pools, exact evaluation) should be reused rather than the numbers.
 
 \section{Conclusion}
-A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets and four
-transfer pairs, a forecaster calibrated at 90\% covered between \covTgtMin\ and \covTgtMax\% of target futures, and a
-more accurate forecaster lost more coverage, not less. Reweighting does not repair the loss and no label-free method can
-in general. Labelled target data can: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value
-restores the guarantee at every budget we tested and gives a usable region from about \recMMin\ labelled scenes. We
-recommend that any transferred conformal region be audited on target labels and, where it fails, recalibrated at the
-scene level before it is used for planning.
+A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets, two
+architectures and six source-target pairs, a forecaster calibrated at 90\% covered between \covTgtMin\ and
+\covTgtMax\% of target futures, every time under-covering, never over. Reweighting does not repair the loss and no
+label-free method can in general. Within one architecture, more accurate models lost more coverage; across
+architectures this did not hold, so accuracy is not a general predictor of how badly the guarantee fails. Labelled
+target data can repair it: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value restores the
+guarantee at every budget we tested, on both architectures, and gives a usable region from about \recMMin\ labelled
+scenes. We recommend that any transferred conformal region be audited on target labels and, where it fails,
+recalibrated at the scene level before it is used for planning.

@@ -112,3 +112,8 @@ for being a 2023 submission, outside the 2024+ requirement.
 Conference/journal acceptances above are stated as reported in the fetched arXiv page or its "Comments" field at
 verification time; since this is a fast-moving set (several still mid-review-cycle as of today), re-check venue
 details against the camera-ready at proofing time if the paper is still cited then.
+
+## Added 2026-10-07 (Wayformer architecture, second confirmatory model)
+| key | status | source checked |
+|---|---|---|
+| nayakanti2023wayformer | V 2026-10-07 | Read directly from the primary source's own bibliography while verifying feng2024unitraj's Table 15 (arXiv:2403.15098, PDF p.17, ref [35]): title/authors/venue/pages/year transcribed from that page, not from memory. |

@@ -10,10 +10,11 @@ after the hypotheses about them were registered, with UniTraj's recipe (effectiv
 $7.5\times10^{-4}$ halved at epochs 10--50): \textbf{av2\_gpu\_full} on the full 183k-scene AV2 training set and
 \textbf{ns\_gpu\_full} on the full nuScenes training split. Each had to reach validation minADE\textsubscript{6} within
 15\% of UniTraj's published value \cite{feng2024unitraj}; they reached \minADESixConf\ (gate 0.98, reference 0.85) and
-\minADESixConfRev\ (gate 1.39, reference 1.21). The final model is the last checkpoint, fixed in advance. Four
-\emph{reduced-budget} models (training-data subsets or shorter schedules; the three AV2 models reach minADE\textsubscript{6}
-1.09--1.35) were
-used to design the analyses and are labelled exploratory throughout.
+\minADESixConfRev\ (gate 1.39, reference 1.21). The final model is the last checkpoint, fixed in advance. A second
+architecture, Wayformer \cite{nayakanti2023wayformer}, was trained forward-only under the identical gate and recipe
+(reaching \minADESixWayformer, Sec.~\ref{sec:wf}); no reverse-direction Wayformer was trained. Four
+\emph{reduced-budget} AutoBot models (training-data subsets or shorter schedules; the three AV2 models reach
+minADE\textsubscript{6} 1.09--1.35) were used to design the analyses and are labelled exploratory throughout.
 \paragraph{Protocol} $\alpha=\delta=0.1$. Forward: calibrate on the AV2 calibration half; test on the AV2 test half
 (same-domain control), nuScenes and Waymo. Reverse: calibrate on the nuScenes calibration scenes; test on nuScenes test
 scenes, AV2 and Waymo. Label-budget experiments draw $k$ agents or $m$ whole scenes 1000 times from a labelled pool that

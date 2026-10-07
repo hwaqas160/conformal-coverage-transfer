@@ -246,3 +246,41 @@
 {"ts": "2026-10-01T14:56:51", "id": "rev1_scene_ns_to_waymo", "event": "done", "detail": "results\\rev1\\scene_ns_to_waymo.json", "sha": "5bc1052"}
 {"ts": "2026-10-01T14:56:52", "id": "rev1_scene_ns_to_av2", "event": "attempt_start", "detail": "draws=1000", "sha": "5bc1052"}
 {"ts": "2026-10-01T14:59:09", "id": "rev1_scene_ns_to_av2", "event": "done", "detail": "results\\rev1\\scene_ns_to_av2.json", "sha": "5bc1052"}
+{"ts": "2026-10-05T10:55:00", "id": "av2_wayformer_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "a5a964e"}
+{"ts": "2026-10-07T10:54:09", "id": "av2_wayformer_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "df63d38"}
+{"ts": "2026-10-07T11:25:13", "id": "av2_wayformer_train", "event": "attempt_end", "detail": "attempt 1 exit -1", "sha": "2f6ec27"}
+{"ts": "2026-10-07T11:27:16", "id": "av2_wayformer_train", "event": "attempt_start", "detail": "wrapper attempt 2", "sha": "2f6ec27"}
+{"ts": "2026-10-07T15:23:06", "id": "av2_wayformer_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "2f6ec27"}
+{"ts": "2026-10-07T18:27:29", "id": "av2_wayformer_train", "event": "attempt_end", "detail": "attempt 1 exit 0", "sha": "2f6ec27"}
+{"ts": "2026-10-07T18:27:29", "id": "av2_wayformer_train", "event": "done", "detail": "exit 0, see F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\train_av2_wayformer.log", "sha": "2f6ec27"}
+{"ts": "2026-10-07T18:29:06", "id": "predict_av2_wayformer", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['av2cal', 'av2test', 'ns', 'wmcal', 'wmtest']", "sha": "2f6ec27"}
+{"ts": "2026-10-07T18:35:21", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\av2cal.npz", "sha": "42701a7"}
+{"ts": "2026-10-07T18:38:43", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\av2test.npz", "sha": "42701a7"}
+{"ts": "2026-10-07T18:55:20", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\ns.npz", "sha": "42701a7"}
+{"ts": "2026-10-07T19:04:18", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\wmcal.npz", "sha": "42701a7"}
+{"ts": "2026-10-07T19:12:46", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\wmtest.npz", "sha": "42701a7"}
+{"ts": "2026-10-07T19:12:46", "id": "predict_av2_wayformer", "event": "done", "detail": "model=av2_wayformer ckpt=last.ckpt -> results\\preds2\\av2_wayformer", "sha": "42701a7"}
+{"ts": "2026-10-07T19:12:58", "id": "run2_av2_wayformer_forward", "event": "attempt_start", "detail": "n cal/same/tgt = 4576/4633/9041", "sha": "42701a7"}
+{"ts": "2026-10-07T19:13:14", "id": "run2_av2_wayformer_forward", "event": "done", "detail": "results\\run2\\av2_wayformer__forward.json in 16s; raw gap@.10=+0.0636 norm gap=+0.0126", "sha": "42701a7"}
+{"ts": "2026-10-07T19:13:16", "id": "addB_av2_wayformer_forward", "event": "attempt_start", "detail": "n cal/same/tgt=4576/4633/9041", "sha": "42701a7"}
+{"ts": "2026-10-07T19:14:45", "id": "addB_av2_wayformer_forward", "event": "done", "detail": "results\\addB\\av2_wayformer__forward.json in 91s; k=1000 rate(cov>=.9): direct=0.54, pac=0.93, cor=0.95, cor_slack_EXPLORATORY=1.00", "sha": "42701a7"}
+{"ts": "2026-10-07T19:14:46", "id": "addC_av2_wayformer", "event": "attempt_start", "detail": "cal=av2cal", "sha": "42701a7"}
+{"ts": "2026-10-07T19:16:58", "id": "addC_av2_wayformer", "event": "done", "detail": "H17 gap=0.2500 CI=[0.23507065994083276, 0.26949860163794986] verdict=SUPPORTED; H18=gap sign differs across targets -- report as dataset-dependent, not general under-coverage; H20=reduced, NOT removed -> F:\\CLAUDE\\AI1\\paper01-coverage-transfer\\results\\addC\\av2_wayformer.json", "sha": "42701a7"}
+{"ts": "2026-10-07T19:16:58", "id": "post_av2_wayformer", "event": "done", "detail": "Wayformer predictions + run2 + addB + addC finished", "sha": "42701a7"}
+{"ts": "2026-10-07T19:18:10", "id": "predict_av2_wayformer", "event": "attempt_start", "detail": "ckpt=last.ckpt sets=['nstrain_c00', 'nstrain_c01', 'nstrain_c02', 'nstrain_c03', 'nstrain_c04', 'nstrain_c05', 'nstrain_c06', 'nstrain_c07', 'nstrain_c08', 'nstrain_c09', 'nstrain_c10']", "sha": "42701a7"}
+{"ts": "2026-10-07T19:18:26", "id": "rev1_scene_wayformer_to_waymo", "event": "attempt_start", "detail": "draws=1000", "sha": "42701a7"}
+{"ts": "2026-10-07T19:21:58", "id": "rev1_scene_wayformer_to_waymo", "event": "done", "detail": "results\\rev1\\scene_wayformer_to_waymo.json", "sha": "42701a7"}
+{"ts": "2026-10-07T19:23:43", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c00.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:28:06", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c01.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:32:28", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c02.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:37:23", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c03.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:42:13", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c04.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:46:57", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c05.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:51:26", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c06.npz", "sha": "680a672"}
+{"ts": "2026-10-07T19:56:05", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c07.npz", "sha": "680a672"}
+{"ts": "2026-10-07T20:01:35", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c08.npz", "sha": "680a672"}
+{"ts": "2026-10-07T20:04:38", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c09.npz", "sha": "680a672"}
+{"ts": "2026-10-07T20:07:16", "id": "predict_av2_wayformer", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\nstrain_c10.npz", "sha": "680a672"}
+{"ts": "2026-10-07T20:07:16", "id": "predict_av2_wayformer", "event": "done", "detail": "model=av2_wayformer ckpt=last.ckpt -> results\\preds2\\av2_wayformer", "sha": "680a672"}
+{"ts": "2026-10-07T20:07:42", "id": "rev1_scene_wayformer_to_nuscenes", "event": "attempt_start", "detail": "draws=1000", "sha": "680a672"}
+{"ts": "2026-10-07T20:10:37", "id": "rev1_scene_wayformer_to_nuscenes", "event": "done", "detail": "results\\rev1\\scene_wayformer_to_nuscenes.json", "sha": "680a672"}
