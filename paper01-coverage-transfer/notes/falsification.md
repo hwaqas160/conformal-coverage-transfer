@@ -978,3 +978,17 @@ infinite) below m~60, reliably finite from m~150 (area 1.62x oracle), falling to
 stays valid throughout (0.97-0.99) because Waymo's agents-per-scene is small, confirming the mechanism finding
 (agent-level failure is specific to large agents-per-scene, i.e. nuScenes) on a second architecture.
 AV2->nuScenes scene repair for Wayformer: predictions in progress, outcome to follow in a separate entry.
+
+---
+
+## Addendum E-2 -- Wayformer injection experiments: registered before running -- 2026-10-08
+Extends Addendum B-4 (injection design) and Addendum E (Wayformer) to the only architecture-specific gap in the
+Wayformer confirmatory battery: Sec.~\ref{sec:inject}'s hz2/lane-dropout/both injections, not yet run on Wayformer
+because it reads velocity/acceleration/heading channels that AutoBot ignores (fixed by `recompute_kinematics`,
+verified as an exact no-op for AutoBot in the entry above). Registered now, before any Wayformer injection number
+is computed: same three conditions (hz2, map, hz2map) and the same composition-reweighting check, same AV2 test
+split, same reporting (coverage lost in points and as a share of the real AV2->nuScenes gap G). One caveat specific
+to this architecture, fixed now: velocity, acceleration and heading for hz2/jitter are approximated by finite
+difference of the (edited) position, since no raw sensor velocity exists for a synthetic trajectory; this is
+disclosed in the paper wherever the Wayformer injection numbers are reported, not silently assumed equivalent to
+the AutoBot case (which needs no such approximation, since it never reads those channels).

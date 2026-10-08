@@ -175,8 +175,8 @@ def cmd_run(a):
         t0 = time.time()
         journal.event(f"inject_{a.model}_{cond}", "attempt_start", f"ckpt={Path(ck).name} n_batches={a.n_batches}")
         dump(ck, str(ROOT / db), key, f"inj_{cond}", str(out.parent), device=a.device, batch_size=a.batch_size,
-             num_workers=a.num_workers, out_file=str(out), limit_batches=a.n_batches,
-             transform=make_transform(cond, params))
+             num_workers=a.num_workers, out_file=str(out), limit_batches=a.n_batches, method=a.method,
+             cache_root=a.cache_root, transform=make_transform(cond, params))
         journal.event(f"inject_{a.model}_{cond}", "artifact", f"{out.relative_to(ROOT)} in {time.time()-t0:.0f}s")
 
 
@@ -189,6 +189,9 @@ if __name__ == "__main__":
     r.add_argument("--conds", nargs="+", default=["hz2", "map", "hz2map"])
     r.add_argument("--n_batches", type=int, default=None); r.add_argument("--device", default="cuda")
     r.add_argument("--batch_size", type=int, default=32); r.add_argument("--num_workers", type=int, default=4)
-    r.add_argument("--force", action="store_true"); r.set_defaults(f=cmd_run)
+    r.add_argument("--force", action="store_true")
+    r.add_argument("--method", default="autobot")
+    r.add_argument("--cache_root", default=None)
+    r.set_defaults(f=cmd_run)
     a = ap.parse_args()
     a.f(a)
