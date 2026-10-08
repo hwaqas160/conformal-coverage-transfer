@@ -1036,3 +1036,23 @@ is unlikely to be ENTIRELY an artifact, since lane dropout (map, no kinematics d
 shows a non-trivial, positive effect (16% of G) in the same direction. But the exact hz2/hz2map magnitudes for
 Wayformer are not presented as clean causal evidence to the same standard as AutoBot's, and the paper states the
 interpolation-smoothness caveat wherever these numbers are quoted.
+
+---
+
+## Addendum H-0 -- H21 (history-length confound) WITHDRAWN: its premise is false for this pipeline -- 2026-10-08
+H21 (Addendum D6) was registered on the premise that UniTraj gives Waymo a 1.1 s history padded to 2.1 s, so a
+"truncate AV2 history to 1.1 s" injection would reproduce a real AV2->Waymo input difference. The premise came from
+Waymo's native format (91 steps, `current_time_index` 10) and was stated in a chat review and in this log WITHOUT
+being checked against the pipeline. Checked now, before running anything:
+- **Code:** `base_dataset.py:313` sets `ret['current_time_index'] = self.config['past_len'] - 1` (= 20), i.e. UniTraj
+  ignores each dataset's native current-time index and windows frames 0..20 as history and 21..80 as future, for
+  every dataset. The converted Waymo scenarios do carry native `current_time_index` = 10 (inspected), but it is not
+  used.
+- **Data:** target agents' valid history frames in the model inputs (6 batches each): AV2 test 21.0/21 (min 21);
+  Waymo test 20.6/21 (min 14, per-frame valid share 0.92-1.00, no leading block of padding).
+**Consequence.** There is no 1.1 s history on Waymo in this pipeline, so the injection would test a difference that
+does not exist; H21 is not run. The "preprocessing artifact" worry therefore applies to nuScenes only (native 2 Hz,
+already tested by the hz2 injection), and the AV2->Waymo gap (+23.4/+25.0 pt) has NO measured input-level
+explanation: no injection was designed for it because no measured AV2-vs-Waymo input difference was found, which is a
+limitation to state, not a result. The review claim "Waymo has a 1.1 s history, padded" (chat, 2026-10-08) and
+REVISION_PLAN item 3.1 are corrected here. No paper text or reported number depended on the false premise.
