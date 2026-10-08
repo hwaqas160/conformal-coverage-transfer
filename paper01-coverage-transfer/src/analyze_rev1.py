@@ -141,7 +141,7 @@ def selfcheck(rng):
     return bad == 0
 
 
-def run_pair(pair: str, draws: int = DRAWS, ms=MS, seed: int = 0):
+def run_pair(pair: str, draws: int = DRAWS, ms=MS, seed: int = 0, q_override: float | None = None):
     model, cal_name, lab_names, ev_name = PAIRS[pair]
     t0 = time.time()
     cal_s, _ = load_scores(model, [cal_name])
@@ -149,7 +149,9 @@ def run_pair(pair: str, draws: int = DRAWS, ms=MS, seed: int = 0):
     ev_s, ev_c = load_scores(model, [ev_name])
     lab, ev = Pool(lab_s, lab_c), Pool(ev_s, ev_c)
     assert not (set(lab.scene_ids) & set(ev.scene_ids)), "labelled and evaluation pools share a scene"
-    q_src = float(split_conformal_quantile(cal_s, ALPHA))
+    # q_override: Addendum H (Method B) starts the SAME rule from a protocol-matched threshold fixed from source
+    # calibration data and target INPUTS only (no target label), so validity is unchanged.
+    q_src = float(split_conformal_quantile(cal_s, ALPHA)) if q_override is None else float(q_override)
     rng = np.random.default_rng(seed)
     out = {"pair": pair, "model": model, "alpha": ALPHA, "alpha_tol": ALPHA_TOL, "delta": DELTA, "draws": draws,
            "n_label_scenes": len(lab.scene_ids), "n_eval_scenes": len(ev.scene_ids), "bet_cap": BET_CAP,
