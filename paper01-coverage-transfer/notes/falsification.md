@@ -1056,3 +1056,31 @@ already tested by the hz2 injection), and the AV2->Waymo gap (+23.4/+25.0 pt) ha
 explanation: no injection was designed for it because no measured AV2-vs-Waymo input difference was found, which is a
 limitation to state, not a result. The review claim "Waymo has a 1.1 s history, padded" (chat, 2026-10-08) and
 REVISION_PLAN item 3.1 are corrected here. No paper text or reported number depended on the false premise.
+
+---
+
+## Addendum H -- Method B, protocol-matched label-free recalibration (AV2 -> nuScenes only) -- written 2026-10-08, BEFORE any run
+**Idea.** The injection experiments (Addendum B-4/E-2) measure input-level differences between AV2 and nuScenes
+(2 Hz history, lane density). Apply the SAME label-free transform T = hz2map (lane keep prob from
+`results/addB/inject_params.json`, measured from target INPUTS only) to the source CALIBRATION inputs and take
+q_pm = (1-alpha) quantile of the resulting calibration scores. No target label is used, so q_pm is fixed before any
+labelled target scene is drawn and Proposition 3's validity (scene rule started from q_pm instead of q_src) is
+unchanged. Applies to AV2 -> nuScenes only: no measured AV2-vs-Waymo input difference exists (Addendum H-0), so no
+protocol transform is defined for Waymo and none is invented.
+**What is measured (fixed now).** (a) Label-free: coverage of q_pm on the nuScenes evaluation pool vs that of
+q_src, signed gap, scene-cluster bootstrap CI, per model (av2_gpu_full, av2_wayformer). DESCRIPTIVE: no guarantee is
+claimed for q_pm itself. (b) Scene-level rule (Addendum D3/D4 design, 1000 draws, same pools and m grid) with q_pm
+as the source threshold; report P[R<=alpha], abstention rate and area vs oracle, and the recommended budget by the
+D4 rule next to the q_src result.
+**Honest prediction, fixed now, including where I expect it NOT to help.** The rule's budget is set by its power to
+reject H_q near the oracle threshold, which does not depend on where the grid is anchored; moving the starting point
+therefore cannot be expected to shrink the budget for a tight certificate. It can shrink the budget only if q_pm
+over-covers (R(q_pm) well below alpha gives slack, so the certify branch can fire at small m at the price of a
+region larger than the oracle). Predictions: (P1) Wayformer, where hz2 alone reproduced 129% of the gap, q_pm closes
+at least half of |gap_src| and may overshoot into over-coverage; (P2) AutoBot, where the injections explained ~27%,
+q_pm closes less than half of |gap_src|; (P3) the recommended budget (D4 rule) changes by at most 50 scenes for
+AutoBot. Anything else is reported as found. Status: EXPLORATORY (new method, not a pre-registered test of a prior
+claim); the paper labels it so.
+**Caveat carried into the paper.** For Wayformer, T edits position and the derived kinematics are recomputed by finite
+difference (Addendum E-2 caveat): q_pm for Wayformer inherits the possibility that the transform is harsher than real
+2 Hz sensing.
