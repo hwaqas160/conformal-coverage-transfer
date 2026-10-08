@@ -192,3 +192,15 @@ Register all of these in Addendum D (step 1.1) before running. Mark each as conf
   keywords; all scene-repair claims corrected to the rev1 numbers (~150-200 scenes). 9 pages.
 - Still open: Wayformer (Phase 2, training), Phase 3 analyses (history-length confound, mechanism), Zenodo v2 with
   corrected code (cite concept DOI), GitHub push of these commits (needs go-ahead).
+
+## Review-item 3 (run the optimal-transport label-free baseline) -- NOT DONE, with reason -- 2026-10-08
+Read Correia & Louizos (arXiv:2507.10425, ~96% of the text) before attempting a faithful implementation. Their label-free
+step brackets the unlabelled test-score distribution with s#Q-down / s#Q-up built from the min and max score over ALL
+candidate labels per instance (or model-predicted vs uniform label sampling). Their scores are bounded in [0,1]; the
+only non-classification experiment is a 4-D synthetic regression handled by regression-as-classification with 50
+bins of a 1-D output; the paper states that for regression "designing s#Q-down and s#Q-up is more challenging" and
+gives no construction for high-dimensional or structured outputs. Our score is a metre-scale min-over-modes,
+max-over-horizon distance over a 120-dim multi-modal output: min over candidate trajectories is 0 and max is
+unbounded, so the published construction is undefined here. Any trajectory version would be my own new construction,
+and presenting it as "the NeurIPS method" would be the simplified-reproduction mistake to avoid. Decision: not run;
+state exactly this in Related Work; list a trajectory-specific bracketing as future work.

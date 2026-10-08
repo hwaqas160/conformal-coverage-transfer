@@ -167,9 +167,10 @@ def cmd_run(a):
     from predict_all import best_ckpt, SETS
     params = json.loads(PARAMS.read_text())
     ck = str(best_ckpt(a.model)) if a.ckpt == "auto" else a.ckpt
-    db, key = SETS["av2test"]
+    db, key = SETS[a.set]
+    prefix = "inj" if a.set == "av2test" else f"inj{a.set}"      # av2cal -> injav2cal_<cond>.npz (Addendum H, Method B)
     for cond in a.conds:
-        out = ROOT / "results" / "preds2" / a.model / f"inj_{cond}.npz"
+        out = ROOT / "results" / "preds2" / a.model / f"{prefix}_{cond}.npz"
         if out.exists() and not a.force:
             print(f"[skip] {out.name}"); continue
         t0 = time.time()
@@ -191,6 +192,7 @@ if __name__ == "__main__":
     r.add_argument("--batch_size", type=int, default=32); r.add_argument("--num_workers", type=int, default=4)
     r.add_argument("--force", action="store_true")
     r.add_argument("--method", default="autobot")
+    r.add_argument("--set", default="av2test", choices=["av2test", "av2cal"])
     r.add_argument("--cache_root", default=None)
     r.set_defaults(f=cmd_run)
     a = ap.parse_args()
