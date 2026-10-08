@@ -992,3 +992,23 @@ to this architecture, fixed now: velocity, acceleration and heading for hz2/jitt
 difference of the (edited) position, since no raw sensor velocity exists for a synthetic trajectory; this is
 disclosed in the paper wherever the Wayformer injection numbers are reported, not silently assumed equivalent to
 the AutoBot case (which needs no such approximation, since it never reads those channels).
+
+---
+
+## Addendum G -- training-seed sensitivity: scope fixed before training -- written 2026-10-08
+Checks whether the headline AV2->nuScenes gap (av2_gpu_full, confirmatory, seed 0, +15.1 points) is sensitive to
+the random seed used for training, as opposed to being a property of this particular optimisation run.
+**Scope decision, stated honestly.** A full replication (3 seeds x 2 directions x 2 architectures) would need
+roughly 2 weeks of additional serial GPU time on this machine's single P2000 and was not undertaken. What is
+tractable and highest-value is re-training the single most-quoted model, av2_gpu_full, with one additional seed.
+This tests the headline number specifically; it does not test seed-sensitivity of the Waymo transfer, the reverse
+direction, or Wayformer, which is disclosed as a residual limitation rather than silently left untested.
+**Design (fixed now).** `av2_gpu_full_seed1`: identical recipe, data, gate and epoch budget as av2_gpu_full
+(Sec.~setup), seed=1 instead of seed=0, same cache (shape-identical, cache content does not depend on seed). Final
+model is the last checkpoint, exactly as for seed 0.
+**Analyses run on it once trained (fixed now):** H1 (AV2->nuScenes gap, same-domain control), reported next to
+seed 0's. **Success criterion:** the paper's claims are about the SIGN and the ORDER OF MAGNITUDE of the gap, not
+its exact value, so the criterion is pre-registered as: seed 1's gap is positive and within a factor of 2 of seed
+0's. If it falls outside that band, this is reported as a real finding (seed sensitivity), not explained away.
+**Not re-run:** H2-H9, Waymo, scene-repair -- out of scope for a seed-sensitivity check specifically aimed at the
+headline number; re-running the entire battery on a second seed is future work, stated as such.
