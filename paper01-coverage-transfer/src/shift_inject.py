@@ -94,6 +94,38 @@ def cmd_sigma(a):
     journal.event("inject_params", "result", f"jitter sigma {out['jitter_sigma_m']:.4f} m (excess over AV2; nuScenes is SMOOTHER), lane keep prob {out['lane_keep_prob']:.3f}")
 
 
+# ------------------------------------------------------------------------------------------ kinematics
+# Channel layout of the 39-dim obj_trajs fed to the model (confirmed against UniTraj's own
+# base_dataset.py:560-577, logged in notes/REVISION_PLAN.md step 2.5): [0:6] pos+dims, [6:11] type one-hot,
+# [11:33] time embedding, [33:35] heading (sin,cos), [35:37] velocity (vx,vy), [37:39] acceleration.
+# AutoBot reads only [0:2] + the mask, so this is a no-op for it; Wayformer reads the full 39 channels, so an
+# hz2/jitter position edit leaves channels 33:39 describing the ORIGINAL (pre-injection) motion unless recomputed.
+HEADING_SLICE, VEL_SLICE, ACC_SLICE = slice(33, 35), slice(35, 37), slice(37, 39)
+
+
+def recompute_kinematics(inp: dict) -> None:
+    """In place: after obj_trajs[...,:2] (position) has been edited by hz2/jitter, recompute heading (sin,cos),
+    velocity and acceleration from the EDITED position by finite difference, so all 39 channels stay mutually
+    consistent. No raw sensor velocity/heading exists for an injected trajectory, so this is the best available
+    self-consistent approximation (documented assumption, not claimed to be exact) -- irrelevant for AutoBot,
+    which never reads these channels. dt = 0.1 s (10 Hz), matching base_dataset.py's own acceleration formula."""
+    pos = inp["obj_trajs"]
+    if pos.shape[-1] < 39:                      # AutoBot's obj_trajs has fewer channels: nothing to recompute
+        return
+    xy = pos[..., :2]                            # (B, A, T, 2), already edited
+    d = xy[:, :, 1:, :] - xy[:, :, :-1, :]        # (B, A, T-1, 2) per-step displacement
+    vel = d / 0.1
+    vel = torch.cat([vel[:, :, :1, :], vel], dim=2)              # copy frame 0 from frame 1 (base_dataset.py convention)
+    acc = vel[:, :, 1:, :] - vel[:, :, :-1, :]
+    acc = torch.cat([acc[:, :, :1, :], acc], dim=2) / 0.1
+    heading = torch.atan2(d[..., 1], d[..., 0])                  # (B, A, T-1)
+    heading = torch.cat([heading[:, :, :1], heading], dim=2)
+    pos[..., VEL_SLICE] = vel
+    pos[..., ACC_SLICE] = acc
+    pos[..., HEADING_SLICE.start] = torch.sin(heading)
+    pos[..., HEADING_SLICE.start + 1] = torch.cos(heading)
+
+
 # ------------------------------------------------------------------------------------------ injections
 def make_transform(cond: str, params: dict, seed: int = 0):
     g = torch.Generator().manual_seed(seed)
@@ -111,11 +143,13 @@ def make_transform(cond: str, params: dict, seed: int = 0):
         m = inp["obj_trajs_mask"]
         ok = m[:, :, kf].all(-1).view(*m.shape[:2], 1, 1)
         pos[..., :2] = torch.where(ok & m.unsqueeze(-1).bool(), new, xy)
+        recompute_kinematics(inp)
 
     def jitter(inp):
         pos, m = inp["obj_trajs"], inp["obj_trajs_mask"].unsqueeze(-1)
         noise = torch.randn(pos[..., :2].shape, generator=g).to(pos.device) * params["jitter_sigma_m"]
         pos[..., :2] = pos[..., :2] + noise * m
+        recompute_kinematics(inp)
 
     def map_thin(inp):
         mk = inp["map_polylines_mask"]                                  # (B, 256, 20)
