@@ -1012,3 +1012,27 @@ its exact value, so the criterion is pre-registered as: seed 1's gap is positive
 0's. If it falls outside that band, this is reported as a real finding (seed sensitivity), not explained away.
 **Not re-run:** H2-H9, Waymo, scene-repair -- out of scope for a seed-sensitivity check specifically aimed at the
 headline number; re-running the entire battery on a second seed is future work, stated as such.
+
+---
+
+## Outcome log -- Addendum E-2, Wayformer injection experiments -- 2026-10-08
+`recompute_kinematics` applied (verified no-op for AutoBot, entry above). Results (`results/addB/inject_av2_wayformer.json`):
+real gap G = +6.4 pt (matches H1). hz2 (2 Hz history) effect **+8.2 pt, CI [7.1, 9.3], 129% of G**; map (lane
+dropout) +1.0 pt (16% of G); both +10.6 pt (166% of G); composition reweighting -1.2 pt (-19% of G, works against
+the gap, same direction as AutoBot).
+**This differs sharply from AutoBot, where hz2+map together explained only ~27% of a much larger gap (+15.1 pt).**
+For Wayformer the measured input difference alone is MORE than sufficient to produce the whole observed gap, with
+the CI lower bound (7.1 pt) still exceeding G (6.4 pt) -- not an artifact of noise.
+**Caveat that must accompany this number (fixed now, before interpreting it as a clean causal story).**
+`recompute_kinematics` derives velocity/acceleration for the injected (2 Hz-resampled, then linearly interpolated)
+trajectory by finite difference. A piecewise-linear interpolant has CONSTANT velocity within each 0.2 s segment and
+a discontinuous jump in velocity (hence a spiked acceleration) at every original keyframe boundary -- an
+artificially jagged motion profile that a real native-2Hz sensor trajectory would not have (real motion is smooth;
+only the SAMPLING is coarse). Since Wayformer reads these derived channels and AutoBot does not, this may inflate
+the measured hz2 effect for Wayformer specifically, beyond what genuinely-coarser real-world sampling would cause.
+**Reading, stated honestly.** The qualitative finding -- input-level differences explain much more of Wayformer's
+gap than of AutoBot's -- is consistent with Wayformer's overall smaller, more "explicable" gap (Sec. mechanism) and
+is unlikely to be ENTIRELY an artifact, since lane dropout (map, no kinematics derivation involved at all) also
+shows a non-trivial, positive effect (16% of G) in the same direction. But the exact hz2/hz2map magnitudes for
+Wayformer are not presented as clean causal evidence to the same standard as AutoBot's, and the paper states the
+interpolation-smoothness caveat wherever these numbers are quoted.
