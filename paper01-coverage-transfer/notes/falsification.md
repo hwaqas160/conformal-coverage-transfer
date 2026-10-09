@@ -1110,3 +1110,12 @@ estimate of what protocol matching alone does.
 (Wayformer), in the conservative direction for the latter, but it is not a substitute for labels and does not reduce
 the label budget. It is the restricted-shift-class label-free method that Proposition 1 says a useful label-free
 method must be: it works exactly as far as the measured protocol differences explain the shift. EXPLORATORY.
+
+## Outcome log: score ablation (exploratory, not pre-registered as a hypothesis; 2026-10-09)
+Script `src/analyze_scores.py`, output `results/rev1/score_ablation.json`. Four alternative scores (top-prob mode, final
+displacement, prob-weighted gamma=0.5, time-scaled by source median error fitted on a disjoint half of the cal split) vs the
+registered score, same transfers, alpha=0.1, cal = half of the source cal split (so numbers differ slightly from the main
+tables). Result: all 24 out-of-domain cells under-cover, by 4 to 26 points. The time-scaled score helps AutoBot AV2->Waymo
+(23 -> 9 pts) but hurts AV2->nuScenes (15 -> 24). Conclusion: the coverage loss is not specific to the registered score;
+no alternative is uniformly better. Efficiency in metres is reported only as the threshold q (and mean tube radius for the
+time-scaled score) in the JSON; region-area comparison across score families was NOT done (regions are not comparable).

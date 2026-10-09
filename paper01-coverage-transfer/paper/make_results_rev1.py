@@ -281,6 +281,33 @@ def macros_methodB() -> str:
     return "\n".join(L) + "\n"
 
 
+def macros_scores() -> str:
+    """Score ablation (exploratory): four alternative nonconformity scores on the same transfers."""
+    p = R / "rev1/score_ablation.json"
+    if not p.exists():
+        return ""
+    d = _j(p)
+    gaps, n, under = [], 0, 0
+    tgt = {"av2_gpu_full": ["ns", "wm_av2gpu_test"], "av2_wayformer": ["ns", "wmtest"],
+           "ns_gpu_full": ["av2test", "wm_nsgpu_test"]}
+    for m, ts in tgt.items():
+        for name, row in d[m].items():
+            if not isinstance(row, dict) or "q" not in row or name == "S0_registered":
+                continue
+            for t in ts:
+                g = row[t]["gap_pts"]; gaps.append(g); n += 1; under += g > 0
+    L = []
+    put = lambda k, v: L.append(r"\newcommand{\%s}{%s}" % (k, v))
+    put("scGapMin", f"{min(gaps):.0f}"); put("scGapMax", f"{max(gaps):.0f}")
+    put("scCells", str(n)); put("scUnder", str(under))
+    a = d["av2_gpu_full"]
+    put("scNormNsAb", f"{a['S3_time_scaled']['ns']['gap_pts']:.0f}")
+    put("scNormWmAb", f"{a['S3_time_scaled']['wm_av2gpu_test']['gap_pts']:.0f}")
+    put("scRegNsAb", f"{a['S0_registered']['ns']['gap_pts']:.0f}")
+    put("scRegWmAb", f"{a['S0_registered']['wm_av2gpu_test']['gap_pts']:.0f}")
+    return "\n".join(L) + "\n"
+
+
 def write_all():
     OUT.mkdir(exist_ok=True)
     scene = {pk: _j(R / f"rev1/scene_{pk}.json") for pk, _ in PAIRS + PAIRS_WF
@@ -293,6 +320,7 @@ def write_all():
         if all(pk in scene for pk, _ in PAIRS_WF):
             macro_text += macros_wf(scene)
         macro_text += macros_methodB()
+        macro_text += macros_scores()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 

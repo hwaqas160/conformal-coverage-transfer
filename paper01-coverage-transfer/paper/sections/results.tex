@@ -77,6 +77,13 @@ started from the matched threshold, the scene-level rule still needs $m=\mbRecMA
 (Wayformer) for a usable region. A measured, label-free correction can recover part of the gap, but it does not replace
 labels.
 
+The loss is not an artefact of the registered score. We re-scored the same transfers with four alternatives
+(exploratory): the top-probability mode only, final displacement, a probability-weighted score, and a score scaled per
+time step by the source median error. Every one of the \scCells\ resulting out-of-domain cases under-covers
+(\scUnder\ of \scCells), by \scGapMin\ to \scGapMax\ points. No score is uniformly better: the time-scaled score cuts
+AutoBot's AV2$\to$Waymo loss from \scRegWmAb\ to \scNormWmAb\ points but raises its AV2$\to$nuScenes loss from \scRegNsAb\
+to \scNormNsAb.
+
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
 Three label budgets answer three different questions: how many labels to \emph{detect} that the guarantee has failed,
 how many to return a threshold with a \emph{certified} (training-conditional) guarantee, and how many before that
