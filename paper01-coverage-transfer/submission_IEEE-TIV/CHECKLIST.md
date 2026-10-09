@@ -42,7 +42,7 @@ are outstanding, and neither is a formatting requirement.
 - [x] Reproducibility statement (code, pre-registration, experiment log)
 
 ## Length
-Regular paper suggested length: 10 pages. Current build: 9 pages including 71 references, all three biographies,
+Regular paper suggested length: 10 pages. Current build: 10 pages including 71 references, all three biographies,
 4 figures (pipeline diagram, coverage-gap bars, manoeuvre coverage, scene-level repair) and 2 tables. No overlength charge.
 
 ## What's in this folder
