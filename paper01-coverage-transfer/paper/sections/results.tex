@@ -115,7 +115,9 @@ $\le5\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo
 $m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less information each. At that budget the repaired
 AV2$\to$nuScenes radius is \recQAvNs\,m against an oracle of \qOracleAvNs\,m. The betting $p$-value gives smaller regions
 than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaNsTwoHundred$\times$ the oracle area at
-$m=200$ on AV2$\to$nuScenes).
+$m=200$ on AV2$\to$nuScenes). In dataset terms, \recMAvNs\ scenes is more than the 138 scenes of the entire nuScenes
+validation split, so on that target the repair draws on training-split labels; a deployment that can label fewer scenes
+should expect the rule to abstain, not to return a smaller guaranteed region.
 
 \begin{figure}[t]
 \centering

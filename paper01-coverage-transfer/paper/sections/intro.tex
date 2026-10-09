@@ -52,9 +52,10 @@ prior work has quantified at this scale. Coverage falls by up to \wmGapAvW\ poin
 two architectures matching published accuracy; within one architecture family the most accurate model loses the
 most coverage, but this does not hold across architectures. (ii) A diagnosis. Covariate reweighting makes the loss
 worse, a non-identifiability result (Proposition~\ref{prop:ident}) shows why label-free repair is limited in
-principle, and controlled input perturbations localise the loss to turns in left-hand traffic. (iii) A repair with a
-finite-sample, training-conditional guarantee when labels arrive scene by scene
-(Propositions~\ref{prop:cor} and~\ref{prop:scene}). It is valid at every labelling budget we tested, on both
+principle, and controlled input perturbations localise the loss to turns in left-hand traffic. (iii) A repair protocol, not a new
+conformal algorithm: it applies Learn-then-Test with a betting test at the scene level, which gives a finite-sample,
+training-conditional guarantee when labels arrive scene by scene (Propositions~\ref{prop:cor} and~\ref{prop:scene}).
+It is valid at every labelling budget we tested, on both
 architectures, and gives a usable region from about \recMMin\ labelled scenes, while the natural agent-level
 guarantee can fail when scenes contain many agents and the source threshold is already badly wrong. (iv) Code,
 registered hypotheses and an append-only experiment log, including a defect found and corrected before submission.
