@@ -1084,3 +1084,29 @@ claim); the paper labels it so.
 **Caveat carried into the paper.** For Wayformer, T edits position and the derived kinematics are recomputed by finite
 difference (Addendum E-2 caveat): q_pm for Wayformer inherits the possibility that the transform is harsher than real
 2 Hz sensing.
+
+---
+
+## Outcome log -- Addendum H (Method B, protocol-matched recalibration, AV2 -> nuScenes) -- 2026-10-09
+Run exactly as registered (`src/analyze_methodB.py`; transform hz2map on av2cal inputs; CPU inference; `results/rev1/methodB_*.json`).
+**(a) Label-free coverage on nuScenes (descriptive; no guarantee for q_pm).**
+- av2_gpu_full: q 3.81 m -> 4.69 m; coverage 0.749 [0.713, 0.779] -> 0.811 [0.781, 0.840]; gap +15.1 -> +8.9 pt (**closes 41%**).
+- av2_wayformer: q 4.16 m -> 5.71 m; coverage 0.836 [0.807, 0.861] -> 0.923 [0.903, 0.939]; gap +6.4 -> -2.3 pt (**closes 137%, overshoots into over-coverage**).
+**(b) Scene-level rule started from q_pm.** Valid at every m on both (P[R<=alpha] 1.000, Wilson lower bound 0.996).
+Recommended budget by the D4 rule UNCHANGED: AutoBot m=150 (area 1.91x with q_src, 1.89x with q_pm); Wayformer m=150
+(1.77x vs 1.78x). At m=100: 2.71x -> 2.78x (AutoBot), 2.27x -> 2.26x (Wayformer).
+**Predictions as registered: P1 (Wayformer closes >= half, may overshoot) CONFIRMED; P2 (AutoBot closes < half) CONFIRMED
+(41%); P3 (AutoBot budget changes by <= 50 scenes) CONFIRMED (no change).** The registered caution also held: moving
+the starting point does not shorten the certification budget, because the budget is set by the power to reject
+near the oracle threshold. Wayformer's over-coverage leaves too little slack (R(q_pm) is ~0.08 vs alpha 0.10) for
+the certify branch to fire at small m.
+**Two further observations, stated as such.** (1) At m = 80 the abstention rate on AutoBot falls from 57% to 1% with
+q_pm but the median area rises (3.07x -> 3.58x): the fixed grid is anchored at q_pm x [4, 0.5], so a larger anchor
+raises the top of the grid and lets the first test reject earlier; this is a grid-range effect, not a better
+certificate, and the area shows the price. (2) Wayformer's overshoot could partly reflect the finite-difference
+kinematics approximation (Addendum E-2); the AutoBot number, which needs no such approximation, is the cleaner
+estimate of what protocol matching alone does.
+**Reading.** A measured, label-free protocol correction recovers part of the gap (41% for AutoBot) or all of it
+(Wayformer), in the conservative direction for the latter, but it is not a substitute for labels and does not reduce
+the label budget. It is the restricted-shift-class label-free method that Proposition 1 says a useful label-free
+method must be: it works exactly as far as the measured protocol differences explain the shift. EXPLORATORY.
