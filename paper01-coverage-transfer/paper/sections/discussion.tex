@@ -22,17 +22,19 @@ for every model we tried. A practitioner cannot know in advance which case they 
 Sec.~\ref{sec:repair-scene}, which is the practical argument for using the scene-level guarantee by default rather
 than hoping agent-level recalibration happens to be close enough.
 
-\paragraph{Mechanism} Two observations narrow the cause. The measured input differences explain about a quarter of
-the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain. Both point to a change
-in the conditional behaviour of road users rather than in the scenes themselves, consistent with
-Proposition~\ref{prop:ident}, and both replicate on Wayformer (Sec.~\ref{sec:wf}). The exploratory AutoBot zoo showed
+\paragraph{Mechanism} Two observations narrow the cause. For AutoBot the measured input differences explain about a
+quarter of the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain; for that
+model both point to a change in the conditional behaviour of road users rather than in the scenes themselves,
+consistent with Proposition~\ref{prop:ident}. The turn pattern replicates on Wayformer, but the input-level
+explanation does not: its injected input differences reproduce the whole, smaller gap (Sec.~\ref{sec:wf}), so how much
+of the loss is protocol and how much is behaviour depends on the model. The exploratory AutoBot zoo showed
 the most accurate model losing the most coverage; Wayformer breaks this pattern, with accuracy comparable to the
 confirmatory AutoBot model but under half its nuScenes gap. Accuracy is therefore not a general predictor of gap
 size across architectures, only a pattern observed within one architecture family trained several ways.
 
 \paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms every direction
 and mechanism finding but was only trained forward, so its reverse-direction and injection results are untested.
-(ii) The measured input differences leave most of the gap unexplained, and unmeasured
+(ii) For AutoBot the measured input differences leave most of the gap unexplained, and unmeasured
 causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
 manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
 (v) The repair budget is measured on three datasets and may differ on others; the registered evaluation design

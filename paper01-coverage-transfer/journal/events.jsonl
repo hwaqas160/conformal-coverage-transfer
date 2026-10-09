@@ -284,3 +284,19 @@
 {"ts": "2026-10-07T20:07:16", "id": "predict_av2_wayformer", "event": "done", "detail": "model=av2_wayformer ckpt=last.ckpt -> results\\preds2\\av2_wayformer", "sha": "680a672"}
 {"ts": "2026-10-07T20:07:42", "id": "rev1_scene_wayformer_to_nuscenes", "event": "attempt_start", "detail": "draws=1000", "sha": "680a672"}
 {"ts": "2026-10-07T20:10:37", "id": "rev1_scene_wayformer_to_nuscenes", "event": "done", "detail": "results\\rev1\\scene_wayformer_to_nuscenes.json", "sha": "680a672"}
+{"ts": "2026-10-08T11:33:12", "id": "inject_av2_wayformer_hz2", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "0873b59"}
+{"ts": "2026-10-08T11:34:48", "id": "inject_av2_wayformer_hz2", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\inj_hz2.npz in 96s", "sha": "180331a"}
+{"ts": "2026-10-08T11:34:48", "id": "inject_av2_wayformer_map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "180331a"}
+{"ts": "2026-10-08T11:36:14", "id": "inject_av2_wayformer_map", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\inj_map.npz in 86s", "sha": "180331a"}
+{"ts": "2026-10-08T11:36:14", "id": "inject_av2_wayformer_hz2map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "180331a"}
+{"ts": "2026-10-08T11:37:41", "id": "inject_av2_wayformer_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\inj_hz2map.npz in 87s", "sha": "180331a"}
+{"ts": "2026-10-08T11:38:01", "id": "inject_analysis_av2_wayformer", "event": "result", "detail": "hz2: +8.2pt (129% of G=6.4); map: +1.0pt (16% of G=6.4); hz2map: +10.6pt (166% of G=6.4); comp: -1.2pt (-19% of G=6.4)", "sha": "180331a"}
+{"ts": "2026-10-08T11:38:48", "id": "av2_gpu_full_seed1_train", "event": "attempt_start", "detail": "wrapper attempt 1", "sha": "b236a02"}
+{"ts": "2026-10-08T16:33:22", "id": "inject_av2_gpu_full_hz2map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "a1de19d"}
+{"ts": "2026-10-08T16:38:45", "id": "inject_av2_gpu_full_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_gpu_full\\injav2cal_hz2map.npz in 322s", "sha": "837c85e"}
+{"ts": "2026-10-08T16:38:47", "id": "inject_av2_wayformer_hz2map", "event": "attempt_start", "detail": "ckpt=last.ckpt n_batches=None", "sha": "837c85e"}
+{"ts": "2026-10-08T16:55:14", "id": "inject_av2_wayformer_hz2map", "event": "artifact", "detail": "results\\preds2\\av2_wayformer\\injav2cal_hz2map.npz in 986s", "sha": "837c85e"}
+{"ts": "2026-10-09T10:53:30", "id": "methodB_av2_to_nuscenes", "event": "attempt_start", "detail": "", "sha": "837c85e"}
+{"ts": "2026-10-09T10:56:43", "id": "methodB_av2_to_nuscenes", "event": "done", "detail": "results\\rev1\\methodB_av2_to_nuscenes.json", "sha": "837c85e"}
+{"ts": "2026-10-09T10:56:44", "id": "methodB_wayformer_to_nuscenes", "event": "attempt_start", "detail": "", "sha": "837c85e"}
+{"ts": "2026-10-09T10:59:31", "id": "methodB_wayformer_to_nuscenes", "event": "done", "detail": "results\\rev1\\methodB_wayformer_to_nuscenes.json", "sha": "837c85e"}

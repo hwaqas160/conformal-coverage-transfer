@@ -33,7 +33,12 @@ under general shift can be bounded by a distance between calibration and test di
 Recent work replaces that bound with an explicit ambiguity-set radius under L\'{e}vy--Prokhorov perturbations
 \cite{aolaritei2025levy}, regularises the representation with a Wasserstein penalty to shrink the achievable coverage
 gap \cite{xu2025wasserstein}, or uses optimal transport with unlabelled target data to both estimate and mitigate the
-loss in coverage \cite{correia2025nonexchangeable}; a parallel line gives sample-complexity lower bounds for when a
+loss in coverage \cite{correia2025nonexchangeable}. The last is the closest label-free competitor, but its bracketing of
+the unlabelled test scores is built from the minimum and maximum score over all candidate labels, for scores bounded
+in $[0,1]$, and is evaluated on classification and a one-dimensional binned regression task. For our unbounded,
+metre-scale score over multi-modal trajectories that minimum is zero and the maximum is unbounded, and we found no
+published construction for structured outputs, so we do not run it as a baseline; a trajectory-specific bracketing
+is a natural extension. A parallel line gives sample-complexity lower bounds for when a
 selective predictor can certify a risk floor under covariate shift at all \cite{liu2026certify}, a negative result in
 the same spirit as our Proposition~\ref{prop:ident}. Online methods adapt the threshold from realised errors:
 adaptive conformal inference \cite{gibbs2021adaptive}, conformal PID control \cite{angelopoulos2023pid}, its use for

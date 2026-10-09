@@ -251,6 +251,33 @@ def macros_wf(scene) -> str:
         tag = MACRO_TAG[pk]
         put(f"recM{tag}", m if m else "--")
         put(f"recArea{tag}", f"{b['median_area_vs_oracle']:.1f}" if b else "--")
+    inj = _j(R / "addB/inject_av2_wayformer.json")["injections"]       # Addendum E-2
+    put("wfInjHz", f"{100 * inj['hz2']['effect_pt']:.1f}")
+    put("wfInjHzFrac", f"{100 * inj['hz2']['fraction_of_G']:.0f}")
+    put("wfInjBoth", f"{100 * inj['hz2map']['effect_pt']:.1f}")
+    put("wfInjBothFrac", f"{100 * inj['hz2map']['fraction_of_G']:.0f}")
+    put("wfInjMapFrac", f"{100 * inj['map']['fraction_of_G']:.0f}")
+    return "\n".join(L) + "\n"
+
+
+def macros_methodB() -> str:
+    """Addendum H (Method B): protocol-matched label-free recalibration, AV2 -> nuScenes, both architectures."""
+    L = []
+    put = lambda k, v: L.append(r"\newcommand{\%s}{%s}" % (k, v))
+    for tag, pair in (("Ab", "av2_to_nuscenes"), ("Wf", "wayformer_to_nuscenes")):
+        p = R / f"rev1/methodB_{pair}.json"
+        if not p.exists():
+            continue
+        d = _j(p)
+        put(f"mbCovSrc{tag}", f"{100 * d['cov_src']:.0f}")
+        put(f"mbCovPm{tag}", f"{100 * d['cov_pm']:.0f}")
+        put(f"mbGapSrc{tag}", f"{100 * d['gap_src']:.1f}")
+        put(f"mbGapPm{tag}", f"{100 * d['gap_pm']:+.1f}")
+        put(f"mbClosed{tag}", f"{100 * d['gap_closed_fraction']:.0f}")
+        put(f"mbQSrc{tag}", f"{d['q_src']:.1f}")
+        put(f"mbQPm{tag}", f"{d['q_pm']:.1f}")
+        m, b = recommended(d["scene_rule_from_q_pm"])
+        put(f"mbRecM{tag}", m if m else "--")
     return "\n".join(L) + "\n"
 
 
@@ -265,6 +292,7 @@ def write_all():
         macro_text = macros(scene)
         if all(pk in scene for pk, _ in PAIRS_WF):
             macro_text += macros_wf(scene)
+        macro_text += macros_methodB()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 

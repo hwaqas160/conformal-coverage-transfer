@@ -42,7 +42,7 @@ The loss is concentrated in turns. On the confirmatory model, right-turn coverag
 AV2 to nuScenes, against \dropStraightConf\ points for straight driving (Fig.~\ref{fig:traj}). It is largest in
 Singapore, where traffic drives on the left: the right-turn drop there exceeds the drop in Boston by
 \sgExtraRightConf\ points. What AV2-trained forecasters miss is the wide, across-traffic turn of left-hand traffic.
-Injecting one measured input difference at a time into AV2 test inputs reproduces only part of the gap
+For AutoBot, injecting one measured input difference at a time into AV2 test inputs reproduces only part of the gap
 (Table~\ref{tab:inject}): a 2\,Hz history explains \injHzConf\%, lane dropout \injMapConf\%, and both together about
 a quarter. Excess annotation noise and map-point density were measured and found absent.
 
@@ -64,6 +64,18 @@ correlates with per-city coverage loss at Spearman $\rho\le0.47$ on every model,
 Adaptive conformal inference \cite{gibbs2021adaptive} converges only with a stream of labels; frozen after 1000 labels,
 its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFrozenMax\% of streams. These results
 agree with Proposition~\ref{prop:ident}: without target labels there is no general fix.
+
+One label-free method restricts the shift class, as that proposition says a useful one must. \emph{Protocol-matched
+recalibration} passes the source calibration inputs through the measured AV2$\to$nuScenes input differences of
+Sec.~\ref{sec:inject} (2\,Hz history and lane dropout, estimated from target inputs only) and recalibrates on the
+result. It is exploratory and carries no guarantee. For AutoBot it moves the threshold from \mbQSrcAb\ to \mbQPmAb\,m
+and coverage on nuScenes from \mbCovSrcAb\% to \mbCovPmAb\%, closing \mbClosedAb\% of the gap. For Wayformer it moves it
+from \mbQSrcWf\ to \mbQPmWf\,m, coverage from \mbCovSrcWf\% to \mbCovPmWf\%, and overshoots the gap to
+\mbGapPmWf\ points, in the conservative direction, which may partly reflect how Wayformer's velocity inputs are
+reconstructed for injected trajectories (Sec.~\ref{sec:wf}). It does not shorten the label budget of Sec.~\ref{sec:repair-scene}:
+started from the matched threshold, the scene-level rule still needs $m=\mbRecMAb$ scenes (AutoBot) and $m=\mbRecMWf$
+(Wayformer) for a usable region. A measured, label-free correction can recover part of the gap, but it does not replace
+labels.
 
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
 Three label budgets answer three different questions: how many labels to \emph{detect} that the guarantee has failed,
@@ -122,6 +134,13 @@ design effect (\designEffWf\ vs.\ AutoBot's \designEffConf). The scene-level rep
 Wayformer transfers (Fig.~\ref{fig:scene}b) and reaches the same operating point, $m=\recMWfNs$ scenes for
 AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo (area \recAreaWfWm$\times$), as the
 AutoBot models.
+
+The input-level explanation does not replicate in size. Injecting the 2\,Hz history into AV2 test inputs costs
+Wayformer \wfInjHz\ points, \wfInjHzFrac\% of its nuScenes gap, and with lane dropout \wfInjBoth\ points (\wfInjBothFrac\%):
+more than the whole gap, where it was about a quarter for AutoBot. Read this with care. Wayformer reads velocity,
+acceleration and heading channels that AutoBot ignores, and for an injected trajectory we reconstruct them by finite
+difference, which gives a piecewise-constant velocity inside each 0.2\,s segment that real 2\,Hz sensing would not
+have and may overstate the effect. Lane dropout, which needs no reconstruction, still accounts for \wfInjMapFrac\%.
 
 Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's confirmatory
 \gapRawConf\ points, while its AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$). This breaks the
