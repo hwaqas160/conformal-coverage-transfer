@@ -32,8 +32,9 @@ the most accurate model losing the most coverage; Wayformer breaks this pattern,
 confirmatory AutoBot model but under half its nuScenes gap. Accuracy is therefore not a general predictor of gap
 size across architectures, only a pattern observed within one architecture family trained several ways.
 
-\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms every direction
-and mechanism finding but was only trained forward, so its reverse-direction and injection results are untested.
+\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms the direction, reweighting,
+turn and repair findings but was only trained forward, so its reverse direction is untested, and its injection result
+rests on reconstructed kinematics.
 (ii) For AutoBot the measured input differences leave most of the gap unexplained, and unmeasured
 causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
 manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
