@@ -1119,3 +1119,11 @@ tables). Result: all 24 out-of-domain cells under-cover, by 4 to 26 points. The 
 (23 -> 9 pts) but hurts AV2->nuScenes (15 -> 24). Conclusion: the coverage loss is not specific to the registered score;
 no alternative is uniformly better. Efficiency in metres is reported only as the threshold q (and mean tube radius for the
 time-scaled score) in the JSON; region-area comparison across score families was NOT done (regions are not comparable).
+
+## Outcome log: Addendum G (training-seed sensitivity, 2026-10-12)
+av2_gpu_full_seed1 trained to completion (60 epochs, last checkpoint, best-ckpt val minADE6 0.875 vs 0.859 for seed 0).
+H1 AV2->nuScenes at alpha=0.1: raw gap +20.6 pts (CI 19.2 to 22.5) vs seed 0's +15.1; same-domain gap +0.8 (control ok).
+Pre-registered criterion (positive and within a factor 2 of seed 0): MET (ratio 1.36). The gap is larger, not smaller, with
+the second seed, so the seed-0 value is not an upper outlier, but the two seeds differ by 5.5 points, more than the seed-0
+CI width: seed-to-seed variation is a real component of uncertainty and is stated in the paper. Not re-seeded (disclosed):
+reverse direction, Waymo transfers, Wayformer. Injections and Method B were not run on seed 1.

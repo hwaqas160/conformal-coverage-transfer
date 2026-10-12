@@ -39,7 +39,10 @@ rests on reconstructed kinematics.
 causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
 manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
 (v) The repair budget is measured on three datasets and may differ on others; the registered evaluation design
-(disjoint pools, exact evaluation) should be reused rather than the numbers.
+(disjoint pools, exact evaluation) should be reused rather than the numbers. (vi) Seeds: a second training seed of the confirmatory AutoBot model gave an AV2$\to$nuScenes
+loss of \seedGapOne\ points (95\% interval \seedCiLo--\seedCiHi) against \seedGapZero\ for the first, meeting our registered
+criterion (same sign, within a factor of two) but showing that seed-to-seed variation exceeds the sampling interval of
+a single run. Other transfers and Wayformer were not re-seeded.
 
 \section{Conclusion}
 A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets, two

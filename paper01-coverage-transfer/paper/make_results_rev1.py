@@ -308,6 +308,21 @@ def macros_scores() -> str:
     return "\n".join(L) + "\n"
 
 
+def macros_seed() -> str:
+    """Addendum G: second training seed of the confirmatory AutoBot model, AV2 -> nuScenes."""
+    p = R / "run2/av2_gpu_full_seed1__forward.json"
+    if not p.exists():
+        return ""
+    t = _j(p)["H1_H4"]["0.10"]["raw"]
+    s0 = _j(R / "run2/av2_gpu_full__forward.json")["H1_H4"]["0.10"]["raw"]["target"]["gap"]
+    g = t["target"]["gap"]
+    L = []
+    put = lambda k, v: L.append(r"\newcommand{\%s}{%s}" % (k, v))
+    put("seedGapOne", f"{100 * g:.1f}"); put("seedGapZero", f"{100 * s0:.1f}")
+    put("seedCiLo", f"{100 * t['target']['ci95'][0]:.0f}"); put("seedCiHi", f"{100 * t['target']['ci95'][1]:.0f}")
+    return "\n".join(L) + "\n"
+
+
 def write_all():
     OUT.mkdir(exist_ok=True)
     scene = {pk: _j(R / f"rev1/scene_{pk}.json") for pk, _ in PAIRS + PAIRS_WF
@@ -321,6 +336,7 @@ def write_all():
             macro_text += macros_wf(scene)
         macro_text += macros_methodB()
         macro_text += macros_scores()
+        macro_text += macros_seed()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 
