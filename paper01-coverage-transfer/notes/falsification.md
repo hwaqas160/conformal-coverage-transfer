@@ -1127,3 +1127,12 @@ Pre-registered criterion (positive and within a factor 2 of seed 0): MET (ratio 
 the second seed, so the seed-0 value is not an upper outlier, but the two seeds differ by 5.5 points, more than the seed-0
 CI width: seed-to-seed variation is a real component of uncertainty and is stated in the paper. Not re-seeded (disclosed):
 reverse direction, Waymo transfers, Wayformer. Injections and Method B were not run on seed 1.
+
+## Addendum I -- Wayformer training-seed sensitivity: scope fixed before training -- written 2026-10-12
+Mirrors Addendum G for the second architecture. `av2_wayformer_seed1`: identical recipe, data, cache (C:\p01_cache_wf),
+epoch budget (27) and final-model rule (last checkpoint) as av2_wayformer, seed=1 instead of 0. Analyses once trained:
+H1 AV2->nuScenes gap and same-domain control, plus the AV2->Waymo gap, reported next to seed 0's (+8.1 pts nuScenes as in
+the paper; value read from results/run2 at analysis time). Success criterion, fixed now: seed 1's AV2->nuScenes gap is
+positive and within a factor of 2 of seed 0's. The accuracy gate (val minADE6 <= 0.98) is applied to seed 1 exactly as for
+seed 0; if seed 1 fails the gate it is reported as a failed training run, not silently replaced. Injections, Method B and the
+reverse direction are NOT re-run on seed 1 (disclosed). If the gap falls outside the band it is reported as seed sensitivity.
