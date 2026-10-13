@@ -1136,3 +1136,33 @@ the paper; value read from results/run2 at analysis time). Success criterion, fi
 positive and within a factor of 2 of seed 0's. The accuracy gate (val minADE6 <= 0.98) is applied to seed 1 exactly as for
 seed 0; if seed 1 fails the gate it is reported as a failed training run, not silently replaced. Injections, Method B and the
 reverse direction are NOT re-run on seed 1 (disclosed). If the gap falls outside the band it is reported as seed sensitivity.
+
+## Addendum J -- Method A feasibility step 1: can a source-trained loss predictor rank target scenes? -- written 2026-10-13, BEFORE any run
+Follow-up-paper idea (Method A): use a label-free predictor of per-scene miss probability as a control variate in an
+anytime-valid scene-level test, to reduce the labelled scenes needed. Its value depends entirely on how well a predictor
+trained on SOURCE labels ranks TARGET scenes by their true loss. This step measures only that; it does no testing.
+**Design (fixed now).** Per agent, label-free features: the 7 `feats_lf` (history-based) + model-output summaries (mean
+and max over modes of endpoint distance from the agent's last position, std of mode endpoints, entropy of mode probs,
+top-mode probability). Target: miss indicator 1[score > q_src] at alpha=0.1 on the source calibration split, q_src from
+that split. Predictor: logistic regression (standardised) and gradient boosting (sklearn defaults, depth<=3, 200 trees),
+fit on a random half of source calibration agents, hyperparameters not tuned on target. Scene prediction = mean of agent
+predictions in the scene. Evaluation: Spearman rho between predicted and true scene-level miss fraction, and
+r^2 = squared Pearson (the variance a control variate could remove), on target scenes: AV2->nuScenes (138 scenes) and
+AV2->Waymo test, for av2_gpu_full and av2_wayformer; nuScenes->AV2/Waymo for ns_gpu_full. Same-domain held-out half of
+source is the control (expect rho>0 there).
+**Predictions (honest).** I expect weak transfer: rho 0.2-0.4 on nuScenes, because the predictor is trained where the
+miss rate is 10% and applied where it is 25%+, and nuScenes has only 138 scenes (rho interval about +-0.17).
+**Decision rule (fixed now).** Method A is worth developing as a paper only if r^2 >= 0.25 (rho >= 0.5) on at least two
+of the AV2->nuScenes / AV2->Waymo cells for both architectures. If not, it is reported as a negative result in the log
+and the follow-up is dropped, not rescued by feature engineering after seeing target labels.
+
+## Outcome log: Addendum J (Method A step 1, 2026-10-13) -- NEGATIVE, Method A dropped as designed
+Script `src/analyze_methodA_step1.py`, results `results/rev1/methodA_step1.json`. Scene-level r^2 between predicted and true
+miss fraction on target scenes: AutoBot AV2->nuScenes 0.08 (logit) / 0.02 (gbm), AV2->Waymo 0.06 / 0.01; Wayformer
+AV2->nuScenes 0.11 / 0.16, AV2->Waymo 0.09 / 0.03; nuScenes-trained model to AV2/Waymo 0.00-0.01. Best Spearman 0.50
+(Wayformer nuScenes logit, 138 scenes, interval wide). Same-domain held-out control is itself weak (r^2 0.03-0.24), so even
+without shift these features barely predict a scene's miss fraction. The predictor also under-predicts the target miss rate
+(e.g. 0.11 vs 0.27 on nuScenes), as expected under shift. Decision rule (r^2>=0.25 on >=2 cells for both architectures) NOT
+met by any cell. A control variate with r^2<=0.16 could cut labelled-scene variance by at most ~16%, which does not change the
+label budget materially. Method A as a variance-reduction paper is dropped; no feature engineering after seeing target labels.
+Salvage for the main paper: one sentence in Discussion that scene-level loss is hard to predict from label-free features.
