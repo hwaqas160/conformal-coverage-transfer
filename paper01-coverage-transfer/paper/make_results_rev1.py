@@ -323,6 +323,17 @@ def macros_seed() -> str:
     return "\n".join(L) + "\n"
 
 
+def macros_predictor() -> str:
+    """Addendum J: best target-scene r^2 of any source-trained loss predictor (negative result)."""
+    p = R / "rev1/methodA_step1.json"
+    if not p.exists():
+        return ""
+    d = _j(p)
+    r2 = [c["r2"] for m in d.values() if isinstance(m, dict) for k, v in m.items() if isinstance(v, dict)
+          for t, c in v.items() if t != "control_heldout_source" and c.get("r2") is not None]
+    return "\\newcommand{\\predBestRsq}{%.0f}\n" % (100 * max(r2))
+
+
 def write_all():
     OUT.mkdir(exist_ok=True)
     scene = {pk: _j(R / f"rev1/scene_{pk}.json") for pk, _ in PAIRS + PAIRS_WF
@@ -337,6 +348,7 @@ def write_all():
         macro_text += macros_methodB()
         macro_text += macros_scores()
         macro_text += macros_seed()
+        macro_text += macros_predictor()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 

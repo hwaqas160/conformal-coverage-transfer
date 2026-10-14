@@ -1,7 +1,7 @@
 \section{Discussion}
 A planner that trusts a source-calibrated region on a new dataset trusts a region that is too small. At $\alpha=0.1$
 the confirmatory models lose \gapRawConf, \gapRawConfRev, \wmGapAvW\ and \wmGapNsW\ points of coverage on the four
-transfers we tested, and the loss is silent: nothing observable without labels signals it. Three results bear
+transfers we tested, and the loss is silent: nothing observable without labels signals it. Four results bear
 directly on practice.
 
 \emph{Label-free fixes are not safe defaults.} Covariate reweighting made the gap larger on every forward model, and
@@ -12,6 +12,10 @@ worse off than one who does nothing.
 with high power. Repairing it with a guarantee that holds under scene clustering needs whole labelled scenes: roughly
 \recMMin\ to \recMMax\ of them before the region is both finite and within twice the oracle area. Below that budget the
 correct behaviour is to abstain, which the scene-level rule does.
+
+\emph{A learned predictor of scene loss does not replace labels.} A classifier trained on source labels to predict whether an agent is
+missed explained at most \predBestRsq\% of the variance of the true per-scene miss fraction on any target, and also little on held-out
+source scenes, so it cannot stand in for target labels, for example as a control variate that shortens the label budget.
 
 \emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean 65 agents
 per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at $m=40$) but mostly
