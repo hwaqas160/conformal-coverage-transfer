@@ -2,9 +2,9 @@
 \paragraph{Data} Argoverse~2 \cite{wilson2021argoverse2}, nuScenes \cite{caesar2020nuscenes} and Waymo Open Motion
 \cite{ettinger2021waymo} (30 of 150 validation shards), converted with ScenarioNet \cite{li2023scenarionet} and loaded
 through UniTraj \cite{feng2024unitraj}. AV2 scenarios are independent 11\,s clips with one focal agent; the labelled AV2
-validation split is divided by a fixed salted hash into a calibration half and a test half. nuScenes has a mean of 65 agents per
-20\,s scene (9041 from 138 validation scenes), so its calibration/test split is made by scene (64/74 scenes). Waymo
-scenarios carry 3.7 agents on average and are split by scenario (\wmNScenariosCalAvW\ calibration, \wmNScenariosAvW\ test).
+validation split is divided by a fixed salted hash into a calibration half and a test half. nuScenes has a mean of \nsAgentsMean\ agents per
+20\,s scene (\nsNAgents\ from \nsNScenes\ validation scenes), so its calibration/test split is made by scene (\nsNScenesCal/\nsNScenesTest\ scenes). Waymo
+scenarios carry \wmAgentsPerScenario\ agents on average and are split by scenario (\wmNScenariosCalAvW\ calibration, \wmNScenariosAvW\ test).
 \paragraph{Forecasters} AutoBot-Ego \cite{girgis2022autobots} with $K=6$ modes. The \emph{confirmatory} models were trained
 after the hypotheses about them were registered, with UniTraj's recipe (effective batch 128, learning rate
 $7.5\times10^{-4}$ halved at epochs 10--50): \textbf{av2\_gpu\_full} on the full 183k-scene AV2 training set and
@@ -14,7 +14,7 @@ $7.5\times10^{-4}$ halved at epochs 10--50): \textbf{av2\_gpu\_full} on the full
 architecture, Wayformer \cite{nayakanti2023wayformer}, was trained forward-only under the same accuracy gate and effective batch size, with its own learning rate and 27-epoch schedule
 (reaching \minADESixWayformer, Sec.~\ref{sec:wf}); no reverse-direction Wayformer was trained. Four
 \emph{reduced-budget} AutoBot models (training-data subsets or shorter schedules; the three AV2 models reach
-minADE\textsubscript{6} 1.09--1.35) were used to design the analyses and are labelled exploratory throughout.
+minADE\textsubscript{6} \explAdeMin--\explAdeMax) were used to design the analyses and are labelled exploratory throughout.
 \paragraph{Protocol} $\alpha=\delta=0.1$. Forward: calibrate on the AV2 calibration half; test on the AV2 test half
 (same-domain control), nuScenes and Waymo. Reverse: calibrate on the nuScenes calibration scenes; test on nuScenes test
 scenes, AV2 and Waymo. Label-budget experiments draw $k$ agents or $m$ whole scenes 1000 times from a labelled pool that

@@ -44,10 +44,10 @@ be complemented by a label-based audit (Sec.~\ref{sec:audit}).
 
 \subsection{Cost of using target labels}
 If $k$ labelled target agents are used directly, the resulting empirical coverage is Beta-distributed around
-$1-\alpha$ \cite{vovk2012conditional}, with standard deviation about $\sqrt{\alpha(1-\alpha)/k}$, so $\approx 1000$
+$1-\alpha$ \cite{vovk2012conditional}, with standard deviation about $\sqrt{\alpha(1-\alpha)/k}$, so $\approx\agentsForTwoPoints$
 labels are needed for $\pm 2$ points at $\alpha=0.1$.
 Detecting a shortfall $\delta$ with an exact one-sided binomial test at level $\ell$ and power $1-\beta$ needs
 \begin{equation}\label{eq:budget}
 k\approx\left(\frac{z_{1-\ell}\sqrt{\alpha(1-\alpha)}+z_{1-\beta}\sqrt{(\alpha+\delta)(1-\alpha-\delta)}}{\delta}\right)^{2}.
 \end{equation}
-For $\delta=0.034$, $\alpha=0.1$, $\ell=0.05$, $\beta=0.1$ this gives $k\approx750$.
+For $\delta=0.034$, $\alpha=0.1$, $\ell=0.05$, $\beta=0.1$ this gives $k\approx\auditBudgetK$.

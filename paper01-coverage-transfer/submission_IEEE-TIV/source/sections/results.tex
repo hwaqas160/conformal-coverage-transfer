@@ -21,10 +21,10 @@ confirmatory models. Error bars: 95\% intervals, resampled by scene where target
 \label{fig:gap}
 \end{figure}
 
-The nuScenes test agents come from only 138 scenes, so they are strongly dependent. Resampling whole scenes inflates the
+The nuScenes test agents come from only \nsNScenes\ scenes, so they are strongly dependent. Resampling whole scenes inflates the
 variance of the coverage estimate by a design effect of \designEffConf; all intervals on multi-agent targets therefore
-resample scenes, not agents. The more accurate model has the larger gap. The confirmatory AV2 model, within 0.5\% of
-UniTraj's published accuracy, loses \gapRawConf\ points, against 3.3 to 10.5 points for the three reduced-budget AV2
+resample scenes, not agents. The more accurate model has the larger gap. The confirmatory AV2 model, within \confAccRelPct\% of
+UniTraj's published accuracy, loses \gapRawConf\ points, against \explGapMin\ to \explGapMax\ points for the three reduced-budget AV2
 models (Table~\ref{tab:models}). With four models of one architecture family this is an association, not a causal claim.
 
 \input{generated/table_models}
@@ -59,8 +59,8 @@ by city; Singapore drives on the left. Error bars: agent-level Wilson 95\% inter
 \subsection{Q3: What can label-free methods do?}
 Little, and not reliably. The model-normalised score (Sec.~\ref{sec:norm}) reduces the AV2$\to$nuScenes gap by
 \normReductionConf\% (to \gapNormConf\ points) but widens the reverse gap (to \gapNormConfRev\ points). On the
-reduced-budget models its effect ranges from a 49\% reduction to a 52\% increase. A domain-classifier shift monitor
-correlates with per-city coverage loss at Spearman $\rho\le0.47$ on every model, below the registered bar of 0.5.
+reduced-budget models its effect ranges from a \explNormBestRed\% reduction to a \explNormWorstInc\% increase. A domain-classifier shift monitor
+correlates with per-city coverage loss at Spearman $\rho\le\monitorRhoMax$ on every model, below the registered bar of 0.5.
 Adaptive conformal inference \cite{gibbs2021adaptive} converges only with a stream of labels; frozen after 1000 labels,
 its threshold covers $\ge90\%$ of held-out scenes in only \aciFrozenMin--\aciFrozenMax\% of streams. These results
 agree with Proposition~\ref{prop:ident}: without target labels there is no general fix.
@@ -90,7 +90,7 @@ how many to return a threshold with a \emph{certified} (training-conditional) gu
 threshold is also \emph{small enough to be useful}. We report all three; the second does not imply the third.
 
 \emph{Audit (detect).} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
-with probability 1.00 on both confirmatory models, at a false-alarm rate of at most 7\% on a shift-free split
+with probability at least \auditPowerConfMin\ on both confirmatory models, at a false-alarm rate of at most \auditFaConfMax\% on a shift-free split
 (Table~\ref{tab:models}).
 
 \emph{Repair with exchangeable labels (certify).} When $k=1000$ agents are labelled at random, certify-or-recalibrate
@@ -102,7 +102,7 @@ draw $m$ labelled scenes from a pool disjoint from the evaluation scenes (nuScen
 Waymo calibration half for the Waymo targets) and evaluate the scene-averaged miscoverage $R(\hat q)$ exactly on the
 evaluation pool, 1000 draws per $m$ (Fig.~\ref{fig:scene}). The scene-level rule with the betting $p$-value is valid at
 every $m$ on all four transfers ($\Pr[R(\hat q)\le\alpha]\ge\betValidMin$). The agent-level rule is not: on
-AV2$\to$nuScenes, with a mean of 65 agents per scene (median 53), it is valid in \agentCorNsForty\% of draws at $m=40$ and
+AV2$\to$nuScenes, with a mean of \nsAgentsMean\ agents per scene (median \nsAgentsMedian), it is valid in \agentCorNsForty\% of draws at $m=40$ and
 \agentCorNsThreeHundred\% at $m=300$, and one-agent-per-scene split CP \cite{dunn2023hierarchical} in
 \hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
 \agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
@@ -115,7 +115,7 @@ $\le5\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo
 $m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less information each. At that budget the repaired
 AV2$\to$nuScenes radius is \recQAvNs\,m against an oracle of \qOracleAvNs\,m. The betting $p$-value gives smaller regions
 than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaNsTwoHundred$\times$ the oracle area at
-$m=200$ on AV2$\to$nuScenes). In dataset terms, \recMAvNs\ scenes is more than the 138 scenes of the entire nuScenes
+$m=200$ on AV2$\to$nuScenes). In dataset terms, \recMAvNs\ scenes is more than the \nsNScenes\ scenes of the entire nuScenes
 validation split, so on that target the repair draws on training-split labels; a deployment that can label fewer scenes
 should expect the rule to abstain, not to return a smaller guaranteed region.
 
@@ -158,7 +158,7 @@ comparable to AutoBot's confirmatory model, yet its nuScenes gap is far smaller.
 unregistered difference worth reporting rather than hiding. On the \emph{same} nuScenes target, agent-level
 certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
 \agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer (\agentCorWfForty\% at $m=40$,
-\agentCorWfThreeHundred\% at $m=300$), on identically structured scenes (same mean 65 agents/scene). The difference
+\agentCorWfThreeHundred\% at $m=300$), on identically structured scenes (same mean \nsAgentsMean\ agents/scene). The difference
 tracks the size of the underlying miscalibration: the source threshold misses \rSrcAutobot\% of AutoBot's
 evaluation agents against only \rSrcWayformer\% of Wayformer's, so the same scene clustering has more room to hurt
 a method that was already more wrong. Scene size is therefore not a sufficient predictor of agent-level failure on

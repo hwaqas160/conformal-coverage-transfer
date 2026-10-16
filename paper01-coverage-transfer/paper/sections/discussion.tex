@@ -17,7 +17,7 @@ correct behaviour is to abstain, which the scene-level rule does.
 missed explained at most \predBestRsq\% of the variance of the true per-scene miss fraction on any target, and also little on held-out
 source scenes, so it cannot stand in for target labels, for example as a control variate that shortens the label budget.
 
-\emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean 65 agents
+\emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean \nsAgentsMean\ agents
 per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at $m=40$) but mostly
 valid for Wayformer on the identical scenes (\agentCorWfForty\%, Sec.~\ref{sec:wf}), tracking how badly each
 model's source threshold was miscalibrated there (\rSrcAutobot\% vs.\ \rSrcWayformer\% missed), not the scene
