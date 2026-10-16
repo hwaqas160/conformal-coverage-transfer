@@ -198,7 +198,7 @@ def macros(scene):
     wf_run2, wf_addc = R / "run2/av2_wayformer__forward.json", R / "addC/av2_wayformer.json"
     if wf_run2.exists() and wf_addc.exists():
         tgt = tgt + [_j(wf_run2)["H1_H4"]["0.10"]["raw"]["target"]["coverage"],
-                    1 - _j(wf_addc)["H17_gap_waymo"]["gap"]]
+                    _j(wf_addc)["H17_gap_waymo"]["coverage"]]
     put("covTgtMin", f"{100 * min(tgt):.0f}")
     put("covTgtMax", f"{100 * max(tgt):.0f}")
     return "\n".join(L) + "\n"
