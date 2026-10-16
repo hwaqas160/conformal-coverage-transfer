@@ -13,7 +13,7 @@ are outstanding, and neither is a formatting requirement.
 - [x] No non-English characters in author information
 - [x] **Institutional email address for every co-author.** All three now have one in `main.tex`: H. W. Saleem
       (`hsaleem.msee20seecs@seecs.edu.pk`), R. Z. Saleem (`rahat.mscm21nbs@student.nust.edu.pk`), H. Maryam
-      (`hina.maryam@sbp.org.pk`).
+      (`hina.maryam@kinnaird.edu.pk`).
 - [x] **Short biography for each author.** All three added as `IEEEbiography`/`IEEEbiographynophoto` blocks after
       the bibliography. Hassan Waqas Saleem has a photo (`author_photos/saleem_hw.jpeg`); Rahat Zeeshan Saleem and
       Hina Maryam are text-only for now -- swap `IEEEbiographynophoto` for `IEEEbiography[{\includegraphics{...}}]`
