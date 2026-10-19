@@ -1208,3 +1208,34 @@ Found in an end-to-end audit and corrected (generated from result files, no hand
   two runs). It tracks the realised threshold's own same-domain shortfall (up to 1.0 pt), i.e. the audit tests the
   realised threshold; stated in the paper, with the margin recommendation.
 - Removed from Methods: the pooled/shrinkage/k* recalibration comparison and ACI result (i), never reported in Results.
+
+## Addendum K -- two label-free-on-target methods: worst-domain and manoeuvre-conditional calibration -- written 2026-10-20, BEFORE any run
+Motivation: Proposition 1 says a label-free threshold needs a restricted shift class. Two candidate restrictions, both testable
+on existing predictions (CPU only, no new training). Nothing below has been computed.
+**Method A (worst-domain conformal).** Calibrate on every labelled source dataset available EXCLUDING the target and use
+q_A = max over source datasets of that dataset's split-conformal 90% threshold (alpha=0.1, ceil((n+1)(1-alpha))/n rule).
+Restricted shift class: the target's difficulty lies inside the range of the source datasets. Baseline: the pooled threshold
+(split CP on the union of the source scores) and the ordinary single-source threshold (AV2 for AV2-trained models, nuScenes
+for the nuScenes model).
+**Method B (manoeuvre-conditional / Mondrian calibration).** Three groups from label-free history features only
+(feats_lf): G0 = hist_speed_mean < 1 m/s; G1 = moving and hist_heading_change < tau; G2 = moving and
+hist_heading_change >= tau, with tau = median hist_heading_change among MOVING source-calibration agents (fixed on source,
+never on target). One threshold per group from the source calibration scores. Baseline: the marginal single-source threshold.
+**Cells (6).** Model -> target: av2_gpu_full -> nuScenes val (138 scenes) and -> Waymo test; av2_wayformer -> nuScenes val
+and -> Waymo test; ns_gpu_full -> AV2 test and -> Waymo test. For A the sources are the other two datasets' labelled
+calibration data (nuScenes source for AV2-trained models = the nuScenes TRAIN predictions, disjoint from the evaluation scenes;
+Waymo source = the Waymo calibration half; AV2 source = AV2 calibration half; nuScenes source for ns_gpu_full = nscal).
+For B the single source is the model's own training-domain calibration split.
+**Metrics.** Agent-level coverage on the target test set with scene-cluster bootstrap 95% CI (1000 resamples); gap =
+0.9 - coverage; efficiency = (q/q_oracle)^2 where q_oracle is the target's own 90% threshold (area proxy; for B the
+mean over target agents of (q_group/q_oracle)^2 is NOT used -- B is reported by coverage only plus the mean threshold ratio).
+**Success criteria (fixed now).**
+- A succeeds if the held-out-target gap is <= 2.0 points (coverage >= 0.88) in at least 4 of the 6 cells AND the area proxy
+  is <= 2.0x the oracle in those cells.
+- B succeeds if it reduces the marginal baseline's gap by at least 50% in at least 4 of the 6 cells.
+- Either method that fails is reported as a negative result. No new features, groups, thresholds or source sets are tried
+  after seeing target labels.
+**Honest predictions.** A: nuScenes target for AV2-trained models likely covered (Waymo threshold 8.9 m exceeds nuScenes'
+oracle 8.2 m) with area ratio near 1.2; Waymo target likely still slightly under-covered because Waymo is the hardest
+dataset, so A probably succeeds in 2-4 of 6 cells (borderline versus the 4-of-6 bar). B: I expect failure (gap reduced by
+10-30%), because the shift probably affects turns in every dataset, not only through the history features.
