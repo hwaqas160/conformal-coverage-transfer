@@ -1,18 +1,21 @@
 \begin{table}[t]
 \centering
-\caption{Coverage gap by model ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). conf.: gated full-data model; expl.: reduced-budget model used to design the analyses. norm.: gap of the normalised score. rew.: change in gap from covariate reweighting (positive = worse). audit: reject probability / false-alarm \% at $k=1000$ labels.}
+\caption{Every model analysed ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). conf.: gated full-data model (s1: second training seed); expl.: reduced-budget model used to design the analyses. AB/WF: AutoBot/Wayformer. acc.: validation minADE$_6$ of the analysed checkpoint. CI: 95\%, resampled by scene. norm.: gap of the normalised score. rew.: change in gap from covariate reweighting (positive = worse). audit: reject probability / false-alarm \% at $k=1000$ labels.}
 \label{tab:models}
-\setlength{\tabcolsep}{3pt}
-\resizebox{\columnwidth}{!}{\begin{tabular}{lllrcrrc}
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{\begin{tabular}{llllrrcrrc}
 \toprule
-Model & St. & Dir. & gap & 95\% CI & norm. & rew. & audit \\
+Model & St. & Arch. & Dir. & acc. & gap & 95\% CI & norm. & rew. & audit \\
 \midrule
-av2\_gpu\_full & conf. & fwd & 15.1 & 13.6--16.7 & 11.0 & +1.9 & 1.00/7 \\
-ns\_gpu\_full & conf. & rev & 7.7 & 6.3--9.6 & 8.6 & +0.1 & 1.00/0 \\
-av2\_cpu\_v1 & expl. & fwd & 3.3 & 2.1--4.5 & 1.7 & +2.0 & 0.95/2 \\
-av2\_valsplit\_v1 & expl. & fwd & 8.0 & 6.4--9.4 & 7.0 & +2.1 & 1.00/1 \\
-av2\_cpu\_v2 & expl. & fwd & 10.5 & 9.4--12.2 & 7.3 & +2.2 & 1.00/6 \\
-ns\_cpu\_v1 & expl. & rev & 4.7 & 3.7--6.2 & 7.1 & -0.5 & 1.00/19 \\
+av2\_gpu\_full & conf. & AB & fwd & 0.846 & 15.1 & 12.0--18.4 & 11.0 & +1.9 & 1.00/7 \\
+av2\_gpu\_full s1 & conf. & AB & fwd & 0.870 & 20.6 & 17.3--24.3 & 16.1 & +1.8 & 1.00/23 \\
+av2\_wayformer & conf. & WF & fwd & 0.932 & 6.4 & 3.9--9.1 & 1.3 & +2.4 & 1.00/3 \\
+av2\_wayformer s1 & conf. & WF & fwd & 0.941 & 7.7 & 5.1--10.7 & 3.3 & +2.5 & 1.00/12 \\
+ns\_gpu\_full & conf. & AB & rev & 1.336 & 7.7 & 6.3--9.9 & 8.6 & +0.1 & 1.00/0 \\
+av2\_cpu\_v1 & expl. & AB & fwd & 1.349 & 3.3 & 0.7--6.2 & 1.7 & +2.0 & 0.95/2 \\
+av2\_valsplit\_v1 & expl. & AB & fwd & 1.347 & 8.0 & 5.0--11.3 & 7.0 & +2.1 & 1.00/1 \\
+av2\_cpu\_v2 & expl. & AB & fwd & 1.092 & 10.5 & 7.9--13.8 & 7.3 & +2.2 & 1.00/6 \\
+ns\_cpu\_v1 & expl. & AB & rev & 1.300 & 4.7 & 3.6--6.2 & 7.1 & $-$0.5 & 1.00/19 \\
 \bottomrule
 \end{tabular}}
 \end{table}

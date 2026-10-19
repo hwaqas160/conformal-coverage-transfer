@@ -185,7 +185,9 @@ def main():
             r"\newcommand{\nCal%s}{%d}" % (tag, dc["n"]["cal"]),
             r"\newcommand{\nTarget%s}{%d}" % (tag, dc["n"]["target"]),
         ]
-        b6 = best_minade6(model)
+        fin = ROOT / "results" / "rev1" / "final_minade.json"   # direct validation of the registered final model
+        b6 = json.loads(fin.read_text()).get(model) if fin.exists() else None
+        b6 = b6 if b6 is not None else best_minade6(model)
         if b6 is not None:
             lines.append(r"\newcommand{\minADESix%s}{%.3f}" % (tag, b6))
     lines.append(r"\newcommand{\nModelsDone}{%d}" % len([m for m in ALL_MODELS if load(m, "forward")]))
@@ -196,48 +198,71 @@ def main():
         lines.append(r"\newcommand{\kStarDirect}{%d}" % k_star)
     (OUT / "numbers.tex").write_text("\n".join(lines) + "\n")
 
-    # ---- per-model table (H8 robustness), forward + reverse rows whenever present ------------
+    # ---- per-model table: every confirmatory run (both architectures, both seeds) + exploratory zoo ------------
+    #      CI = scene-cluster bootstrap (addB B10) wherever available, so multi-agent targets resample scenes.
+    #      acc. = val minADE6 of the model whose predictions are analysed: direct validation of the registered
+    #      final (last) checkpoint for confirmatory runs, the named checkpoint for exploratory ones.
+    fin_p = ROOT / "results" / "rev1" / "final_minade.json"
+    fin = json.loads(fin_p.read_text()) if fin_p.exists() else {}
+    CONF_SET = {CONF_MODEL, CONF_REVERSE_MODEL, "av2_gpu_full_seed1", "av2_wayformer", "av2_wayformer_seed1"}
+    ARCH = {"av2_wayformer": "WF", "av2_wayformer_seed1": "WF"}
+    LABEL = {"av2_gpu_full_seed1": r"av2\_gpu\_full s1", "av2_wayformer": r"av2\_wayformer",
+             "av2_wayformer_seed1": r"av2\_wayformer s1"}
     rows = []
-    for direction, models in (("forward", ALL_MODELS), ("reverse", REVERSE_MODELS)):
-        for m in models:
-            dj = load(m, direction)
-            if dj is None:
-                continue
-            h = dj["H1_H4"][ALPHA_KEY]
-            raw_tgt, norm_tgt = h["raw"]["target"], h["norm"]["target"]
-            reduction = 100 * (1 - norm_tgt["gap"] / raw_tgt["gap"]) if raw_tgt["gap"] else float("nan")
-            power = dj["audit"]["target"]["reject_prob"].get(K_HEADLINE)
-            fa = dj["audit"]["same_domain"]["reject_prob"].get(K_HEADLINE)
-            h3 = dj["H3_label_free"]
-            rows.append({
-                "model": m.replace("_", r"\_"), "status": "conf." if m in (CONF_MODEL, CONF_REVERSE_MODEL) else "expl.",
-                "direction": "fwd" if direction == "forward" else "rev",
-                "gap_raw": pct(raw_tgt["gap"]),
-                "ci": f"{pct(raw_tgt['ci95'][0])}--{pct(raw_tgt['ci95'][1])}",
-                "gap_norm": pct(norm_tgt["gap"]),
-                "rew": f"{100 * (h3['weighted']['gap'] - h3['uncorrected']['gap']):+.1f}",
-                "power": f"{power:.2f}" if power is not None else "--",
-                "fa": f"{100 * fa:.0f}" if fa is not None else "--",
-            })
+    order = ([(CONF_MODEL, "forward"), ("av2_gpu_full_seed1", "forward"), ("av2_wayformer", "forward"),
+              ("av2_wayformer_seed1", "forward"), (CONF_REVERSE_MODEL, "reverse")]
+             + [(m, "forward") for m in ALL_MODELS if m != CONF_MODEL]
+             + [(m, "reverse") for m in REVERSE_MODELS if m != CONF_REVERSE_MODEL])
+    for m, direction in order:
+        dj = load(m, direction)
+        if dj is None:
+            continue
+        h = dj["H1_H4"][ALPHA_KEY]
+        raw_tgt, norm_tgt = h["raw"]["target"], h["norm"]["target"]
+        bp = ROOT / "results" / "addB" / f"{m}__{direction}.json"
+        ci = raw_tgt["ci95"]
+        if bp.exists():
+            b10 = json.loads(bp.read_text()).get("B10_target_clustered")
+            if b10:
+                ci = b10["ci95_cluster"]
+        power = dj["audit"]["target"]["reject_prob"].get(K_HEADLINE)
+        fa = dj["audit"]["same_domain"]["reject_prob"].get(K_HEADLINE)
+        h3 = dj["H3_label_free"]
+        acc = fin.get(m) if m in CONF_SET else best_minade6(m)
+        rows.append({
+            "model": LABEL.get(m, m.replace("_", r"\_")),
+            "status": "conf." if m in CONF_SET else "expl.",
+            "arch": ARCH.get(m, "AB"),
+            "direction": "fwd" if direction == "forward" else "rev",
+            "acc": f"{acc:.3f}" if acc is not None else "--",
+            "gap_raw": pct(raw_tgt["gap"]),
+            "ci": f"{pct(ci[0])}--{pct(ci[1])}",
+            "gap_norm": pct(norm_tgt["gap"]),
+            "rew": f"{100 * (h3['weighted']['gap'] - h3['uncorrected']['gap']):+.1f}",
+            "power": f"{power:.2f}" if power is not None else "--",
+            "fa": f"{100 * fa:.0f}" if fa is not None else "--",
+        })
     tex = [
         r"\begin{table}[t]",
         r"\centering",
-        (r"\caption{Coverage gap by model ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). "
-         r"conf.: gated full-data model; expl.: reduced-budget model used to design the analyses. norm.: gap of "
-         r"the normalised score. rew.: change in gap from covariate reweighting (positive = worse). audit: reject "
-         r"probability / false-alarm \%% at $k=%s$ labels.}" % K_HEADLINE),
+        (r"\caption{Every model analysed ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). conf.: "
+         r"gated full-data model (s1: second training seed); expl.: reduced-budget model used to design the analyses. "
+         r"AB/WF: AutoBot/Wayformer. acc.: validation minADE$_6$ of the analysed checkpoint. CI: 95\%%, resampled by "
+         r"scene. norm.: gap of the normalised score. rew.: change in gap from covariate reweighting (positive = worse). "
+         r"audit: reject probability / false-alarm \%% at $k=%s$ labels.}" % K_HEADLINE),
         r"\label{tab:models}",
-        r"\setlength{\tabcolsep}{3pt}",
-        r"\resizebox{\columnwidth}{!}{\begin{tabular}{lllrcrrc}",
+        r"\setlength{\tabcolsep}{2.5pt}",
+        r"\resizebox{\columnwidth}{!}{\begin{tabular}{llllrrcrrc}",
         r"\toprule",
-        r"Model & St. & Dir. & gap & 95\% CI & norm. & rew. & audit \\",
+        r"Model & St. & Arch. & Dir. & acc. & gap & 95\% CI & norm. & rew. & audit \\",
         r"\midrule",
     ]
-    for r in sorted(rows, key=lambda r: (r["status"] != "conf.", r["direction"])):
-        tex.append(f"{r['model']} & {r['status']} & {r['direction']} & {r['gap_raw']} & {r['ci']} & "
-                   f"{r['gap_norm']} & {r['rew']} & {r['power']}/{r['fa']} \\\\")
+    for r in rows:
+        tex.append(__import__('re').sub(r'(?<![\w$\\-])-(\d)', r'$-$\1',
+                   f"{r['model']} & {r['status']} & {r['arch']} & {r['direction']} & {r['acc']} & {r['gap_raw']} & "
+                   f"{r['ci']} & {r['gap_norm']} & {r['rew']} & {r['power']}/{r['fa']} \\\\"))
     if not rows:
-        tex.append(r"\multicolumn{8}{c}{no results yet} \\")
+        tex.append(r"\multicolumn{10}{c}{no results yet} \\")
     tex += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
     (OUT / "table_models.tex").write_text("\n".join(tex) + "\n")
 

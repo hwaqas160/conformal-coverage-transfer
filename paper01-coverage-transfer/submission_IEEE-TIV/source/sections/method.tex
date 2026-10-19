@@ -1,10 +1,12 @@
 \section{Methods}
 \subsection{Model-normalised score (label-free)}\label{sec:norm}
-The forecaster emits, per mode $k$, a Laplace scale $(b^x_{k,t},b^y_{k,t})$. Let
-$u_k(x)=\tfrac1T\sum_t\sqrt{(b^x_{k,t})^2+(b^y_{k,t})^2}$ and use the score
-$s'(x,y)=\min_k \max_t\|\hat y_{k,t}-y_t\|/u_k(x)$. The region is the union of balls of radius $\hat q'\,u_k(x)$. The premise is that when a
+The forecaster emits, per mode $r$, a Laplace scale $(b^x_{r,t},b^y_{r,t})$. Let
+$u_r(x)=\tfrac1T\sum_t\sqrt{(b^x_{r,t})^2+(b^y_{r,t})^2}$ and use the score
+$s'(x,y)=\min_r \max_t\|\hat y_{r,t}-y_t\|/u_r(x)$. The region is the union of balls of radius $\hat q'\,u_r(x)$. The premise is that when a
 shift makes scenes harder, the forecaster's own scale widens, so the normalised score is less shift-sensitive. Its
-efficiency is measured by region area $\sum_k\pi(\hat q' u_k)^2$ at matched coverage.
+efficiency is measured by the area proxy $\sum_r\pi(\hat q' u_r)^2$ (the summed cross-section of the tubes, ignoring
+overlap) at matched coverage; for the unnormalised score this proxy is proportional to $\hat q^2$, so the area ratios we report
+against an oracle equal $(\hat q/q_{\mathrm{oracle}})^2$.
 
 \subsection{Coverage audit}\label{sec:audit}
 Given a source-calibrated $\hat q$ and $k$ labelled target agents, an
@@ -13,14 +15,8 @@ a violation. We report its empirical power and its false-alarm
 rate on a shift-free split, alongside the theoretical budget of
 Eq.~\eqref{eq:budget}.
 
-\subsection{Recalibration with $k$ target labels}
-We compare three thresholds computed from $k$ labelled target agents and the $n$ source calibration scores:
-\emph{direct} (SCP on the $k$ target scores); \emph{pooled} (SCP on the union); and \emph{shrinkage}
-($\hat q=\lambda\hat q_{\text{tgt}}+(1-\lambda)\hat q_{\text{src}}$ with $\lambda=k/(k+k_0)$). We report the label budget $k^\star$ at which
-absolute coverage error falls below $0.02$ in at least 90\% of random label draws.
-
 \subsection{Certify-or-recalibrate with exchangeable labels}\label{sec:cor}
-Plain recalibration on $k$ target labels is only \emph{marginally} valid: the coverage of the resulting threshold is
+Plain recalibration (split CP on the $k$ labelled target scores alone) is only \emph{marginally} valid: the coverage of the resulting threshold is
 $\mathrm{Beta}(\ell,k+1-\ell)$-distributed \cite{vovk2012conditional}, so it falls below $1-\alpha$ in roughly half of all
 label draws (Sec.~\ref{sec:results}). A practitioner needs the stronger, \emph{training-conditional}
 statement \cite{vovk2012conditional,bian2023training}: coverage $\ge 1-\alpha$ with probability $\ge 1-\delta$ over the draw of the labels.
@@ -77,8 +73,7 @@ because the grid does not depend on the labels; the certification branch fails w
 
 \subsection{Online baseline}
 Adaptive conformal inference (ACI) \cite{gibbs2021adaptive} updates the working level $\alpha_{t+1}=\alpha_t+\gamma(\alpha-\mathrm{err}_t)$ after every revealed label, keeping the source
-calibration set fixed; it needs a stream of labels and offers long-run, not finite-sample, coverage. We report (i) how many streamed labels ACI needs before its
-running coverage stays within $2$ points of nominal, and (ii) the coverage of its threshold frozen after $k$ labels, for $\gamma\in\{0.005,0.01,0.05\}$.
+calibration set fixed; it needs a stream of labels and offers long-run, not finite-sample, coverage. We report the coverage of its threshold frozen after $k$ streamed labels, for $\gamma\in\{0.005,0.01,0.05\}$.
 
 \subsection{Controlled input shifts}\label{sec:inject}
 To locate the source of the loss we perturb one measured AV2--nuScenes difference at a time in AV2 test \emph{inputs} (ground truth untouched) and record the coverage lost by

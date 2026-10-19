@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{H19: does the scene-level betting-LTT repair (Sec.~\ref{sec:repair-scene}) transfer to Waymo scenarios as the labelling unit (mean 3.7 agents/scenario, vs.\ nuScenes' $\sim$65/scene)? Cells: \% of 200 draws whose threshold covers $\ge 90\%$ of held-out scenarios / median area vs.\ oracle. The pre-registered bar (rate $\ge 0.88$ at every $m\in\{30,40,50,60\}$) is met at $m=30,40$ for AV2$\to$Waymo only; see Sec.~\ref{sec:waymo} for the honest reading of the shortfall at $m=50,60$.}
+\label{tab:waymoscene}
+\begin{tabular}{lrrr}
+\toprule
+Transfer & $m$ scenarios & rate & area/oracle \\
+\midrule
+AV2$\to$Waymo & 30 & 90 & 1.86 \\
+AV2$\to$Waymo & 40 & 88 & 1.58 \\
+AV2$\to$Waymo & 50 & 86 & 1.56 \\
+AV2$\to$Waymo & 60 & 86 & 1.67 \\
+nuScenes$\to$Waymo & 30 & 85 & 2.02 \\
+nuScenes$\to$Waymo & 40 & 82 & 1.78 \\
+nuScenes$\to$Waymo & 50 & 80 & 1.62 \\
+nuScenes$\to$Waymo & 60 & 82 & 1.73 \\
+\bottomrule
+\end{tabular}
+\end{table}

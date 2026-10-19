@@ -1,22 +1,20 @@
 \section{Related Work}
-\paragraph{Conformal prediction for trajectories.}
+\paragraph{Conformal prediction for trajectories}
 Split CP turns any predictor into one with marginal coverage guarantees \cite{vovk2005algorithmic,angelopoulos2023gentle}
 and underlies conformal safe planning around predicted agents \cite{lindemann2023safe}. Multi-step and multi-modal
 trajectories have been handled with copula-based intervals \cite{sun2024copula}, scenario-aware intervals in a Frenet
 frame on nuPlan with a learned reliability discriminator \cite{shu2025scenario}, and multi-view calibration that
 fuses vehicle- and infrastructure-side
 observations before conformal calibration \cite{chen2024v2i}. A 2025 survey of the field catalogues these directions
-and the open gaps around uncertainty and generalisation \cite{abdelmadjid2025survey}; concurrent architecture work
-targets multimodal mode decoding \cite{zhou2026modeseq} and a shared encoder across simulation, prediction and
-planning \cite{song2025unimotion}, and a controlled dataset-design study on a new benchmark finds that feature
+and the open gaps around uncertainty and generalisation \cite{abdelmadjid2025survey}, and a controlled dataset-design study on a new benchmark finds that feature
 engineering matters less than which data the model sees \cite{demmler2025dataset} --- a finding our Sec.~\ref{sec:where}
 echoes from the calibration side. Calibrating the predictive \emph{distribution} itself, rather than only the
 output region, has also been proposed \cite{pouria2026gaussian}. Locally weighted scores that divide the residual by
 an estimated spread \cite{lei2018distribution} are the classical route to adaptive regions; our normalised score uses
-the forecaster's own predicted scale in that role, an LLM-based safe-navigation system uses a related idea in token
+the forecaster's own predicted scale in that role, and an LLM-based safe-navigation system uses a related idea in token
 space \cite{doula2025safepath}.
 
-\paragraph{Safe planning and robot safety with conformal guarantees.}
+\paragraph{Safe planning and robot safety with conformal guarantees}
 Beyond trajectory regions, conformal prediction has been used to certify learned perception for navigation
 \cite{mei2024perceive}, to adapt a crowd-navigation policy's safety margin to distribution shift
 \cite{yao2025crowdnav}, to learn safety regions from sparse human feedback \cite{feldman2025robotsafety}, to certify
@@ -27,21 +25,21 @@ policy updates analytically rather than by relabelling, and \cite{binny2025moved
 ego agent itself induces in interacting agents. All of these assume the calibration and deployment \emph{domain}
 match; we study what happens when the domain itself changes.
 
-\paragraph{Conformal prediction under shift.}
+\paragraph{Conformal prediction under shift}
 Weighted CP handles covariate shift given the likelihood ratio \cite{tibshirani2019covariate}, and the coverage loss
 under general shift can be bounded by a distance between calibration and test distributions \cite{barber2023beyond}.
 Recent work replaces that bound with an explicit ambiguity-set radius under L\'{e}vy--Prokhorov perturbations
 \cite{aolaritei2025levy}, regularises the representation with a Wasserstein penalty to shrink the achievable coverage
 gap \cite{xu2025wasserstein}, or uses optimal transport with unlabelled target data to both estimate and mitigate the
-loss in coverage \cite{correia2025nonexchangeable}. Robust conformal prediction instead guards against every test distribution inside an $f$-divergence ball around the
-training distribution \cite{cauchois2024robust}; it restricts the shift class by construction, as Proposition~ef{prop:ident}
-says a useful label-free method must, but needs a radius chosen or estimated for the shift, and we leave it as a baseline
-for future work. The last is the closest label-free competitor, but its bracketing of
-the unlabelled test scores is built from the minimum and maximum score over all candidate labels, for scores bounded
-in $[0,1]$, and is evaluated on classification and a one-dimensional binned regression task. For our unbounded,
-metre-scale score over multi-modal trajectories that minimum is zero and the maximum is unbounded, and we found no
-published construction for structured outputs, so we do not run it as a baseline; a trajectory-specific bracketing
-is a natural extension. A parallel line gives sample-complexity lower bounds for when a
+loss in coverage \cite{correia2025nonexchangeable}. That optimal-transport method is the closest label-free competitor,
+but its bracketing of the unlabelled test scores is built from the minimum and maximum score over all candidate labels,
+for scores bounded in $[0,1]$, and is evaluated on classification and a one-dimensional binned regression task. For our
+unbounded, metre-scale score over multi-modal trajectories that minimum is zero and the maximum is unbounded, and we
+found no published construction for structured outputs, so we do not run it as a baseline; a trajectory-specific
+bracketing is a natural extension. Robust conformal prediction instead guards against every test distribution inside
+an $f$-divergence ball around the training distribution \cite{cauchois2024robust}; it restricts the shift class by
+construction, as Proposition~\ref{prop:ident} says a useful label-free method must, but needs a radius chosen or
+estimated for the shift, and we leave it as a baseline for future work. A parallel line gives sample-complexity lower bounds for when a
 selective predictor can certify a risk floor under covariate shift at all \cite{liu2026certify}, a negative result in
 the same spirit as our Proposition~\ref{prop:ident}. Online methods adapt the threshold from realised errors:
 adaptive conformal inference \cite{gibbs2021adaptive}, conformal PID control \cite{angelopoulos2023pid}, its use for
@@ -52,7 +50,7 @@ training-conditional (not just time-averaged) regret bounds under drift \cite{li
 trajectory-specific instance of this family is CUQDS \cite{huang2025cuqds}, which pairs a learned Gaussian-process
 uncertainty module with online conformal PID control; like the other online methods above, it needs a running stream
 of ground-truth labels at deployment time, so it answers a different question from ours and is not a baseline we can
-run in the zero-label or fixed-labelled-batch settings this paper studies. Our ACI comparison (Sec.~\ref{sec:repair-scene})
+run in the zero-label or fixed-labelled-batch settings this paper studies. Our ACI comparison (Sec.~\ref{sec:labelfree})
 covers the same methodological category --- adapt the threshold from realised errors --- without requiring CUQDS's
 architecture-specific uncertainty module.
 Other work conditions on an observable nuisance parameter and generates synthetic data with a diffusion model
@@ -60,20 +58,17 @@ Other work conditions on an observable nuisance parameter and generates syntheti
 (both preprints). We study a different point in this space: no feedback, no generative model, and three real driving
 datasets.
 
-\paragraph{Grouped, hierarchical and conditional coverage.}
+\paragraph{Grouped, hierarchical and conditional coverage}
 When observations come in groups, exchangeability across observations fails, and hierarchical conformal methods
 restore validity by pooling or subsampling at the group level \cite{dunn2023hierarchical,lee2023hierarchical}; recent
 extensions handle hierarchically structured outputs with a reconciliation step \cite{principato2024hierarchicaldata},
-weight groups directly when the shift is known to act at the group level \cite{bhattacharyya2024groupweighted}, carry
-constrained-complexity representations into hierarchical classification \cite{mortier2025hierarchicalclass}, or let a
+weight groups directly when the shift is known to act at the group level \cite{bhattacharyya2024groupweighted}, or let a
 test group borrow structure from a donor group when only partial test-group data is available
 \cite{mallick2026generalizedhcp}. A broader conditional-coverage literature asks for validity on subpopulations or
 individual test points rather than only on average: a unifying decomposition of conditional miscoverage
 \cite{min2026unifiedtheory}, learned reliability estimators that predict where coverage will fail
-\cite{zhou2026cpassessment,braun2025diagnostics}, group-conditional coverage over overlapping, fractional group
-memberships \cite{bairaktari2025kandinsky}, an audit showing nominal marginal coverage can still silently fail a
-specific clinical subgroup \cite{zhong2026fairness}, and conditional risk control for segmentation via a weighted-quantile
-connection to risk control \cite{luo2025conditionalrisk}. Risk-controlling procedures \cite{bates2021rcps} and
+\cite{zhou2026cpassessment,braun2025diagnostics}, and group-conditional coverage over overlapping, fractional group
+memberships \cite{bairaktari2025kandinsky}. Risk-controlling procedures \cite{bates2021rcps} and
 Learn-then-Test \cite{angelopoulos2025ltt} give finite-sample control of a monotone risk by testing a fixed ordered
 set of thresholds, and betting-based $p$-values \cite{waudbysmith2024betting} make such tests far tighter than
 Hoeffding-type bounds when losses are small. We combine the two ideas for a setting those works do not address:
@@ -81,11 +76,10 @@ dataset shift in trajectory prediction, where the natural labelling unit is the 
 controlled is the scene-averaged miscoverage of a fixed, source-calibrated forecaster. Valid $p$-values for bounded
 losses need care \cite{alvarez2024pvalue}; our own implementation needed a corrected bet cap (Sec.~\ref{sec:scene}).
 
-\paragraph{Risk control and betting, more generally.}
-Beyond Learn-then-Test, risk control has been extended to adaptive, data-dependent tradeoffs among several risks at
-once \cite{nguyen2024tradeoffs}, to a semi-supervised setting that uses unlabelled data to tune the risk-control
-hyperparameter without extra labels \cite{einbinder2024semisupervised}, and to post-processing an existing decision
-policy only where a risk budget is violated, rather than replacing it outright \cite{joshi2026riskcontrolled}.
+\paragraph{Risk control and betting, more generally}
+Risk control has been extended to tradeoffs among several risks \cite{nguyen2024tradeoffs}, to semi-supervised tuning
+with unlabelled data \cite{einbinder2024semisupervised}, and to post-processing a decision policy only where a risk
+budget is violated \cite{joshi2026riskcontrolled}.
 E-values have been proposed as a more flexible alternative to the $p$-values we use, enabling anytime-valid and
 fixed-size variants \cite{gauthier2025evalues}; weighted-conformal test martingales extend betting-style monitoring
 to post-deployment shift detection that distinguishes benign covariate shift from harmful shift
@@ -93,7 +87,7 @@ to post-deployment shift detection that distinguishes benign covariate shift fro
 treating a conformal predictor as valid for i.i.d., not only exchangeable, data. We use the same betting machinery
 for a different purpose: certifying a \emph{scene-averaged} risk from whole labelled scenes.
 
-\paragraph{Cross-dataset trajectory prediction and perception under domain shift.}
+\paragraph{Cross-dataset trajectory prediction and perception under domain shift}
 UniTraj harmonises several driving datasets and reports that accuracy drops when models are transferred between them
 \cite{feng2024unitraj}; that study is about point accuracy, not about the validity of an uncertainty guarantee.
 Beyond trajectories, \cite{ovadia2019can} showed that calibration of deep models degrades under dataset shift; our

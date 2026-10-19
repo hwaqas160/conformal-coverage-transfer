@@ -92,7 +92,10 @@ def macros_text() -> str:
     put("monitorRhoMax", f"{max(rho):.2f}")
 
     # ---- confirmatory accuracy relative to the published reference -------------------------------------------
-    put("confAccRelPct", f"{100 * abs(st['ade_conf'] - REF_ACC) / REF_ACC:.1f}")
+    fin = _j(R / "rev1/final_minade.json")
+    put("confAccRelPct", f"{100 * abs(fin['av2_gpu_full'] - REF_ACC) / REF_ACC:.1f}")
+    put("nsAccRelPct", f"{100 * (fin['ns_gpu_full'] - 1.21) / 1.21:.0f}")
+    put("seedOneAde", f"{fin['av2_gpu_full_seed1']:.3f}")
 
     # ---- nuScenes / Waymo dataset statistics -----------------------------------------------------------------
     put("nsNAgents", str(st["ns_n_agents"])); put("nsNScenes", str(st["ns_n_scenes"]))
@@ -112,6 +115,37 @@ def macros_text() -> str:
     k = ((z(1 - lvl) * math.sqrt(a_ * (1 - a_)) + z(1 - beta) * math.sqrt((a_ + d_) * (1 - a_ - d_))) / d_) ** 2
     put("auditBudgetK", f"{round(k, -1):.0f}")
     put("agentsForTwoPoints", f"{round(1.96 ** 2 * a_ * (1 - a_) / 0.02 ** 2, -2):.0f}")
+    return "\n".join(L) + "\n"
+
+
+def macros_audit_fix() -> str:
+    """Agent-level C-or-R validity by transfer, audit rejection on shift-free splits, normalised score on Wayformer,
+    and the descriptive planner-relevance numbers (Addendum F; agent-weighted, no guarantee)."""
+    L = []
+    put = lambda k, v: L.append("\\newcommand{\\%s}{%s}" % (k, v))
+    sc = {p: _j(R / f"rev1/scene_{p}.json") for p in ("av2_to_waymo", "ns_to_av2", "wayformer_to_waymo", "ns_to_waymo")}
+    ok = [100 * r["agent_cor"]["p_valid"] for p in ("av2_to_waymo", "ns_to_av2", "wayformer_to_waymo")
+          for r in sc[p]["by_m"].values() if "agent_cor" in r]
+    put("agentCorSmallMin", f"{min(ok):.0f}")
+    nw = sc["ns_to_waymo"]["by_m"]
+    put("agentCorNsWmForty", f"{100 * nw['40']['agent_cor']['p_valid']:.0f}")
+    put("agentCorNsWmThreeHundred", f"{100 * nw['300']['agent_cor']['p_valid']:.0f}")
+    put("rSrcNsWm", f"{100 * sc['ns_to_waymo']['R_src_on_eval']:.1f}")
+    runs = [("av2_gpu_full", "forward"), ("av2_gpu_full_seed1", "forward"), ("av2_wayformer", "forward"),
+            ("av2_wayformer_seed1", "forward"), ("ns_gpu_full", "reverse")]
+    fa = [_j(R / f"run2/{m}__{d}.json")["audit"]["same_domain"] for m, d in runs]
+    put("auditFaAllMin", f"{100 * min(a['reject_prob']['1000'] for a in fa):.0f}")
+    put("auditFaAllMax", f"{100 * max(a['reject_prob']['1000'] for a in fa):.0f}")
+    put("auditSameGapMax", f"{100 * max(a['true_gap'] for a in fa):.1f}")
+    wf = _j(R / "run2/av2_wayformer__forward.json")["H1_H4"][KEY]
+    put("normReductionWf", f"{100 * (1 - wf['norm']['target']['gap'] / wf['raw']['target']['gap']):.0f}")
+    f = _j(R / "addF/addF.json")
+    put("missAgentsAvNs", f"{100 * f['av2_to_nuscenes']['M_agent_weighted']:.0f}")
+    put("missAgentsAvWm", f"{100 * f['av2_to_waymo']['M_agent_weighted']:.0f}")
+    b = _j(R / "addB/av2_gpu_full__forward.json")["B11_driving_side"]["by_type"]
+    put("missRightSg", f"{100 * (1 - b['right_turn']['singapore']):.0f}")
+    put("missRightBos", f"{100 * (1 - b['right_turn']['boston']):.0f}")
+    put("missStraightBos", f"{100 * (1 - b['straight']['boston']):.0f}")
     return "\n".join(L) + "\n"
 
 

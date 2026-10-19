@@ -93,6 +93,9 @@ def table_scene(models=ALL, ms=("30", "40", "60")) -> str:
         r"\bottomrule", r"\end{tabular}}", r"\end{table}"])
 
 
+_TEXMINUS = lambda s: __import__('re').sub(r'(?<![\w$\\-])-(\d)', r'$-$\1', s)
+
+
 def table_inject(models=ALL) -> str:
     rows = []
     for m in models:
@@ -223,7 +226,7 @@ def macros_conf(models=CONFIRMATORY) -> str:
             L.append(r"\newcommand{\%sConf}{%s}" % (name, "--" if val is None else fmt.format(val * scale)))
 
         put("dropRight", tt("same", "right_turn") - tt("target", "right_turn"))
-        put("dropStraight", tt("same", "straight") - tt("target", "straight"), "{:.1f}")
+        put("dropStraight", tt("same", "straight") - tt("target", "straight"))
         put("sgExtraRight", g("B11_driving_side", "by_type", "right_turn", "drop_diff_sg_minus_bos"))
         put("designEff", g("B10_target_clustered", "design_effect"), "{:.1f}", 1.0)
         put("injHz", (inj.get("injections", {}).get("hz2") or {}).get("fraction_of_G"))
@@ -251,7 +254,7 @@ def write_all():
     (OUT / "table_cluster.tex").write_text(table_cluster() + "\n")
     (OUT / "table_repair.tex").write_text(table_repair() + "\n")
     (OUT / "table_scene.tex").write_text(table_scene() + "\n")
-    (OUT / "table_inject.tex").write_text(table_inject() + "\n")
+    (OUT / "table_inject.tex").write_text(_TEXMINUS(table_inject()) + "\n")
     fig_traj_type()
     have = [m for m in ALL if _load(m)]
     return have

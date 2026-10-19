@@ -3,7 +3,7 @@
 A forecaster $f$ maps a scene $x$ to $K$ candidate futures $\hat y_1,\dots,\hat y_K\in\mathbb{R}^{T\times 2}$ for a target
 agent whose true future is $y$. We use the nonconformity score
 \begin{equation}
-s(x,y)=\min_{k\le K}\ \max_{t\le T}\ \|\hat y_{k,t}(x)-y_t\|_2 ,
+s(x,y)=\min_{r\le K}\ \max_{t\le T}\ \|\hat y_{r,t}(x)-y_t\|_2 ,
 \end{equation}
 so that $s\le q$ iff $y$ lies inside the union of the $K$ tube-shaped balls of radius $q$ around the candidates. Given $n$
 calibration scenes from a \emph{source} dataset, split CP sets $\hat q=$ the $\lceil (n+1)(1-\alpha)\rceil$-th smallest score,
@@ -27,7 +27,7 @@ restricting the class of shifts nothing label-free can.
 
 \begin{proposition}[Non-identifiability of a label-free threshold]\label{prop:ident}
 Let $S_0$ be a nonconformity score with a continuous distribution on the target, and consider the scale-shift family
-$S=c\,S_0$, $c\ge1$, whose members are all indistinguishable from unlabeled target inputs. Let $\hat q$ be any threshold
+$S=c\,S_0$, $c\ge1$, whose members are all indistinguishable from unlabelled target inputs. Let $\hat q$ be any threshold
 computed without target labels, so its law does not depend on $c$. If $\Pr[cS_0\le\hat q]\ge 1-\alpha$ for every $c\ge1$,
 then $\Pr[\hat q=\infty]\ge 1-\alpha$.
 \end{proposition}
@@ -43,11 +43,11 @@ be complemented by a label-based audit (Sec.~\ref{sec:audit}).
 \end{remark}
 
 \subsection{Cost of using target labels}
-If $k$ labelled target agents are used directly, the resulting empirical coverage is Beta-distributed around
+If $k$ labelled target agents are used directly, the coverage of the recalibrated threshold is Beta-distributed around
 $1-\alpha$ \cite{vovk2012conditional}, with standard deviation about $\sqrt{\alpha(1-\alpha)/k}$, so $\approx\agentsForTwoPoints$
 labels are needed for $\pm 2$ points at $\alpha=0.1$.
-Detecting a shortfall $\delta$ with an exact one-sided binomial test at level $\ell$ and power $1-\beta$ needs
+Detecting a coverage gap $\Delta$ with an exact one-sided binomial test at level $a$ and power $1-\beta$ needs
 \begin{equation}\label{eq:budget}
-k\approx\left(\frac{z_{1-\ell}\sqrt{\alpha(1-\alpha)}+z_{1-\beta}\sqrt{(\alpha+\delta)(1-\alpha-\delta)}}{\delta}\right)^{2}.
+k\approx\left(\frac{z_{1-a}\sqrt{\alpha(1-\alpha)}+z_{1-\beta}\sqrt{(\alpha+\Delta)(1-\alpha-\Delta)}}{\Delta}\right)^{2}.
 \end{equation}
-For $\delta=0.034$, $\alpha=0.1$, $\ell=0.05$, $\beta=0.1$ this gives $k\approx\auditBudgetK$.
+For $\Delta=0.034$, $\alpha=0.1$, $a=0.05$, $\beta=0.1$ this gives $k\approx\auditBudgetK$.

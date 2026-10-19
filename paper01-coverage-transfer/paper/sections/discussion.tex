@@ -4,59 +4,88 @@ the confirmatory models lose \gapRawConf, \gapRawConfRev, \wmGapAvW\ and \wmGapN
 transfers we tested, and the loss is silent: nothing observable without labels signals it. Four results bear
 directly on practice.
 
-\emph{Label-free fixes are not safe defaults.} Covariate reweighting made the gap larger on every forward model, and
-the normalised score helped in one direction and hurt in the other. A practitioner who applies either and stops can be
-worse off than one who does nothing.
+\emph{Label-free fixes are not safe defaults.} Reweighting made every forward gap larger, and the normalised score
+helped in one direction and hurt in the other.
 
 \emph{Auditing is cheap; repairing is not.} About $10^3$ labelled target agents suffice to detect a gap of this size
 with high power. Repairing it with a guarantee that holds under scene clustering needs whole labelled scenes: roughly
 \recMMin\ to \recMMax\ of them before the region is both finite and within twice the oracle area. Below that budget the
-correct behaviour is to abstain, which the scene-level rule does.
+correct behaviour is to abstain, which the scene-level rule does. Fig.~\ref{fig:protocol} summarises the resulting
+procedure.
 
-\emph{A learned predictor of scene loss does not replace labels.} A classifier trained on source labels to predict whether an agent is
-missed explained at most \predBestRsq\% of the variance of the true per-scene miss fraction on any target, and also little on held-out
-source scenes, so it cannot stand in for target labels, for example as a control variate that shortens the label budget.
+\emph{A learned predictor of scene loss does not replace labels.} A classifier trained on source labels to predict
+whether an agent is missed explained at most \predBestRsq\% of the variance of the true per-scene miss fraction on any
+target, and also little on held-out source scenes, so it cannot stand in for target labels, for example as a control
+variate that shortens the label budget.
 
-\emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean \nsAgentsMean\ agents
-per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at $m=40$) but mostly
-valid for Wayformer on the identical scenes (\agentCorWfForty\%, Sec.~\ref{sec:wf}), tracking how badly each
-model's source threshold was miscalibrated there (\rSrcAutobot\% vs.\ \rSrcWayformer\% missed), not the scene
-structure, which was the same for both. Agent-level guarantees did hold on Waymo and AV2, where scenes are small,
-for every model we tried. A practitioner cannot know in advance which case they are in without the audit of
-Sec.~\ref{sec:repair-scene}, which is the practical argument for using the scene-level guarantee by default rather
-than hoping agent-level recalibration happens to be close enough.
+\emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean
+\nsAgentsMean\ agents per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at
+$m=40$) but mostly valid for Wayformer on the identical scenes (\agentCorWfForty\%, Sec.~\ref{sec:wf}), tracking how
+badly each model's source threshold was miscalibrated there (\rSrcAutobot\% vs.\ \rSrcWayformer\% missed), not the
+scene structure, which was the same for both. Agent-level guarantees held on AV2 and on Waymo where scenes are small
+and the source threshold less wrong, but not for nuScenes$\to$Waymo (\agentCorNsWmThreeHundred\% valid at $m=300$),
+whose source threshold misses \rSrcNsWm\% of agents. Without labels a practitioner cannot tell which case applies, so the scene-level guarantee should be the default.
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.95\columnwidth}\small
+\textbf{Input:} source threshold $\hat q_{\mathrm{src}}$; labelled target agents ($k$) or scenes ($m$); $\alpha,\delta$.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item \emph{Audit.} Binomial test of coverage $\ge1-\alpha-\epsilon$ on $k\approx10^3$ agents (Sec.~\ref{sec:audit}).
+      If not rejected, keep $\hat q_{\mathrm{src}}$ and keep auditing.
+\item \emph{Certify.} Test $H:R(\hat q_{\mathrm{src}})>\alpha$ on the $m$ scenes at level $\delta/2$ with the
+      betting $p$-value; if rejected, keep $\hat q_{\mathrm{src}}$.
+\item \emph{Recalibrate.} Otherwise run scene-level Learn-then-Test on the fixed grid (Sec.~\ref{sec:scene}) at level
+      $\delta/2$ and return its threshold.
+\item \emph{Abstain.} If no finite threshold is certified, return $+\infty$ (do not plan on the region) and label more
+      scenes; expect this below about \recMMin\ scenes.
+\end{enumerate}
+\end{minipage}}
+\caption{Audit-then-repair protocol for a transferred conformal region. Steps 2--4 give $\Pr[R(\hat q)\le\alpha]\ge1-\delta$
+(Proposition~\ref{prop:scene}); step 1 only detects.}
+\label{fig:protocol}
+\end{figure}
+
+\paragraph{What a planner would see} The numbers below are descriptive and agent-weighted; no guarantee covers them.
+At the source threshold, \missAgentsAvNs\% of nuScenes agents and \missAgentsAvWm\% of Waymo agents have a true future
+outside the AV2-calibrated region, against the nominal 10\%. The shortfall is concentrated where a planner most needs
+the region: \missRightSg\% of right-turning agents in Singapore and \missRightBos\% in Boston fall outside it, against
+\missStraightBos\% of straight-driving agents in Boston. In metres, the tube is \qSrcAvNs\,m wide where \qOracleAvNs\,m
+is needed on nuScenes, and the scene-level repair restores it to \recQAvNs\,m.
 
 \paragraph{Mechanism} Two observations narrow the cause. For AutoBot the measured input differences explain about a
 quarter of the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain; for that
 model both point to a change in the conditional behaviour of road users rather than in the scenes themselves,
-consistent with Proposition~\ref{prop:ident}. The turn pattern replicates on Wayformer, but the input-level
-explanation does not: its injected input differences reproduce the whole, smaller gap (Sec.~\ref{sec:wf}), so how much
-of the loss is protocol and how much is behaviour depends on the model. The exploratory AutoBot zoo showed
-the most accurate model losing the most coverage; Wayformer breaks this pattern, with accuracy comparable to the
-confirmatory AutoBot model but under half its nuScenes gap. Accuracy is therefore not a general predictor of gap
-size across architectures, only a pattern observed within one architecture family trained several ways.
+consistent with Proposition~\ref{prop:ident}. This is an interpretation, not a measurement. The turn pattern
+replicates on Wayformer, but the input-level explanation does not: its injected input differences reproduce the whole,
+smaller gap (Sec.~\ref{sec:wf}), so how much of the loss is protocol and how much is behaviour depends on the model.
+Across AutoBot training budgets the more accurate model lost more coverage, but a second training seed already breaks
+this pattern, and so does Wayformer, with accuracy comparable to the confirmatory AutoBot model but under half its
+nuScenes gap. Accuracy is therefore not a general predictor of gap size, only a pattern across training budgets of one
+architecture.
 
-\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms the direction, reweighting,
-turn and repair findings but was only trained forward, so its reverse direction is untested, and its injection result
-rests on reconstructed kinematics.
-(ii) For AutoBot the measured input differences leave most of the gap unexplained, and unmeasured
-causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not conditional on a scenario; the
-manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident} covers scale shifts only.
-(v) The repair budget is measured on three datasets and may differ on others; the registered evaluation design
-(disjoint pools, exact evaluation) should be reused rather than the numbers. (vi) Seeds: a second training seed of the confirmatory AutoBot model gave an AV2$\to$nuScenes
-loss of \seedGapOne\ points (95\% interval \seedCiLo--\seedCiHi) against \seedGapZero\ for the first, meeting our registered
-criterion (same sign, within a factor of two) but showing that seed-to-seed variation exceeds the sampling interval of
-a single run. A second Wayformer seed (accuracy \wfSeedAde, same gate) gave \wfSeedGapOne\ points on nuScenes against
-\wfSeedGapZero\ and \wfSeedWmOne\ against \wfSeedWmZero\ on Waymo, so its smaller nuScenes gap relative to AutoBot is not a
-seed artefact. The reverse direction and the injection and recalibration analyses were not re-seeded.
+\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms the direction,
+reweighting, turn and repair findings but was only trained forward, so its reverse direction is untested, and its
+injection result rests on reconstructed kinematics. (ii) For AutoBot the measured input differences leave most of the
+gap unexplained, and unmeasured causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not
+conditional on a scenario; the manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident}
+covers scale shifts only. (v) The repair budget is measured on three datasets and may differ on others; the registered
+evaluation design (disjoint pools, exact evaluation) should be reused rather than the numbers. (vi) Seeds: a second
+training seed of the confirmatory AutoBot model gave an AV2$\to$nuScenes loss of \seedGapOne\ points (95\% interval
+\seedCiLo--\seedCiHi) against \seedGapZero\ (\seedZeroCiLo--\seedZeroCiHi) for the first, meeting our registered
+criterion (same sign, within a factor of two); the intervals overlap, but seed-to-seed variation is as large as the
+sampling uncertainty of a single run. A second Wayformer seed (accuracy \wfSeedAde, same gate) gave \wfSeedGapOne\
+points on nuScenes against \wfSeedGapZero\ and \wfSeedWmOne\ against \wfSeedWmZero\ on Waymo, so its smaller nuScenes
+gap relative to AutoBot is not a seed artefact. The reverse direction and the injection and recalibration analyses
+were not re-seeded.
 
 \section{Conclusion}
 A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets, two
-architectures and six source-target pairs, a forecaster calibrated at 90\% covered between \covTgtMin\ and
+architectures and six model--target transfers, a forecaster calibrated at 90\% covered between \covTgtMin\ and
 \covTgtMax\% of target futures, every time under-covering, never over. Reweighting does not repair the loss and no
-label-free method can in general. Within one architecture, more accurate models lost more coverage; across
-architectures this did not hold, so accuracy is not a general predictor of how badly the guarantee fails. Labelled
-target data can repair it: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value restores the
-guarantee at every budget we tested, on both architectures, and gives a usable region from about \recMMin\ labelled
-scenes. We recommend that any transferred conformal region be audited on target labels and, where it fails,
-recalibrated at the scene level before it is used for planning.
+label-free method can in general. More accurate AutoBot models lost more coverage across training budgets, but not
+between seeds or across architectures, so accuracy is not a general predictor of how badly the guarantee fails.
+Labelled target data can repair it: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value
+restores the guarantee at every budget we tested, on both architectures, and gives a usable region from about
+\recMMin\ labelled scenes. We recommend that any transferred conformal region be audited on target labels and, where it
+fails, recalibrated at the scene level (Fig.~\ref{fig:protocol}) before it is used for planning.

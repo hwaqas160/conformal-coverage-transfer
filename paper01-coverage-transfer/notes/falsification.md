@@ -1183,3 +1183,28 @@ same procedure (2000-scene val subset, seed 0) and stored in results/rev1/wf_gat
 Seed 0 now reads val minADE6 = 0.9319 (the 2026-10-07 entry above recorded 0.9275, a different run of the same procedure; the
 subset is not perfectly stable between runs). Seed 1: 0.9408. Gate (<= 0.98) passes for both. The paper now reports the
 generated values (0.932 and 0.941). No conclusion changes.
+
+## Correction (2026-10-19): confirmatory accuracies now reported for the registered final model (last checkpoint)
+The paper reported AutoBot confirmatory accuracies from the best-validated checkpoint (av2_gpu_full 0.854, ns_gpu_full 1.232)
+although the registered final model, used for every coverage result, is the last checkpoint (never validated during training
+because the last epoch is not a validation epoch). Measured directly with src/validate_ckpt.py (same split, 2000-scene subset,
+seed 0; results/rev1/final_minade.json): av2_gpu_full 0.846, av2_gpu_full_seed1 0.870, ns_gpu_full 1.336 (gate 1.39, so it
+still passes, with less headroom than reported: 10% above the 1.21 reference instead of 2%). Wayformer values were already
+direct final-checkpoint measurements (0.932, 0.941). No coverage number changes; only the reported accuracies and the
+accuracy-related sentences. The exploratory AV2 models' predictions were made from their named checkpoints, whose accuracies
+are what the paper reports, so they are unaffected.
+
+## Pre-submission audit corrections (2026-10-19, no new hypothesis)
+Found in an end-to-end audit and corrected (generated from result files, no hand-typed values):
+- Agent-level C-or-R on small-scene targets: the text said it "held on Waymo and AV2 for every model". False for
+  nuScenes->Waymo (88% valid at m=40 falling to 65% at m=300; source threshold misses 27.8% of agents). Now reported,
+  and it supports the existing reading that the size of the source miscalibration, not scene size alone, drives failure.
+- Intervals: Table I, the Wayformer nuScenes CI and the seed CIs were agent-level although the paper says multi-agent
+  targets resample scenes. All now scene-clustered (addB B10). With the wider intervals the two AutoBot seed intervals
+  overlap (12-18 vs 17-24); the sentence "seed variation exceeds the sampling interval" was replaced accordingly.
+- Accuracy-gap association: holds across training budgets but not between training seeds (seed 1 is less accurate,
+  0.870 vs 0.846, yet has the larger gap). Intro, Results, Discussion and Conclusion reworded.
+- Audit "false-alarm" on shift-free splits ranges 0-23% across the five confirmatory runs (was reported as <=7% from
+  two runs). It tracks the realised threshold's own same-domain shortfall (up to 1.0 pt), i.e. the audit tests the
+  realised threshold; stated in the paper, with the margin recommendation.
+- Removed from Methods: the pooled/shrinkage/k* recalibration comparison and ACI result (i), never reported in Results.

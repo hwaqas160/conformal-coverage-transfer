@@ -4,7 +4,7 @@ models on which the analyses were designed are summarised in Sec.~\ref{sec:expl}
 
 \subsection{Q1: How large is the gap?}\label{sec:confirm}
 On its own test split each confirmatory model is calibrated as promised: the same-domain gap is \gapSameConf\ points
-for the AV2 model and \gapSameConfRev\ points for the nuScenes model (Fig.~\ref{fig:gap}). On every other dataset it
+for the AV2 model and $\gapSameConfRev$ points for the nuScenes model (Fig.~\ref{fig:gap}). On every other dataset it
 under-covers. Calibrated on AV2, coverage falls by \gapRawConf\ points on nuScenes and by \wmGapAvW\ points on Waymo.
 Calibrated on nuScenes, it falls by \gapRawConfRev\ points on AV2 and by \wmGapNsW\ points on Waymo. All four
 intervals exclude zero by a wide margin, so a Holm correction over the four registered tests changes no conclusion.
@@ -23,9 +23,11 @@ confirmatory models. Error bars: 95\% intervals, resampled by scene where target
 
 The nuScenes test agents come from only \nsNScenes\ scenes, so they are strongly dependent. Resampling whole scenes inflates the
 variance of the coverage estimate by a design effect of \designEffConf; all intervals on multi-agent targets therefore
-resample scenes, not agents. The more accurate model has the larger gap. The confirmatory AV2 model, within \confAccRelPct\% of
-UniTraj's published accuracy, loses \gapRawConf\ points, against \explGapMin\ to \explGapMax\ points for the three reduced-budget AV2
-models (Table~\ref{tab:models}). With four models of one architecture family this is an association, not a causal claim.
+resample scenes, not agents. Across training budgets the more accurate model has the larger gap: the confirmatory AV2
+model, within \confAccRelPct\% of UniTraj's published accuracy, loses \gapRawConf\ points, against \explGapMin\ to
+\explGapMax\ points for the three reduced-budget AV2 models (Table~\ref{tab:models}). The pattern does not hold between
+training seeds: a second seed of the same recipe is slightly less accurate (\seedOneAde) yet loses \seedGapOne\ points.
+It is an association across budgets of one architecture family, not a causal claim.
 
 \input{generated/table_models}
 
@@ -50,15 +52,16 @@ a quarter. Excess annotation noise and map-point density were measured and found
 \centering
 \includegraphics[width=\linewidth]{generated/fig_traj_conf.pdf}
 \caption{Coverage by manoeuvre for the confirmatory AV2 model ($\alpha=0.1$, dashed = nominal). nuScenes is split
-by city; Singapore drives on the left. Error bars: agent-level Wilson 95\% intervals.}
+by city; Singapore drives on the left. lane ch.\ R/L: lane change to the right/left. Error bars: agent-level Wilson 95\% intervals.}
 \label{fig:traj}
 \end{figure}
 
 \input{generated/table_inject}
 
-\subsection{Q3: What can label-free methods do?}
+\subsection{Q3: What can label-free methods do?}\label{sec:labelfree}
 Little, and not reliably. The model-normalised score (Sec.~\ref{sec:norm}) reduces the AV2$\to$nuScenes gap by
-\normReductionConf\% (to \gapNormConf\ points) but widens the reverse gap (to \gapNormConfRev\ points). On the
+\normReductionConf\% for AutoBot (to \gapNormConf\ points) and by \normReductionWf\% for Wayformer, but widens the
+reverse gap (to \gapNormConfRev\ points). On the
 reduced-budget models its effect ranges from a \explNormBestRed\% reduction to a \explNormWorstInc\% increase. A domain-classifier shift monitor
 correlates with per-city coverage loss at Spearman $\rho\le\monitorRhoMax$ on every model, below the registered bar of 0.5.
 Adaptive conformal inference \cite{gibbs2021adaptive} converges only with a stream of labels; frozen after 1000 labels,
@@ -71,27 +74,28 @@ Sec.~\ref{sec:inject} (2\,Hz history and lane dropout, estimated from target inp
 result. It is exploratory and carries no guarantee. For AutoBot it moves the threshold from \mbQSrcAb\ to \mbQPmAb\,m
 and coverage on nuScenes from \mbCovSrcAb\% to \mbCovPmAb\%, closing \mbClosedAb\% of the gap. For Wayformer it moves it
 from \mbQSrcWf\ to \mbQPmWf\,m, coverage from \mbCovSrcWf\% to \mbCovPmWf\%, and overshoots the gap to
-\mbGapPmWf\ points, in the conservative direction, which may partly reflect how Wayformer's velocity inputs are
+$\mbGapPmWf$ points, in the conservative direction, which may partly reflect how Wayformer's velocity inputs are
 reconstructed for injected trajectories (Sec.~\ref{sec:wf}). It does not shorten the label budget of Sec.~\ref{sec:repair-scene}:
 started from the matched threshold, the scene-level rule still needs $m=\mbRecMAb$ scenes (AutoBot) and $m=\mbRecMWf$
 (Wayformer) for a usable region. A measured, label-free correction can recover part of the gap, but it does not replace
 labels.
 
-The loss is not an artefact of the registered score. We re-scored the same transfers with four alternatives
-(exploratory): the top-probability mode only, final displacement, a probability-weighted score, and a score scaled per
-time step by the source median error. Every one of the \scCells\ resulting out-of-domain cases under-covers
-(\scUnder\ of \scCells), by \scGapMin\ to \scGapMax\ points. No score is uniformly better: the time-scaled score cuts
+The loss is not an artefact of the registered score. Re-scored with four alternatives (exploratory: top-probability
+mode, final displacement, probability-weighted, and per-time-step scaling by the source median error), all \scCells\
+out-of-domain cases under-cover, by \scGapMin\ to \scGapMax\ points. No score is uniformly better: the time-scaled score cuts
 AutoBot's AV2$\to$Waymo loss from \scRegWmAb\ to \scNormWmAb\ points but raises its AV2$\to$nuScenes loss from \scRegNsAb\
 to \scNormNsAb.
 
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
-Three label budgets answer three different questions: how many labels to \emph{detect} that the guarantee has failed,
-how many to return a threshold with a \emph{certified} (training-conditional) guarantee, and how many before that
-threshold is also \emph{small enough to be useful}. We report all three; the second does not imply the third.
+We report three label budgets: to \emph{detect} the failure, to \emph{certify} a repaired threshold, and for that
+threshold to be \emph{useful}. The second does not imply the third.
 
 \emph{Audit (detect).} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
-with probability at least \auditPowerConfMin\ on both confirmatory models, at a false-alarm rate of at most \auditFaConfMax\% on a shift-free split
-(Table~\ref{tab:models}).
+with probability \auditPowerConfMin\ on every confirmatory run (Table~\ref{tab:models}). On a shift-free split it rejects in
+\auditFaAllMin--\auditFaAllMax\% of label draws. This is not excess Type-I error: the audit tests the realised source
+threshold, which itself under-covers its own test split by up to \auditSameGapMax\ points when its calibration draw is
+unlucky, and the rejection rate tracks that shortfall. A deployment that only wants to flag shifts should test
+$1-\alpha-\epsilon$ for a small margin $\epsilon$.
 
 \emph{Repair with exchangeable labels (certify).} When $k=1000$ agents are labelled at random, certify-or-recalibrate
 (Sec.~\ref{sec:cor}) covers $\ge90\%$ of held-out agents in \corCORMin--\corCORMax\% of label draws, against
@@ -104,8 +108,11 @@ evaluation pool, 1000 draws per $m$ (Fig.~\ref{fig:scene}). The scene-level rule
 every $m$ on all four transfers ($\Pr[R(\hat q)\le\alpha]\ge\betValidMin$). The agent-level rule is not: on
 AV2$\to$nuScenes, with a mean of \nsAgentsMean\ agents per scene (median \nsAgentsMedian), it is valid in \agentCorNsForty\% of draws at $m=40$ and
 \agentCorNsThreeHundred\% at $m=300$, and one-agent-per-scene split CP \cite{dunn2023hierarchical} in
-\hierNsThreeHundred\%. On Waymo and AV2, with few agents per scene, the agent-level rule stays valid in at least
-\agentCorOtherMin\% of draws: agent-level guarantees fail where scenes are large.
+\hierNsThreeHundred\%. With few agents per scene it stays valid in at least \agentCorSmallMin\% of draws for AV2$\to$Waymo,
+nuScenes$\to$AV2 and Wayformer's AV2$\to$Waymo, but not for nuScenes$\to$Waymo, where it falls from
+\agentCorNsWmForty\% at $m=40$ to \agentCorNsWmThreeHundred\% at $m=300$ although Waymo scenes are small: there the
+source threshold misses \rSrcNsWm\% of evaluation agents. Agent-level guarantees fail where scenes are large or the
+source threshold is badly wrong (Sec.~\ref{sec:wf}).
 
 \emph{Useful.} Validity is not usefulness. With $m\le40$ scenes the scene-level rule abstains in every draw, correctly reporting that
 it cannot certify any finite threshold rather than returning an unsupported one. The abstention rate falls with $m$
@@ -116,23 +123,24 @@ $m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less informa
 AV2$\to$nuScenes radius is \recQAvNs\,m against an oracle of \qOracleAvNs\,m. The betting $p$-value gives smaller regions
 than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaNsTwoHundred$\times$ the oracle area at
 $m=200$ on AV2$\to$nuScenes). In dataset terms, \recMAvNs\ scenes is more than the \nsNScenes\ scenes of the entire nuScenes
-validation split, so on that target the repair draws on training-split labels; a deployment that can label fewer scenes
-should expect the rule to abstain, not to return a smaller guaranteed region.
+validation split, so on that target the repair draws on training-split labels, which assumes nuScenes training and
+validation scenes are exchangeable. A deployment that can label fewer scenes should expect the rule to abstain, not to
+return a smaller guaranteed region.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{generated/fig_scene_repair.pdf}
 \caption{Repair with $m$ whole labelled scenes, disjoint label and evaluation pools, 1000 draws per $m$. (a) Probability
 that the repaired threshold controls scene-averaged miscoverage at $\alpha$ (dotted line: $1-\delta$), AutoBot only.
-(b) Median region area relative to the oracle, all five source models; hollow markers: threshold infinite in
-$>5\%$ of draws.}
+(b) Median region area relative to the oracle (area proxy, Sec.~\ref{sec:norm}), all six transfers of both
+architectures; hollow markers: threshold infinite in $>5\%$ of draws.}
 \label{fig:scene}
 \end{figure}
 
 \subsection{A second architecture: Wayformer}\label{sec:wf}
-Every result above uses AutoBot. We trained Wayformer \cite{nayakanti2023wayformer} on the same full AV2 set under
-the same gate (val minADE\textsubscript{6} \minADESixWayformer, within 15\% of UniTraj's reference, matching
-AutoBot's gate) to ask whether the findings are AutoBot-specific. No reverse-direction Wayformer was trained.
+To test whether the findings are AutoBot-specific we trained Wayformer \cite{nayakanti2023wayformer} on the same full
+AV2 set under the same gate (val minADE\textsubscript{6} \minADESixWayformer\ for the final checkpoint; UniTraj reports 0.85 for both
+architectures \cite[Table~15]{feng2024unitraj}), forward only.
 
 The direction replicates everywhere: same-domain gap \gapSameWayformer\ points; AV2$\to$nuScenes gap
 $+\gapRawWayformer$ points (CI \gapRawWayformerCI); AV2$\to$Waymo gap $+\wmGapWf$ points (CI \wmGapWfCI). Reweighting
@@ -144,26 +152,22 @@ Wayformer transfers (Fig.~\ref{fig:scene}b) and reaches the same operating point
 AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo (area \recAreaWfWm$\times$), as the
 AutoBot models.
 
-The input-level explanation does not replicate in size. Injecting the 2\,Hz history into AV2 test inputs costs
-Wayformer \wfInjHz\ points, \wfInjHzFrac\% of its nuScenes gap, and with lane dropout \wfInjBoth\ points (\wfInjBothFrac\%):
-more than the whole gap, where it was about a quarter for AutoBot. Read this with care. Wayformer reads velocity,
-acceleration and heading channels that AutoBot ignores, and for an injected trajectory we reconstruct them by finite
-difference, which gives a piecewise-constant velocity inside each 0.2\,s segment that real 2\,Hz sensing would not
-have and may overstate the effect. Lane dropout, which needs no reconstruction, still accounts for \wfInjMapFrac\%.
+The input-level explanation does not replicate in size. Injecting the 2\,Hz history costs Wayformer \wfInjHz\ points
+(\wfInjHzFrac\% of its nuScenes gap), and with lane dropout \wfInjBoth\ points (\wfInjBothFrac\%), against about a quarter
+for AutoBot. Wayformer reads velocity, acceleration and heading channels that AutoBot ignores; for an injected
+trajectory we reconstruct them by finite difference, which gives a piecewise-constant velocity that real 2\,Hz sensing
+would not have and may overstate the effect. Lane dropout, which needs no reconstruction, still accounts for \wfInjMapFrac\%.
 
 Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's confirmatory
 \gapRawConf\ points, while its AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$). This breaks the
 exploratory zoo's ``more accurate model, larger gap'' pattern (Sec.~\ref{sec:confirm}): Wayformer's accuracy is
-comparable to AutoBot's confirmatory model, yet its nuScenes gap is far smaller. We also find a second,
-unregistered difference worth reporting rather than hiding. On the \emph{same} nuScenes target, agent-level
+comparable to AutoBot's confirmatory model, yet its nuScenes gap is far smaller. A second, unregistered difference: on the \emph{same} nuScenes target, agent-level
 certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
 \agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer (\agentCorWfForty\% at $m=40$,
 \agentCorWfThreeHundred\% at $m=300$), on identically structured scenes (same mean \nsAgentsMean\ agents/scene). The difference
 tracks the size of the underlying miscalibration: the source threshold misses \rSrcAutobot\% of AutoBot's
 evaluation agents against only \rSrcWayformer\% of Wayformer's, so the same scene clustering has more room to hurt
-a method that was already more wrong. Scene size is therefore not a sufficient predictor of agent-level failure on
-its own, which is itself a reason to prefer the scene-level guarantee always, rather than judge case by case
-whether agent-level recalibration happened to get lucky.
+a method that was already more wrong. Scene size alone therefore does not predict agent-level failure.
 
 \subsection{Exploratory models}\label{sec:expl}
 Three reduced-budget AV2 models and one reduced-budget nuScenes model (Table~\ref{tab:models}) were analysed before

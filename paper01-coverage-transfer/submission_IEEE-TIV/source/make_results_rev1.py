@@ -69,7 +69,7 @@ def fig_gap():
             ax.errorbar(xx, c, yerr=[[c - ci[0]], [ci[1] - c]], fmt="none", ecolor="k", elinewidth=0.6, capsize=1.5)
         ax.text(i + w / 2, ct - 0.018, f"{100 * ct:.0f}", ha="center", va="top", fontsize=5.5, color="white")
     ax.axhline(1 - ALPHA, ls="--", color="k", lw=0.7)
-    ax.text(-0.45, 1 - ALPHA + 0.004, "nominal", fontsize=5.5, ha="left", va="bottom")
+    ax.text(len(rows) - 0.55, 1 - ALPHA + 0.004, "nominal", fontsize=5.5, ha="right", va="bottom")
     ax.set_xticks(list(x)); ax.set_xticklabels([r[0] for r in rows])
     ax.set_ylim(0.6, 0.97); ax.set_ylabel("coverage")
     ax.legend(loc="lower center", frameon=False, ncol=2, bbox_to_anchor=(0.5, 0.99), borderaxespad=0.0)
@@ -157,7 +157,7 @@ def fig_scene_repair(scene):
     a2.set_xscale("log"); a2.set_xticks([60, 100, 200, 300]); a2.set_xticklabels(["60", "100", "200", "300"])
     a2.set_xlabel("labelled scenes $m$"); a2.set_ylabel("area / oracle")
     a2.set_title("(b) betting LTT, region size", fontsize=6.5)
-    a2.legend(loc="upper right", frameon=False, fontsize=4.3, handlelength=1.8, labelspacing=0.25)
+    a2.legend(loc="upper right", frameon=False, fontsize=5.2, handlelength=1.8, labelspacing=0.25)
     for a in (a1, a2):
         for s in ("top", "right"):
             a.spines[s].set_visible(False)
@@ -218,7 +218,8 @@ def macros_wf(scene) -> str:
     put("minADESixWayformer", f"{_j(R / 'rev1/wf_gate.json')['av2_wayformer']:.3f}")   # direct validation of last.ckpt (src/validate_ckpt.py)
     put("gapSameWayformer", pct(h["same"]["gap"]))
     put("gapRawWayformer", pct(h["target"]["gap"]))
-    put("gapRawWayformerCI", f"[{pct(h['target']['ci95'][0])}, {pct(h['target']['ci95'][1])}]")
+    wci = _j(R / "addB/av2_wayformer__forward.json")["B10_target_clustered"]["ci95_cluster"]
+    put("gapRawWayformerCI", f"[{pct(wci[0])}, {pct(wci[1])}]")
     put("gapNormWayformer", pct(hn["target"]["gap"]))
     put("normReductionWayformer", f"{100 * (1 - hn['target']['gap'] / h['target']['gap']):.0f}")
     h3 = fwd["H3_label_free"]
@@ -319,7 +320,10 @@ def macros_seed() -> str:
     L = []
     put = lambda k, v: L.append(r"\newcommand{\%s}{%s}" % (k, v))
     put("seedGapOne", f"{100 * g:.1f}"); put("seedGapZero", f"{100 * s0:.1f}")
-    put("seedCiLo", f"{100 * t['target']['ci95'][0]:.0f}"); put("seedCiHi", f"{100 * t['target']['ci95'][1]:.0f}")
+    c1 = _j(R / "addB/av2_gpu_full_seed1__forward.json")["B10_target_clustered"]["ci95_cluster"]
+    c0 = _j(R / "addB/av2_gpu_full__forward.json")["B10_target_clustered"]["ci95_cluster"]
+    put("seedCiLo", f"{100 * c1[0]:.0f}"); put("seedCiHi", f"{100 * c1[1]:.0f}")
+    put("seedZeroCiLo", f"{100 * c0[0]:.0f}"); put("seedZeroCiHi", f"{100 * c0[1]:.0f}")
     return "\n".join(L) + "\n"
 
 
@@ -352,8 +356,9 @@ def write_all():
         import sys; sys.path.insert(0, str(Path(__file__).resolve().parent))
         from make_results_text import macros_text
         macro_text += macros_text()
-        from make_results_text import macros_wf_seed
+        from make_results_text import macros_wf_seed, macros_audit_fix
         macro_text += macros_wf_seed()
+        macro_text += macros_audit_fix()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 
