@@ -1239,3 +1239,21 @@ mean over target agents of (q_group/q_oracle)^2 is NOT used -- B is reported by 
 oracle 8.2 m) with area ratio near 1.2; Waymo target likely still slightly under-covered because Waymo is the hardest
 dataset, so A probably succeeds in 2-4 of 6 cells (borderline versus the 4-of-6 bar). B: I expect failure (gap reduced by
 10-30%), because the shift probably affects turns in every dataset, not only through the history features.
+
+## Outcome log: Addendum K (2026-10-20) -- BOTH METHODS FAIL their registered criteria; reported as negative results
+Script `src/analyze_methodsAB.py`, results `results/rev1/methodsAB.json`. Gap = 90 - coverage (points; negative = over-coverage).
+| cell | single-source | A worst-domain (area vs oracle) | pooled | B marginal -> Mondrian (reduction) |
+| av2_gpu_full -> nuScenes | 15.1 | -2.0 (1.38x) | -0.7 | 15.1 -> 15.7 (-4%) |
+| av2_gpu_full -> Waymo | 23.4 | +3.3 (0.71x) | 4.7 | 23.4 -> 23.0 (2%) |
+| av2_wayformer -> nuScenes | 6.4 | -7.6 (3.44x) | -6.6 | 6.4 -> 7.0 (-10%) |
+| av2_wayformer -> Waymo | 25.0 | +14.5 (0.32x) | 15.7 | 25.0 -> 24.9 (1%) |
+| ns_gpu_full -> AV2 | 8.1 | -4.2 (1.80x) | -3.1 | 8.1 -> 7.2 (11%) |
+| ns_gpu_full -> Waymo | 18.3 | +8.4 (0.46x) | 12.6 | 18.3 -> 17.5 (5%) |
+A: gap <= 2 pts and area <= 2x in only 2 of 6 cells (av2_gpu_full->nuScenes, ns_gpu_full->AV2); registered bar 4 of 6 -> FAIL.
+Pattern (as predicted): worst-domain calibration covers targets that are easier than the hardest source (nuScenes, AV2; but
+over-covers, 3.44x area for Wayformer->nuScenes) and fails on Waymo, the hardest dataset, which lies outside the range of the
+sources (under-covers by 3 to 15 pts). This is Proposition 1 in practice: the restricted shift class "inside the source range"
+holds only when the target is not harder than every source, which a practitioner cannot know without target labels.
+B: median gap reduction 3% (range -10% to 11%); bar 50% in 4 of 6 -> FAIL. Conditioning on label-free history-based manoeuvre
+groups does not repair the loss, consistent with the reading that the shift acts on the conditional behaviour of road users
+(the future given the history), not through what the history shows. No variants were tried after seeing target labels.
