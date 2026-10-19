@@ -20,7 +20,7 @@ are outstanding, and neither is a formatting requirement.
       once their photos arrive.
 - [x] **Conflict of interest disclosure.** Added as a `\section*{Conflict of Interest}` after Reproducibility:
       the authors declare no competing interests.
-- [x] **Code archive published on Zenodo, publicly accessible.** `10.5281/zenodo.23054412` (concept DOI; v2 = corrected code)
+- [x] **Code archive published on Zenodo, publicly accessible.** `10.5281/zenodo.23054412` (concept DOI, latest = v2 `10.5281/zenodo.23466500`, corrected code)
       (https://doi.org/10.5281/zenodo.23054412), holding `conformal-coverage-transfer-code.zip` (2.28 MB: code,
       configs, pre-registration log, aggregate result JSONs, paper source; no raw third-party datasets, no compiled
       PDF), with title/description/creators/license (CC BY 4.0) set. **This is permanent** -- the record cannot be

@@ -203,3 +203,10 @@ verified against UniTraj Table 15).
 NEXT: once results/train_av2_wayformer.log shows epoch-1 it/s, recompute total epoch time and confirm or adjust
 before epoch 2 (adjusting epochs later requires a fresh OneCycleLR schedule, i.e. restarting from epoch 0 -- so
 this check should happen EARLY, ideally before epoch 1 finishes if speed is visible from the progress bar).
+
+## ZENODO v2 PUBLISHED (2026-10-19)
+New version of the code record: version DOI 10.5281/zenodo.23466500 (v2); concept DOI 10.5281/zenodo.23054412 (always the
+latest; cited in the paper). Content: git archive of paper01-coverage-transfer at commit 6acbf75 (241 files, 1.45 MB), no
+compiled PDFs, no raw datasets. Changelog (betting bet-cap defect fix, Wayformer, seeds, outcome logs through Addendum J) is in
+the record description. v1 (10.5281/zenodo.23054413) remains public and unchangeable. The access token was supplied in chat,
+used as a process environment variable only, and is stored nowhere.
