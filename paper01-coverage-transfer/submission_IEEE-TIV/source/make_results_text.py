@@ -35,6 +35,33 @@ def _scene(ids):
     return np.array([(re.search(r"scene-\d+", str(s)) or [str(s)])[0] for s in ids])
 
 
+STATS = R / "rev1" / "text_stats.json"
+
+
+def _raw_stats():
+    """Values that need the prediction archives / checkpoint names (not in the repo): computed once and cached to
+    results/rev1/text_stats.json, which IS committed, so a fresh clone regenerates the same macros."""
+    ade = [_best_minade6(m) for m in ("av2_cpu_v1", "av2_valsplit_v1", "av2_cpu_v2")]
+    ns = np.load(PRED / "av2_gpu_full/ns.npz", allow_pickle=True)
+    sid = _scene(ns["scenario_id"]); _, cnt = np.unique(sid, return_counts=True)
+    nsc = lambda f: int(len(np.unique(_scene(np.load(PRED / "ns_gpu_full" / f, allow_pickle=True)["scenario_id"]))))
+    rows, scen = 0, set()
+    for n in ("wmcal", "wmtest"):
+        w = np.load(PRED / "av2_wayformer" / f"{n}.npz", allow_pickle=True)
+        rows += len(w["scenario_id"]); scen |= set(map(str, w["scenario_id"]))
+    return {"ade_expl_min": min(ade), "ade_expl_max": max(ade), "ade_conf": _best_minade6("av2_gpu_full"),
+            "ns_n_agents": int(len(sid)), "ns_n_scenes": int(len(cnt)), "ns_mean": float(cnt.mean()),
+            "ns_median": float(np.median(cnt)), "ns_cal": nsc("nscal.npz"), "ns_test": nsc("nstest.npz"),
+            "wm_agents_per_scenario": rows / len(scen)}
+
+
+def _stats():
+    if (PRED / "av2_gpu_full/ns.npz").exists():
+        st = _raw_stats(); STATS.write_text(json.dumps(st, indent=1))
+        return st
+    return _j(STATS)
+
+
 def macros_text() -> str:
     L = []
     put = lambda k, v: L.append("\\newcommand{\\%s}{%s}" % (k, v))
@@ -43,8 +70,8 @@ def macros_text() -> str:
     expl_fwd = ["av2_cpu_v1", "av2_valsplit_v1", "av2_cpu_v2"]
     gaps = [100 * _j(R / f"run2/{m}__forward.json")["H1_H4"][KEY]["raw"]["target"]["gap"] for m in expl_fwd]
     put("explGapMin", f"{min(gaps):.1f}"); put("explGapMax", f"{max(gaps):.1f}")
-    ade = [_best_minade6(m) for m in expl_fwd]
-    put("explAdeMin", f"{min(ade):.2f}"); put("explAdeMax", f"{max(ade):.2f}")
+    st = _stats()
+    put("explAdeMin", f"{st['ade_expl_min']:.2f}"); put("explAdeMax", f"{st['ade_expl_max']:.2f}")
 
     red = []
     for m, d in [(m, "forward") for m in expl_fwd] + [("ns_cpu_v1", "reverse")]:
@@ -65,21 +92,13 @@ def macros_text() -> str:
     put("monitorRhoMax", f"{max(rho):.2f}")
 
     # ---- confirmatory accuracy relative to the published reference -------------------------------------------
-    b = _best_minade6("av2_gpu_full")
-    put("confAccRelPct", f"{100 * abs(b - REF_ACC) / REF_ACC:.1f}")
+    put("confAccRelPct", f"{100 * abs(st['ade_conf'] - REF_ACC) / REF_ACC:.1f}")
 
     # ---- nuScenes / Waymo dataset statistics -----------------------------------------------------------------
-    ns = np.load(PRED / "av2_gpu_full/ns.npz", allow_pickle=True)
-    sid = _scene(ns["scenario_id"]); u, cnt = np.unique(sid, return_counts=True)
-    put("nsNAgents", str(len(sid))); put("nsNScenes", str(len(u)))
-    put("nsAgentsMean", f"{cnt.mean():.0f}"); put("nsAgentsMedian", f"{np.median(cnt):.0f}")
-    put("nsNScenesCal", str(len(np.unique(_scene(np.load(PRED / "ns_gpu_full/nscal.npz", allow_pickle=True)["scenario_id"])))))
-    put("nsNScenesTest", str(len(np.unique(_scene(np.load(PRED / "ns_gpu_full/nstest.npz", allow_pickle=True)["scenario_id"])))))
-    wm_rows, wm_scen = 0, set()
-    for n in ("wmcal", "wmtest"):
-        w = np.load(PRED / "av2_wayformer" / f"{n}.npz", allow_pickle=True)
-        wm_rows += len(w["scenario_id"]); wm_scen |= set(map(str, w["scenario_id"]))
-    put("wmAgentsPerScenario", f"{wm_rows / len(wm_scen):.1f}")
+    put("nsNAgents", str(st["ns_n_agents"])); put("nsNScenes", str(st["ns_n_scenes"]))
+    put("nsAgentsMean", f"{st['ns_mean']:.0f}"); put("nsAgentsMedian", f"{st['ns_median']:.0f}")
+    put("nsNScenesCal", str(st["ns_cal"])); put("nsNScenesTest", str(st["ns_test"]))
+    put("wmAgentsPerScenario", f"{st['wm_agents_per_scenario']:.1f}")
 
     # ---- measured input differences used by the injections ---------------------------------------------------
     ip = _j(R / "addB/inject_params.json")

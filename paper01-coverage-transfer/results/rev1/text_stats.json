@@ -1,0 +1,12 @@
+{
+ "ade_expl_min": 1.092,
+ "ade_expl_max": 1.349,
+ "ade_conf": 0.854,
+ "ns_n_agents": 9041,
+ "ns_n_scenes": 138,
+ "ns_mean": 65.51449275362319,
+ "ns_median": 53.0,
+ "ns_cal": 64,
+ "ns_test": 74,
+ "wm_agents_per_scenario": 3.7478321193201527
+}

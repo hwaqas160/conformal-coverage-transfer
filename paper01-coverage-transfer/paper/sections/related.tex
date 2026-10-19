@@ -33,7 +33,10 @@ under general shift can be bounded by a distance between calibration and test di
 Recent work replaces that bound with an explicit ambiguity-set radius under L\'{e}vy--Prokhorov perturbations
 \cite{aolaritei2025levy}, regularises the representation with a Wasserstein penalty to shrink the achievable coverage
 gap \cite{xu2025wasserstein}, or uses optimal transport with unlabelled target data to both estimate and mitigate the
-loss in coverage \cite{correia2025nonexchangeable}. The last is the closest label-free competitor, but its bracketing of
+loss in coverage \cite{correia2025nonexchangeable}. Robust conformal prediction instead guards against every test distribution inside an $f$-divergence ball around the
+training distribution \cite{cauchois2024robust}; it restricts the shift class by construction, as Proposition~ef{prop:ident}
+says a useful label-free method must, but needs a radius chosen or estimated for the shift, and we leave it as a baseline
+for future work. The last is the closest label-free competitor, but its bracketing of
 the unlabelled test scores is built from the minimum and maximum score over all candidate labels, for scores bounded
 in $[0,1]$, and is evaluated on classification and a one-dimensional binned regression task. For our unbounded,
 metre-scale score over multi-modal trajectories that minimum is zero and the maximum is unbounded, and we found no

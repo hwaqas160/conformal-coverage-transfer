@@ -117,3 +117,4 @@ details against the camera-ready at proofing time if the paper is still cited th
 | key | status | source checked |
 |---|---|---|
 | nayakanti2023wayformer | V 2026-10-07 | Read directly from the primary source's own bibliography while verifying feng2024unitraj's Table 15 (arXiv:2403.15098, PDF p.17, ref [35]): title/authors/venue/pages/year transcribed from that page, not from memory. |
+- cauchois2024robust: verified 2026-10-19 (search result: arXiv:2008.04267; JASA 119(548):3033-3044, DOI 10.1080/01621459.2023.2298037; authors Cauchois, Gupta, Ali, Duchi).
