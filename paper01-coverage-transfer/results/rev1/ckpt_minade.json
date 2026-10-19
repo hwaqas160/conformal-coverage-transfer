@@ -1,0 +1,12 @@
+{
+ "av2_cpu_v1": 1.349,
+ "av2_cpu_v2": 1.092,
+ "av2_gpu_dev_ep11": 1.043,
+ "av2_gpu_full": 0.854,
+ "av2_gpu_full_seed1": 0.875,
+ "av2_wayformer": 0.955,
+ "av2_wayformer_seed1": 0.977,
+ "ns_cpu_v1": 1.3,
+ "ns_gpu_full": 1.232,
+ "av2_valsplit_v1": 1.347
+}

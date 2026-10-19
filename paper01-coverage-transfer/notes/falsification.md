@@ -1176,3 +1176,10 @@ same-domain gap +0.5 (control ok); AV2->Waymo gap +24.2 (seed 0 +25.0). Register
 magnitude does not carry across architectures survives a second seed for both. Seed-to-seed differences: AutoBot 5.5 pts,
 Wayformer 1.4 pts (nuScenes). Injections, Method B and the reverse direction were not repeated on seed 1 (disclosed).
 (Note: the CIs quoted above are agent-level; scene-clustered 95% intervals are seed 0 3.9-9.1 and seed 1 5.1-10.7 pts.)
+
+## Note (2026-10-19): re-measurement of the Wayformer seed-0 final checkpoint
+For reproducibility the final-checkpoint accuracy of both Wayformer runs was re-measured with src/validate_ckpt.py under the
+same procedure (2000-scene val subset, seed 0) and stored in results/rev1/wf_gate.json (logs: results/validate_wf_seed*_last.log).
+Seed 0 now reads val minADE6 = 0.9319 (the 2026-10-07 entry above recorded 0.9275, a different run of the same procedure; the
+subset is not perfectly stable between runs). Seed 1: 0.9408. Gate (<= 0.98) passes for both. The paper now reports the
+generated values (0.932 and 0.941). No conclusion changes.

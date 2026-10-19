@@ -53,7 +53,10 @@ def best_minade6(model):
     base_model['minADE5_2Hz_same'] in run2 json, which is a different (5-mode, 2Hz-subsampled) diagnostic metric."""
     d = ROOT / "results" / "ckpts" / model
     vals = [float(m.group(1)) for f in d.glob("epoch*.ckpt") if (m := re.search(r"minADE([\d.]+)\.ckpt$", f.name))]
-    return min(vals) if vals else None
+    if vals:
+        return min(vals)
+    cache = ROOT / "results" / "rev1" / "ckpt_minade.json"   # committed copy, for a fresh clone without checkpoints
+    return json.loads(cache.read_text()).get(model) if cache.exists() else None
 
 
 def load(model, direction):

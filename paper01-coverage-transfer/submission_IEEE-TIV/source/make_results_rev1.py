@@ -215,7 +215,7 @@ def macros_wf(scene) -> str:
     fwd = _j(R / "run2/av2_wayformer__forward.json")
     h = fwd["H1_H4"]["0.10"]["raw"]
     hn = fwd["H1_H4"]["0.10"]["norm"]
-    put("minADESixWayformer", "0.928")   # measured directly on last.ckpt, Addendum E outcome log (not in a ckpt filename)
+    put("minADESixWayformer", f"{_j(R / 'rev1/wf_gate.json')['av2_wayformer']:.3f}")   # direct validation of last.ckpt (src/validate_ckpt.py)
     put("gapSameWayformer", pct(h["same"]["gap"]))
     put("gapRawWayformer", pct(h["target"]["gap"]))
     put("gapRawWayformerCI", f"[{pct(h['target']['ci95'][0])}, {pct(h['target']['ci95'][1])}]")
