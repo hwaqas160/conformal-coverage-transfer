@@ -94,3 +94,17 @@ def macros_text() -> str:
     put("auditBudgetK", f"{round(k, -1):.0f}")
     put("agentsForTwoPoints", f"{round(1.96 ** 2 * a_ * (1 - a_) / 0.02 ** 2, -2):.0f}")
     return "\n".join(L) + "\n"
+
+
+def macros_wf_seed() -> str:
+    """Addendum I: second Wayformer training seed."""
+    p = R / "rev1/wf_seed1.json"
+    if not p.exists():
+        return ""
+    d = _j(p); a, b = d["av2_wayformer"], d["av2_wayformer_seed1"]
+    L = []
+    put = lambda k, v: L.append("\\newcommand{\\%s}{%s}" % (k, v))
+    put("wfSeedGapOne", f"{100 * b['gap_nuscenes']:.1f}"); put("wfSeedGapZero", f"{100 * a['gap_nuscenes']:.1f}")
+    put("wfSeedWmOne", f"{100 * b['gap_waymo']:.1f}"); put("wfSeedWmZero", f"{100 * a['gap_waymo']:.1f}")
+    put("wfSeedAde", f"{b['val_minADE6_last']:.3f}")
+    return "\n".join(L) + "\n"

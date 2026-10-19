@@ -352,6 +352,8 @@ def write_all():
         import sys; sys.path.insert(0, str(Path(__file__).resolve().parent))
         from make_results_text import macros_text
         macro_text += macros_text()
+        from make_results_text import macros_wf_seed
+        macro_text += macros_wf_seed()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 

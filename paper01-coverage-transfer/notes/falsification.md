@@ -1166,3 +1166,13 @@ without shift these features barely predict a scene's miss fraction. The predict
 met by any cell. A control variate with r^2<=0.16 could cut labelled-scene variance by at most ~16%, which does not change the
 label budget materially. Method A as a variance-reduction paper is dropped; no feature engineering after seeing target labels.
 Salvage for the main paper: one sentence in Discussion that scene-level loss is hard to predict from label-free features.
+
+## Outcome log: Addendum I (Wayformer seed 1, 2026-10-19)
+av2_wayformer_seed1 trained 27/27 epochs (DONE 2026-10-16; the job crashed and auto-resumed on 2026-10-16 15:04, losing ~8
+min). Final (last) checkpoint measured directly with src/validate_ckpt.py: val minADE6 = 0.941 (seed 0: 0.928); gate <= 0.98
+PASSED. Results (results/rev1/wf_seed1.json): AV2->nuScenes gap +7.7 pts (CI 6.5-9.0; seed 0 +6.4, CI 5.0-7.9), ratio 1.21;
+same-domain gap +0.5 (control ok); AV2->Waymo gap +24.2 (seed 0 +25.0). Registered criterion (positive, within a factor of
+2 of seed 0): MET. Wayformer's nuScenes gap stays far below AutoBot's (+15.1 and +20.6 for its two seeds), so the claim that
+magnitude does not carry across architectures survives a second seed for both. Seed-to-seed differences: AutoBot 5.5 pts,
+Wayformer 1.4 pts (nuScenes). Injections, Method B and the reverse direction were not repeated on seed 1 (disclosed).
+(Note: the CIs quoted above are agent-level; scene-clustered 95% intervals are seed 0 3.9-9.1 and seed 1 5.1-10.7 pts.)
