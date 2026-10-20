@@ -1296,3 +1296,18 @@ nuScenes calibration scenes; also report the worst-domain threshold. Test: Waymo
 in-domain controls. Comparison: av2_gpu_full calibrated on AV2 (Waymo gap +23.4) and ns_gpu_full on nuScenes (+18.3). Success: Waymo gap
 <= 11.7 points (at most half of av2_gpu_full's) AND in-domain gaps on AV2 test and nuScenes test <= 3 points in absolute value. Prediction:
 the Waymo gap shrinks to roughly 15-20 points, not half (~35% to succeed); a larger-than-expected reduction would be the paper's strongest result.
+
+## Outcome log: Addendum L1 -- sequential (anytime-valid) scene-level certification (2026-10-20) -- FAILS its registered criterion
+Script `src/analyze_L1_sequential.py`, results `results/rev1/L1_sequential.json`; 1000 draws per transfer.
+| transfer | valid | median stop (IQR) | fixed-m budget | stop/fixed | median area vs oracle |
+| AV2->nuScenes | 1.000 | 106 (98-119) | 150 | 0.71 | 2.56x |
+| AV2->Waymo | 0.999 | 98 (87-112) | 150 | 0.65 | 2.30x |
+| nuScenes->Waymo | 0.999 | 90 (80-102) | 150 | 0.60 | 2.23x |
+| nuScenes->AV2 | 0.996 | 66 (66-80) | 200 | 0.33 | 4.65x |
+| Wayformer->nuScenes | 1.000 | 102 (92-112) | 150 | 0.68 | 2.12x |
+| Wayformer->Waymo | 1.000 | 93 (84-105) | 150 | 0.62 | 2.36x |
+Validity holds in every transfer (>= 0.996, as guaranteed for any stopping time). The median stopping time is 33-71% of the fixed budget, so
+the label budget is cut by about a third to two thirds. But the registered area criterion (median area <= 2.0x oracle at the stopping time) is
+met in NONE of the six (2.12x to 4.65x), so 0 of 6 transfers meet all three conditions -> FAIL. Reading (post hoc, not a rescue): the registered
+stability rule stops when the threshold stops moving, which happens while the region is still conservative; a tighter stopping rule would trade
+budget for area. The registered rule was not changed. The result is a budget-versus-size trade-off, not a free reduction.

@@ -1,0 +1,98 @@
+{
+ "design": {
+  "t_min": 30,
+  "stable_lag": 10,
+  "stable_tol": 0.03,
+  "t_cap": 300,
+  "alpha": 0.1,
+  "delta": 0.1
+ },
+ "pairs": {
+  "av2_to_nuscenes": {
+   "pair": "av2_to_nuscenes",
+   "draws": 1000,
+   "p_valid": 1.0,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 106.0,
+   "q25_stop": 98.0,
+   "q75_stop": 119.0,
+   "q90_stop": 131.0,
+   "median_area_vs_oracle": 2.559256089779028,
+   "fixed_budget_m": 150,
+   "stop_over_fixed": 0.7066666666666667
+  },
+  "av2_to_waymo": {
+   "pair": "av2_to_waymo",
+   "draws": 1000,
+   "p_valid": 0.999,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 98.0,
+   "q25_stop": 87.0,
+   "q75_stop": 112.0,
+   "q90_stop": 127.0,
+   "median_area_vs_oracle": 2.295107315778027,
+   "fixed_budget_m": 150,
+   "stop_over_fixed": 0.6533333333333333
+  },
+  "ns_to_waymo": {
+   "pair": "ns_to_waymo",
+   "draws": 1000,
+   "p_valid": 0.999,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 90.0,
+   "q25_stop": 80.0,
+   "q75_stop": 102.0,
+   "q90_stop": 116.10000000000002,
+   "median_area_vs_oracle": 2.234839589041326,
+   "fixed_budget_m": 150,
+   "stop_over_fixed": 0.6
+  },
+  "ns_to_av2": {
+   "pair": "ns_to_av2",
+   "draws": 1000,
+   "p_valid": 0.996,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 66.0,
+   "q25_stop": 66.0,
+   "q75_stop": 80.0,
+   "q90_stop": 96.10000000000002,
+   "median_area_vs_oracle": 4.653323392424911,
+   "fixed_budget_m": 200,
+   "stop_over_fixed": 0.33
+  },
+  "wayformer_to_nuscenes": {
+   "pair": "wayformer_to_nuscenes",
+   "draws": 1000,
+   "p_valid": 1.0,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 102.0,
+   "q25_stop": 92.0,
+   "q75_stop": 112.0,
+   "q90_stop": 121.0,
+   "median_area_vs_oracle": 2.1177648415623556,
+   "fixed_budget_m": 150,
+   "stop_over_fixed": 0.68
+  },
+  "wayformer_to_waymo": {
+   "pair": "wayformer_to_waymo",
+   "draws": 1000,
+   "p_valid": 1.0,
+   "frac_infinite_at_stop": 0.0,
+   "frac_capped": 0.0,
+   "median_stop": 93.0,
+   "q25_stop": 84.0,
+   "q75_stop": 105.0,
+   "q90_stop": 117.0,
+   "median_area_vs_oracle": 2.3626265854268937,
+   "fixed_budget_m": 150,
+   "stop_over_fixed": 0.62
+  }
+ },
+ "transfers_succeeding": 0,
+ "success": false
+}
