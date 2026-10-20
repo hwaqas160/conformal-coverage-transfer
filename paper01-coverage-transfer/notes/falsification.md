@@ -1311,3 +1311,19 @@ the label budget is cut by about a third to two thirds. But the registered area 
 met in NONE of the six (2.12x to 4.65x), so 0 of 6 transfers meet all three conditions -> FAIL. Reading (post hoc, not a rescue): the registered
 stability rule stops when the threshold stops moving, which happens while the region is still conservative; a tighter stopping rule would trade
 budget for area. The registered rule was not changed. The result is a budget-versus-size trade-off, not a free reduction.
+
+## Outcome log: Addendum L2 -- output-based label-free shift monitor (2026-10-20) -- MEETS its registered criterion, with caveats
+Script `src/analyze_L2_monitor.py` (registered), `src/analyze_L2_diagnostics.py` (POST HOC, not part of the criterion). Results
+`results/rev1/L2_monitor.json`, `results/rev1/L2_diagnostics.json`. 24 (model, target) pairs: 10 models x their same-domain test split and
+out-of-domain targets (14 shift pairs).
+Registered primary: Spearman(S, coverage gap) over all 24 pairs = **0.77** (one-sided permutation p < 1e-4); bar rho >= 0.70, p <= 0.05, and above
+the covariate monitor's 0.47 -> **SUCCESS**. Shift pairs only (n=14): S rho 0.80 (p=0.0006). Secondary (registered as non-decisive): KS distance
+of the predicted-scale distributions rho = 0.92 (all) / 0.90 (shift only); mode-entropy drift rho 0.60 / 0.56.
+Post hoc checks: within the single target nuScenes (8 models, removes the between-target effect) rho(S)=0.62, rho(KS)=0.90. Flagging
+gap > 3 points: AUC 0.91 (S), 0.99 (KS) over the 24 pairs. Leave-one-model-out linear prediction of the gap from S: mean absolute error
+3.7 points over a gap range of 3-25 points.
+Caveats that bound the claim: (1) n is small and the models are related (zoo, seeds), so the 24 pairs are not independent; the three target
+datasets contribute most of the between-target spread. (2) The monitor is blind to one shift: nuScenes-trained models on AV2 (gaps 8.1 and 4.7
+points) have S ~ 0 and KS 0.041 / 0.075, inside or near the same-domain range (0.015-0.053): a false negative, the behaviour shift left the model's
+predicted scale unchanged. (3) It is a correlation, not a guarantee; Proposition 1 still applies. (4) The statistic needs the source calibration
+predictions' scales and unlabelled target inputs only, so it IS label-free. It is the first label-free signal in this study that tracks the gap.
