@@ -1327,3 +1327,17 @@ datasets contribute most of the between-target spread. (2) The monitor is blind 
 points) have S ~ 0 and KS 0.041 / 0.075, inside or near the same-domain range (0.015-0.053): a false negative, the behaviour shift left the model's
 predicted scale unchanged. (3) It is a correlation, not a guarantee; Proposition 1 still applies. (4) The statistic needs the source calibration
 predictions' scales and unlabelled target inputs only, so it IS label-free. It is the first label-free signal in this study that tracks the gap.
+
+## Outcome log: Addendum L3 -- robust conformal over a half-chi-square ball, LODO radius (2026-10-20) -- FAILS its registered criterion
+Script `src/analyze_L3_robust.py`, results `results/rev1/L3_robust.json`. Gap = 90 - coverage (points; negative = over-coverage).
+| cell | rho_hat (LODO) | rho* (oracle) | single-source gap | robust gap (area vs oracle) |
+| av2_gpu_full -> nuScenes | 0.452 | 0.167 | 15.1 | -2.6 (1.55x) |
+| av2_gpu_full -> Waymo | 0.287 | 0.396 | 23.4 | +1.1 (0.89x) |
+| av2_wayformer -> nuScenes | 0.509 | 0.020 | 6.4 | -7.9 (3.86x) |
+| av2_wayformer -> Waymo | 0.078 | 0.441 | 25.0 | +9.8 (0.43x) |
+| ns_gpu_full -> AV2 | 0.267 | 0.033 | 8.1 | -5.5 (2.33x) |
+| ns_gpu_full -> Waymo | 0.081 | 0.201 | 18.3 | +3.5 (0.71x) |
+Gap <= 2 points and area <= 2x in 2 of 6 cells (av2_gpu_full -> nuScenes and -> Waymo); bar 4 of 6 -> FAIL. Same pattern as worst-domain
+calibration (Addendum K): the leave-one-dataset-out radius overshoots for the easy targets (nuScenes, AV2: radius 0.27-0.51 against an oracle
+0.02-0.17, giving 1.6-3.9x areas) and undershoots for Waymo from weak-shift sources (0.08 against 0.44 for Wayformer). The estimated radius is
+only as good as how much the held-out dataset resembles the other sources, which cannot be known without target labels (Proposition 1).
