@@ -1259,3 +1259,40 @@ groups does not repair the loss, consistent with the reading that the shift acts
 (the future given the history), not through what the history shows. No variants were tried after seeing target labels.
 (Correction to the Addendum K outcome line above: the median gap reduction of method B over the six cells is 1% per the generated
 macro (values -4, 2, -10, 1, 11, 5 percent), not "3%". The range -10% to 11% and the FAIL verdict are unchanged.)
+
+## Addendum L -- four methods aimed at the refuted/weak points -- written 2026-10-20, BEFORE any run of L1-L4
+Context: Addenda H, J and K showed no label-free fix works under Proposition 1, the repair needs 150-200 scenes, and the covariate
+monitor is weak. L1-L4 attack those: shrink the label budget (L1), detect earlier (L2), add the missing robust-CP baseline (L3),
+shrink the gap itself through training (L4). All success criteria below are fixed now; failures are reported as negative results,
+and nothing is re-tuned after seeing target labels. Nothing has been computed.
+**L1 Sequential (anytime-valid) scene-level certification.** Scenes from the labelled pool (disjoint from the evaluation pool, as in
+Addendum D) arrive one at a time in random order. For every grid candidate q (the fixed log-spaced grid of Sec. III-D) keep the betting
+capital K_q(t) and use the running-maximum p-value 1/max_{s<=t} K_q(s) (valid at ANY stopping time by Ville's inequality); fixed-sequence
+testing at delta/2 plus source certification at delta/2 as before; the grid is label-independent, so the returned threshold q_t has
+Pr[exists t: R(q_t) > alpha] <= delta, hence validity at any data-dependent stopping time. Stopping rule (fixed now): stop at the first
+t >= 30 at which q_t is finite and within 3% of q_{t-10}; cap at 300 scenes (report capped draws). Evaluate over 1000 random draws on the
+six transfers (AV2->nuScenes, AV2->Waymo, nuScenes->AV2, nuScenes->Waymo, Wayformer->nuScenes, Wayformer->Waymo) with exact R(q) on the
+evaluation pool. Success: in at least 4 of 6 transfers, validity Pr[R(q_tau) <= alpha] >= 0.90 AND median area at the stopping time
+<= 2.0x the oracle AND median stopping time <= 0.75 x the fixed-m recommended budget of that transfer (150 or 200 scenes).
+Prediction: validity holds by construction; the stopping-time criterion is uncertain (~50%).
+**L2 Output-based shift monitor.** Label-free statistic S = log( median over target agents of u / median over source-calibration agents of u ),
+u = mean over the K modes of the predicted Laplace scale (pred_scale). Unit of analysis: every (model, target) pair with predictions in
+results/preds2 (confirmatory models and seeds, Wayformer and seed, exploratory zoo). Primary: Spearman correlation between S and the
+signed coverage gap. Success: rho >= 0.70 with a permutation p <= 0.05, and rho exceeds the covariate domain-classifier monitor's best
+(0.47). Secondary (reported, not decisive): KS distance between the predicted-scale distributions, and mode-entropy drift. Prediction: rho
+0.4-0.6 (~35% to succeed); n is small (about 12-15 pairs).
+**L3 Robust conformal over an f-divergence ball (Cauchois et al. 2024) as a baseline.** Half chi-square divergence D(Q||P) = E_P[(dQ/dP - 1)^2]/2.
+For source score CDF with P(S<=t)=p, the worst-case coverage over {Q: D<=rho} is the smallest q in [0,1] with p f(q/p) + (1-p) f((1-q)/(1-p)) <= rho
+(f(t)=(t-1)^2/2); the robust threshold is the empirical quantile at the smallest p whose worst-case coverage is >= 0.9. rho is estimated
+leave-one-dataset-out, exactly as in Addendum K: rho_hat = max over the OTHER labelled datasets of the binned (20 source-score-quantile bins)
+half chi-square divergence between the source calibration scores and that dataset's labelled scores. Same six cells and bar as Addendum K
+method A (gap <= 2.0 points and area <= 2.0x oracle in at least 4 of 6). Also report the oracle rho* that would exactly reach 90% on the
+target. Prediction: behaves like worst-domain calibration, 2-3 of 6.
+**L4 Multi-dataset training.** `multi_av2ns`: AutoBot, the av2_gpu_full recipe (60 epochs, batch 32 x accum 4, lr 7.5e-4 halved at epochs
+10/20/30/40/50, seed 0, val_every 2, 2000-scene AV2 val subset), trained on AV2 train PLUS the full nuScenes train split; Waymo is never
+seen in training or calibration. Final model = last checkpoint; accuracy gate val minADE6 <= 0.98 on AV2 val (same as av2_gpu_full) and
+<= 1.39 on nuScenes val (measured with validate_ckpt on the final checkpoint). Calibration: pooled split CP on the AV2 calibration half plus the
+nuScenes calibration scenes; also report the worst-domain threshold. Test: Waymo test (held-out dataset), plus AV2 test and nuScenes test as
+in-domain controls. Comparison: av2_gpu_full calibrated on AV2 (Waymo gap +23.4) and ns_gpu_full on nuScenes (+18.3). Success: Waymo gap
+<= 11.7 points (at most half of av2_gpu_full's) AND in-domain gaps on AV2 test and nuScenes test <= 3 points in absolute value. Prediction:
+the Waymo gap shrinks to roughly 15-20 points, not half (~35% to succeed); a larger-than-expected reduction would be the paper's strongest result.
