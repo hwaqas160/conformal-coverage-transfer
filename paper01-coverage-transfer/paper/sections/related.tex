@@ -19,10 +19,8 @@ Beyond trajectory regions, conformal prediction has been used to certify learned
 \cite{mei2024perceive}, to adapt a crowd-navigation policy's safety margin to distribution shift
 \cite{yao2025crowdnav}, to learn safety regions from sparse human feedback \cite{feldman2025robotsafety}, to certify
 learned dynamical-system motion primitives \cite{binny2026stable}, and more broadly to connect conformal prediction
-to formal verification and control of learning-enabled autonomous systems \cite{lindemann2024formal}. Closest to our
-label-free-versus-labelled distinction, \cite{mirzaeedodangeh2025interactive} transfers a safety guarantee across
-policy updates analytically rather than by relabelling, and \cite{binny2025moved} treats the distribution shift the
-ego agent itself induces in interacting agents. All of these assume the calibration and deployment \emph{domain}
+to formal verification and control of learning-enabled autonomous systems \cite{lindemann2024formal}. Of these, \cite{mirzaeedodangeh2025interactive} transfers a safety guarantee across policy updates analytically and
+\cite{binny2025moved} treats the shift the ego agent induces in others. All of these assume the calibration and deployment \emph{domain}
 match; we study what happens when the domain itself changes.
 
 \paragraph{Conformal prediction under shift}
@@ -91,12 +89,8 @@ for a different purpose: certifying a \emph{scene-averaged} risk from whole labe
 UniTraj harmonises several driving datasets and reports that accuracy drops when models are transferred between them
 \cite{feng2024unitraj}; that study is about point accuracy, not about the validity of an uncertainty guarantee.
 Beyond trajectories, \cite{ovadia2019can} showed that calibration of deep models degrades under dataset shift; our
-question is the conformal analogue for structured, multi-modal forecasts. The same cross-dataset gap is documented
-on the perception side of the autonomous-driving stack: visual localisation uncertainty is miscalibrated under novel
-weather and lighting \cite{wu2025visuallocalization}, collaborative-perception benchmarks struggle to generalise
-across sensor rigs and sites \cite{wang2025collaborative}, cross-sensor pretraining is used specifically to close a
-domain gap that would otherwise need target-domain labels \cite{kong2025largead,qiu2026crosssensor}, and a broader
-uncertainty-aware perception survey argues for explicit, communicable uncertainty rather than a single calibrated
-score \cite{manchingal2025uncertaintyaware}. None of this literature asks whether a \emph{conformal} guarantee
-specifically, rather than calibration quality in general, survives the same transfer; that is the question this
-paper measures, diagnoses and partially repairs.
+question is the conformal analogue for structured, multi-modal forecasts. The same gap is documented on the perception
+side: localisation uncertainty is miscalibrated under novel weather \cite{wu2025visuallocalization}, collaborative
+perception generalises poorly across sensor rigs \cite{wang2025collaborative}, and cross-sensor pretraining is used to
+close a domain gap that would otherwise need target labels \cite{kong2025largead,qiu2026crosssensor}. None of this asks
+whether a \emph{conformal} guarantee survives the transfer; this paper measures, diagnoses and partially repairs that.

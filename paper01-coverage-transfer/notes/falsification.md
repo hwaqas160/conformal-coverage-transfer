@@ -1257,3 +1257,5 @@ holds only when the target is not harder than every source, which a practitioner
 B: median gap reduction 3% (range -10% to 11%); bar 50% in 4 of 6 -> FAIL. Conditioning on label-free history-based manoeuvre
 groups does not repair the loss, consistent with the reading that the shift acts on the conditional behaviour of road users
 (the future given the history), not through what the history shows. No variants were tried after seeing target labels.
+(Correction to the Addendum K outcome line above: the median gap reduction of method B over the six cells is 1% per the generated
+macro (values -4, 2, -10, 1, 11, 5 percent), not "3%". The range -10% to 11% and the FAIL verdict are unchanged.)

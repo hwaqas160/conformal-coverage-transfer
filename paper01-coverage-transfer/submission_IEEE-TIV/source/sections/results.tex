@@ -21,9 +21,8 @@ confirmatory models. Error bars: 95\% intervals, resampled by scene where target
 \label{fig:gap}
 \end{figure}
 
-The nuScenes test agents come from only \nsNScenes\ scenes, so they are strongly dependent. Resampling whole scenes inflates the
-variance of the coverage estimate by a design effect of \designEffConf; all intervals on multi-agent targets therefore
-resample scenes, not agents. Across training budgets the more accurate model has the larger gap: the confirmatory AV2
+The nuScenes test agents come from only \nsNScenes\ scenes, so they are strongly dependent: resampling whole scenes
+inflates the variance by a design effect of \designEffConf, so all intervals on multi-agent targets resample scenes. Across training budgets the more accurate model has the larger gap: the confirmatory AV2
 model, within \confAccRelPct\% of UniTraj's published accuracy, loses \gapRawConf\ points, against \explGapMin\ to
 \explGapMax\ points for the three reduced-budget AV2 models (Table~\ref{tab:models}). The pattern does not hold between
 training seeds: a second seed of the same recipe is slightly less accurate (\seedOneAde) yet loses \seedGapOne\ points.
@@ -71,20 +70,26 @@ agree with Proposition~\ref{prop:ident}: without target labels there is no gener
 One label-free method restricts the shift class, as that proposition says a useful one must. \emph{Protocol-matched
 recalibration} passes the source calibration inputs through the measured AV2$\to$nuScenes input differences of
 Sec.~\ref{sec:inject} (2\,Hz history and lane dropout, estimated from target inputs only) and recalibrates on the
-result. It is exploratory and carries no guarantee. For AutoBot it moves the threshold from \mbQSrcAb\ to \mbQPmAb\,m
+result. It is exploratory and has no guarantee. For AutoBot it moves the threshold from \mbQSrcAb\ to \mbQPmAb\,m
 and coverage on nuScenes from \mbCovSrcAb\% to \mbCovPmAb\%, closing \mbClosedAb\% of the gap. For Wayformer it moves it
 from \mbQSrcWf\ to \mbQPmWf\,m, coverage from \mbCovSrcWf\% to \mbCovPmWf\%, and overshoots the gap to
 $\mbGapPmWf$ points, in the conservative direction, which may partly reflect how Wayformer's velocity inputs are
 reconstructed for injected trajectories (Sec.~\ref{sec:wf}). It does not shorten the label budget of Sec.~\ref{sec:repair-scene}:
 started from the matched threshold, the scene-level rule still needs $m=\mbRecMAb$ scenes (AutoBot) and $m=\mbRecMWf$
-(Wayformer) for a usable region. A measured, label-free correction can recover part of the gap, but it does not replace
-labels.
+(Wayformer) for a usable region. A measured correction recovers part of the gap but does not replace labels.
 
 The loss is not an artefact of the registered score. Re-scored with four alternatives (exploratory: top-probability
 mode, final displacement, probability-weighted, and per-time-step scaling by the source median error), all \scCells\
 out-of-domain cases under-cover, by \scGapMin\ to \scGapMax\ points. No score is uniformly better: the time-scaled score cuts
 AutoBot's AV2$\to$Waymo loss from \scRegWmAb\ to \scNormWmAb\ points but raises its AV2$\to$nuScenes loss from \scRegNsAb\
 to \scNormNsAb.
+
+Two further label-free constructions, registered before running, also fail. \emph{Worst-domain calibration} (the largest
+threshold over the other labelled datasets) meets its bar (gap $\le2$ points at $\le2\times$ the oracle area) in only
+\abAok\ of six held-out cells: it over-covers the easier targets by up to \abEasyOverMax\ points and under-covers Waymo,
+the hardest dataset, by \abWmGapMin--\abWmGapMax\ points. \emph{Manoeuvre-conditional calibration}, with groups from history
+only, closes a median of \abBRedMed\% of the gap (bar met in \abBok\ of six). A restricted shift class helps only if the
+target belongs to it (Proposition~\ref{prop:ident}).
 
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
 We report three label budgets: to \emph{detect} the failure, to \emph{certify} a repaired threshold, and for that
@@ -144,13 +149,12 @@ architectures \cite[Table~15]{feng2024unitraj}), forward only.
 
 The direction replicates everywhere: same-domain gap \gapSameWayformer\ points; AV2$\to$nuScenes gap
 $+\gapRawWayformer$ points (CI \gapRawWayformerCI); AV2$\to$Waymo gap $+\wmGapWf$ points (CI \wmGapWfCI). Reweighting
-again makes the nuScenes gap worse (\rewWayformer\ points). The audit again has power \auditPowerWayformer\ at a
-\auditFaWayformer\% false-alarm rate. The loss again concentrates in turns (right-turn drop \dropRightWf\ points vs.\
+again makes the nuScenes gap worse (\rewWayformer\ points); the audit has power \auditPowerWayformer. The loss again
+concentrates in turns (right-turn drop \dropRightWf\ points vs.\
 \dropStraightWf\ for straight) and in Singapore (\sgExtraRightWf\ points more than Boston), with a similar scene-cluster
 design effect (\designEffWf\ vs.\ AutoBot's \designEffConf). The scene-level repair is valid at every $m$ on both
-Wayformer transfers (Fig.~\ref{fig:scene}b) and reaches the same operating point, $m=\recMWfNs$ scenes for
-AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo (area \recAreaWfWm$\times$), as the
-AutoBot models.
+Wayformer transfers (Fig.~\ref{fig:scene}b) and reaches the same operating point as AutoBot: $m=\recMWfNs$ scenes for
+AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo (area \recAreaWfWm$\times$).
 
 The input-level explanation does not replicate in size. Injecting the 2\,Hz history costs Wayformer \wfInjHz\ points
 (\wfInjHzFrac\% of its nuScenes gap), and with lane dropout \wfInjBoth\ points (\wfInjBothFrac\%), against about a quarter
@@ -160,14 +164,13 @@ would not have and may overstate the effect. Lane dropout, which needs no recons
 
 Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's confirmatory
 \gapRawConf\ points, while its AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$). This breaks the
-exploratory zoo's ``more accurate model, larger gap'' pattern (Sec.~\ref{sec:confirm}): Wayformer's accuracy is
-comparable to AutoBot's confirmatory model, yet its nuScenes gap is far smaller. A second, unregistered difference: on the \emph{same} nuScenes target, agent-level
-certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
+``more accurate model, larger gap'' pattern (Sec.~\ref{sec:confirm}): Wayformer is about as accurate as AutoBot's
+confirmatory model, yet its nuScenes gap is far smaller. A second, unregistered difference: on the \emph{same} nuScenes
+target, agent-level certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
 \agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer (\agentCorWfForty\% at $m=40$,
-\agentCorWfThreeHundred\% at $m=300$), on identically structured scenes (same mean \nsAgentsMean\ agents/scene). The difference
-tracks the size of the underlying miscalibration: the source threshold misses \rSrcAutobot\% of AutoBot's
-evaluation agents against only \rSrcWayformer\% of Wayformer's, so the same scene clustering has more room to hurt
-a method that was already more wrong. Scene size alone therefore does not predict agent-level failure.
+\agentCorWfThreeHundred\% at $m=300$), on identical scenes. The difference tracks the size of the miscalibration: the source threshold misses
+\rSrcAutobot\% of AutoBot's evaluation agents against \rSrcWayformer\% of Wayformer's, so scene clustering has more room
+to hurt a method that was already more wrong. Scene size alone does not predict agent-level failure.
 
 \subsection{Exploratory models}\label{sec:expl}
 Three reduced-budget AV2 models and one reduced-budget nuScenes model (Table~\ref{tab:models}) were analysed before

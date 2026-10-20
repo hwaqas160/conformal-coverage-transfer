@@ -161,3 +161,21 @@ def macros_wf_seed() -> str:
     put("wfSeedWmOne", f"{100 * b['gap_waymo']:.1f}"); put("wfSeedWmZero", f"{100 * a['gap_waymo']:.1f}")
     put("wfSeedAde", f"{b['val_minADE6_last']:.3f}")
     return "\n".join(L) + "\n"
+
+
+def macros_methodsAB() -> str:
+    """Addendum K: worst-domain (A) and manoeuvre-conditional (B) calibration, six cells."""
+    p = R / "rev1/methodsAB.json"
+    if not p.exists():
+        return ""
+    d = _j(p); cells = d["cells"]
+    wm = [c["A_worst_domain"]["gap_pts"] for c in cells if c["target"] == "Waymo"]
+    easy = [c["A_worst_domain"]["gap_pts"] for c in cells if c["target"] != "Waymo"]
+    red = [100 * c["B_mondrian"]["gap_reduction_fraction"] for c in cells]
+    L = []
+    put = lambda k, v: L.append("\\newcommand{\\%s}{%s}" % (k, v))
+    put("abAok", str(d["A_cells_succeeding"])); put("abBok", str(d["B_cells_succeeding"]))
+    put("abWmGapMin", f"{min(wm):.0f}"); put("abWmGapMax", f"{max(wm):.0f}")
+    put("abEasyOverMax", f"{-min(easy):.0f}")
+    put("abBRedMed", f"{np.median(red):.0f}")
+    return "\n".join(L) + "\n"
