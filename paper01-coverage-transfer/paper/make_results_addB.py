@@ -23,7 +23,9 @@ ALL = EXPLORATORY + CONFIRMATORY
 
 
 def _tex(m: str) -> str:
-    return m.replace("_", r"\_")
+    import sys as _s; _s.path.insert(0, str(Path(__file__).resolve().parent))
+    from model_names import paper_name
+    return paper_name(m)
 
 
 def _status(m: str) -> str:

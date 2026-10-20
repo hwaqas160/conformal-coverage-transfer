@@ -7,8 +7,8 @@ validation split is divided by a fixed salted hash into a calibration half and a
 scenarios carry \wmAgentsPerScenario\ agents on average and are split by scenario (\wmNScenariosCalAvW\ calibration, \wmNScenariosAvW\ test).
 \paragraph{Forecasters} AutoBot-Ego \cite{girgis2022autobots} with $K=6$ modes. The \emph{confirmatory} models were trained
 after the hypotheses about them were registered, with UniTraj's recipe (effective batch 128, learning rate
-$7.5\times10^{-4}$ halved at epochs 10--50): \textbf{av2\_gpu\_full} on the full 183k-scene AV2 training set and
-\textbf{ns\_gpu\_full} on the full nuScenes training split. Each had to reach validation minADE\textsubscript{6} within
+$7.5\times10^{-4}$ halved at epochs 10--50): \textbf{AB-AV2-s0} on the full 183k-scene AV2 training set and
+\textbf{AB-NS-s0} on the full nuScenes training split. (Names read architecture--data--run: AB AutoBot, WF Wayformer; s0, s1 training seeds; r1--r3 reduced budget.) Each had to reach validation minADE\textsubscript{6} within
 15\% of UniTraj's published value \cite{feng2024unitraj}; their final checkpoints reach \minADESixConf\ (gate 0.98, reference 0.85) and
 \minADESixConfRev\ (gate 1.39, reference 1.21). The final model is the last checkpoint, fixed in advance. A second
 architecture, Wayformer \cite{nayakanti2023wayformer}, was trained forward-only under the same accuracy gate and effective batch size, with its own learning rate and 27-epoch schedule

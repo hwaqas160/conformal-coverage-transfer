@@ -18,6 +18,9 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from model_names import paper_name  # noqa: E402
 
 try:
     from scipy.stats import spearmanr
@@ -205,9 +208,6 @@ def main():
     fin_p = ROOT / "results" / "rev1" / "final_minade.json"
     fin = json.loads(fin_p.read_text()) if fin_p.exists() else {}
     CONF_SET = {CONF_MODEL, CONF_REVERSE_MODEL, "av2_gpu_full_seed1", "av2_wayformer", "av2_wayformer_seed1"}
-    ARCH = {"av2_wayformer": "WF", "av2_wayformer_seed1": "WF"}
-    LABEL = {"av2_gpu_full_seed1": r"av2\_gpu\_full s1", "av2_wayformer": r"av2\_wayformer",
-             "av2_wayformer_seed1": r"av2\_wayformer s1"}
     rows = []
     order = ([(CONF_MODEL, "forward"), ("av2_gpu_full_seed1", "forward"), ("av2_wayformer", "forward"),
               ("av2_wayformer_seed1", "forward"), (CONF_REVERSE_MODEL, "reverse")]
@@ -230,9 +230,8 @@ def main():
         h3 = dj["H3_label_free"]
         acc = fin.get(m) if m in CONF_SET else best_minade6(m)
         rows.append({
-            "model": LABEL.get(m, m.replace("_", r"\_")),
+            "model": paper_name(m),
             "status": "conf." if m in CONF_SET else "expl.",
-            "arch": ARCH.get(m, "AB"),
             "direction": "fwd" if direction == "forward" else "rev",
             "acc": f"{acc:.3f}" if acc is not None else "--",
             "gap_raw": pct(raw_tgt["gap"]),
@@ -246,23 +245,23 @@ def main():
         r"\begin{table}[t]",
         r"\centering",
         (r"\caption{Every model analysed ($\alpha=0.10$, points; target nuScenes for fwd., AV2 for rev.). conf.: "
-         r"gated full-data model (s1: second training seed); expl.: reduced-budget model used to design the analyses. "
-         r"AB/WF: AutoBot/Wayformer. acc.: validation minADE$_6$ of the analysed checkpoint. CI: 95\%%, resampled by "
+         r"gated full-data model; expl.: reduced-budget model used to design the analyses (naming: Sec.~IV-B). "
+         r"acc.: validation minADE$_6$ of the analysed checkpoint. CI: 95\%%, resampled by "
          r"scene. norm.: gap of the normalised score. rew.: change in gap from covariate reweighting (positive = worse). "
          r"audit: reject probability / false-alarm \%% at $k=%s$ labels.}" % K_HEADLINE),
         r"\label{tab:models}",
         r"\setlength{\tabcolsep}{2.5pt}",
-        r"\resizebox{\columnwidth}{!}{\begin{tabular}{llllrrcrrc}",
+        r"\resizebox{\columnwidth}{!}{\begin{tabular}{lllrrcrrc}",
         r"\toprule",
-        r"Model & St. & Arch. & Dir. & acc. & gap & 95\% CI & norm. & rew. & audit \\",
+        r"Model & St. & Dir. & acc. & gap & 95\% CI & norm. & rew. & audit \\",
         r"\midrule",
     ]
     for r in rows:
         tex.append(__import__('re').sub(r'(?<![\w$\\-])-(\d)', r'$-$\1',
-                   f"{r['model']} & {r['status']} & {r['arch']} & {r['direction']} & {r['acc']} & {r['gap_raw']} & "
+                   f"{r['model']} & {r['status']} & {r['direction']} & {r['acc']} & {r['gap_raw']} & "
                    f"{r['ci']} & {r['gap_norm']} & {r['rew']} & {r['power']}/{r['fa']} \\\\"))
     if not rows:
-        tex.append(r"\multicolumn{10}{c}{no results yet} \\")
+        tex.append(r"\multicolumn{9}{c}{no results yet} \\")
     tex += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
     (OUT / "table_models.tex").write_text("\n".join(tex) + "\n")
 
@@ -275,7 +274,7 @@ def main():
                 continue
             h3 = dj["H3_label_free"]
             rw_rows.append({
-                "model": m.replace("_", r"\_"), "direction": direction,
+                "model": paper_name(m), "direction": direction,
                 "uncorr": pct(h3["uncorrected"]["gap"]), "weighted": pct(h3["weighted"]["gap"]),
                 "removal": f"{100*dj['H2']['label_free_reweighting_removal_fraction']:.0f}",
             })
