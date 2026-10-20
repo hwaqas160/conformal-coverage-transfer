@@ -357,9 +357,11 @@ def write_all():
         from make_results_text import macros_text
         macro_text += macros_text()
         from make_results_text import macros_wf_seed, macros_audit_fix, macros_methodsAB
+        from make_results_L import macros_L
         macro_text += macros_wf_seed()
         macro_text += macros_audit_fix()
         macro_text += macros_methodsAB()
+        macro_text += macros_L()
         (OUT / "numbers_rev1.tex").write_text(macro_text)
     return sorted(scene)
 

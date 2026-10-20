@@ -5,7 +5,8 @@ new labels, on another. Using forecasters calibrated on Argoverse 2 or nuScenes 
 Waymo Open Motion, we measure coverage losses of 6 to 25 percentage points at a 90 percent nominal level, on two
 architectures whose accuracy is within 15 percent of published values; the third dataset was registered in advance.
 Reweighting by an estimated covariate-shift likelihood ratio makes the loss worse, and we show that no label-free method
-can repair an unrestricted shift. The loss concentrates in turns, most of all in left-hand traffic. Measured input
+can repair an unrestricted shift, although the drift of the forecaster's own predicted scale tracks the loss. The loss
+concentrates in turns, most of all in left-hand traffic. Measured input
 differences between the datasets explain about a quarter of it for one architecture and, with caveats, all of it for
 the other. Labelled target data can repair it, but labels arrive one scene at a time, and a guarantee that treats agents
 as independent can fail when scenes contain many agents. A scene-level Learn-then-Test rule with a betting test restores

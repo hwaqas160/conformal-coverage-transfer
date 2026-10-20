@@ -37,7 +37,7 @@ are outstanding, and neither is a formatting requirement.
 ## Content already in the manuscript
 - [x] ORCID for the corresponding author (0009-0003-4461-8005), in the author footnote
 - [x] Declaration of Generative-AI use in manuscript preparation (required disclosure, kept, not removed)
-- [x] Abstract: one paragraph, 236 words (within the 150-250 word requirement), no citations/equations/tables
+- [x] Abstract: one paragraph, 248 words (within the 150-250 word requirement), no citations/equations/tables
 - [x] 4 keywords (guideline: 3-4)
 - [x] Reproducibility statement (code, pre-registration, experiment log)
 

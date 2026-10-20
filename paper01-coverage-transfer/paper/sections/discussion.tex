@@ -7,16 +7,12 @@ directly on practice.
 \emph{Label-free fixes are not safe defaults.} Reweighting made every forward gap larger, and the normalised score
 helped in one direction and hurt in the other.
 
-\emph{Auditing is cheap; repairing is not.} About $10^3$ labelled target agents suffice to detect a gap of this size
-with high power. Repairing it with a guarantee that holds under scene clustering needs whole labelled scenes: roughly
-\recMMin\ to \recMMax\ of them before the region is both finite and within twice the oracle area. Below that budget the
-correct behaviour is to abstain, which the scene-level rule does. Fig.~\ref{fig:protocol} summarises the resulting
-procedure.
+\emph{Auditing is cheap; repairing is not.} About $10^3$ labelled agents detect a gap of this size; repairing it with a
+guarantee that survives scene clustering needs roughly \recMMin\ to \recMMax\ whole scenes before the region is finite and
+within twice the oracle area, and below that budget the right behaviour is to abstain (Fig.~\ref{fig:protocol}).
 
-\emph{A learned predictor of scene loss does not replace labels.} A classifier trained on source labels to predict
-whether an agent is missed explained at most \predBestRsq\% of the variance of the true per-scene miss fraction on any
-target, and also little on held-out source scenes, so it cannot stand in for target labels, for example as a control
-variate that shortens the label budget.
+\emph{A learned predictor of scene loss does not replace labels.} A source-trained classifier of whether an agent is
+missed explained at most \predBestRsq\% of the variance of the per-scene miss fraction on any target.
 
 \emph{The unit of labelling matters, and scene size alone does not predict the failure.} On nuScenes (mean
 \nsAgentsMean\ agents per scene), agent-level guarantees were nearly useless for AutoBot (\agentCorNsForty\% valid at
@@ -80,7 +76,7 @@ seed artefact. The reverse direction and the injection and recalibration analyse
 A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets, two
 architectures and six model--target transfers, a forecaster calibrated at 90\% covered between \covTgtMin\ and
 \covTgtMax\% of target futures, every time under-covering, never over. Reweighting does not repair the loss and no
-label-free method can in general. More accurate AutoBot models lost more coverage across training budgets, but not
+label-free method can in general, though the drift of the forecaster's predicted scale warns of it. More accurate AutoBot models lost more coverage across training budgets, but not
 between seeds or across architectures, so accuracy is not a general predictor of how badly the guarantee fails.
 Labelled target data can repair it: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value
 restores the guarantee at every budget we tested, on both architectures, and gives a usable region from about

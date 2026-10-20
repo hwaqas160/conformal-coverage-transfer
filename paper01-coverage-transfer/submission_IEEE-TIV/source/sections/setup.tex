@@ -19,10 +19,9 @@ minADE\textsubscript{6} \explAdeMin--\explAdeMax) were used to design the analys
 (same-domain control), nuScenes and Waymo. Reverse: calibrate on the nuScenes calibration scenes; test on nuScenes test
 scenes, AV2 and Waymo. Label-budget experiments draw $k$ agents or $m$ whole scenes 1000 times from a labelled pool that
 is disjoint from the evaluation pool. Intervals on multi-agent targets resample scenes.
-\paragraph{Registration and disclosures} Hypotheses, thresholds and success criteria were written to a
-version-controlled, timestamped log (released with the code) before the runs they govern; later analyses were added as dated
-addenda, and outcomes are appended, never edited. Defects found during the work are disclosed there: a cache collision,
-per-agent instead of per-scene nuScenes splits, and truncated scenario identifiers, none affecting a reported number; and
-a betting $p$-value whose bet cap allowed negative capital. That last defect was found in an internal review before
-submission, a regression test that detects it was added, and every repair result in Sec.~\ref{sec:repair-scene} was
-recomputed with the corrected code under a design registered before the rerun.
+\paragraph{Registration and disclosures} Hypotheses, thresholds and success criteria were written to a version-controlled,
+timestamped log (released with the code) before the runs they govern; later analyses are dated addenda and outcomes are
+appended, never edited. Disclosed defects: a cache collision, per-agent nuScenes splits and truncated scenario
+identifiers (none affecting a reported number), and a betting $p$-value whose bet cap allowed negative capital, found in
+an internal review, covered by a regression test, and followed by recomputing every repair result in
+Sec.~\ref{sec:repair-scene} under a design registered beforehand.

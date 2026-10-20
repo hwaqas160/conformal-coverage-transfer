@@ -75,15 +75,11 @@ controlled is the scene-averaged miscoverage of a fixed, source-calibrated forec
 losses need care \cite{alvarez2024pvalue}; our own implementation needed a corrected bet cap (Sec.~\ref{sec:scene}).
 
 \paragraph{Risk control and betting, more generally}
-Risk control has been extended to tradeoffs among several risks \cite{nguyen2024tradeoffs}, to semi-supervised tuning
-with unlabelled data \cite{einbinder2024semisupervised}, and to post-processing a decision policy only where a risk
-budget is violated \cite{joshi2026riskcontrolled}.
-E-values have been proposed as a more flexible alternative to the $p$-values we use, enabling anytime-valid and
-fixed-size variants \cite{gauthier2025evalues}; weighted-conformal test martingales extend betting-style monitoring
-to post-deployment shift detection that distinguishes benign covariate shift from harmful shift
-\cite{prinster2025watch}; and \cite{vovk2025randomness} revisits the randomness-theoretic foundations that justify
-treating a conformal predictor as valid for i.i.d., not only exchangeable, data. We use the same betting machinery
-for a different purpose: certifying a \emph{scene-averaged} risk from whole labelled scenes.
+Risk control has been extended to tradeoffs among several risks \cite{nguyen2024tradeoffs}, semi-supervised tuning
+\cite{einbinder2024semisupervised} and post-processing of decision policies \cite{joshi2026riskcontrolled}; e-values give
+anytime-valid alternatives to the $p$-values we use \cite{gauthier2025evalues}, and weighted martingales monitor
+post-deployment shift \cite{prinster2025watch}. We use betting for a different purpose: certifying a \emph{scene-averaged}
+risk from whole labelled scenes.
 
 \paragraph{Cross-dataset trajectory prediction and perception under domain shift}
 UniTraj harmonises several driving datasets and reports that accuracy drops when models are transferred between them
