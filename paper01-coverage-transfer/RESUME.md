@@ -210,3 +210,12 @@ latest; cited in the paper). Content: git archive of paper01-coverage-transfer a
 compiled PDFs, no raw datasets. Changelog (betting bet-cap defect fix, Wayformer, seeds, outcome logs through Addendum J) is in
 the record description. v1 (10.5281/zenodo.23054413) remains public and unchangeable. The access token was supplied in chat,
 used as a process environment variable only, and is stored nowhere.
+
+## MULTI-DATASET TRAINING (Addendum L4): memory-thrash incident and fix (2026-10-21)
+`multi_av2ns` (AV2 + nuScenes AutoBot, run/train_multi_av2ns.cmd, watchdog P01_TrainMultiAv2ns) slowed from 1.9 it/s to 0.11 it/s over
+epochs 2-4 and then stalled at epoch 4 step 3549. Cause: 21 DataLoader processes (10 persistent train workers + 10 persistent val workers +
+main), each committing ~4.3 GB with the multi-dataset file lists = 81 GB commit; system commit reached 165 of 191 GB, working sets were trimmed to
+a few MB and the processes paged against the pagefile on drive F: (HDD; disk queue 60+). Killing the tree needed ~2 min (processes blocked in I/O);
+afterwards commit fell to 83 GB and the F: queue to 2. Fix: validation loader now 2 non-persistent workers; training num_workers 10 -> 6
+(src/train_autobot.py, run/train_multi_av2ns.cmd). Resume from last.ckpt (09:20 on 2026-10-21, epoch 4, <=200 steps lost). The recipe, data and
+seed are unchanged, so Addendum L4 is unaffected; this is an engineering fix. Not a result.

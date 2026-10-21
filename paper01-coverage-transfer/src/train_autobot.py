@@ -123,9 +123,13 @@ def main():
     train_loader = DataLoader(train_set, batch_size=a.batch, shuffle=True, drop_last=True,
                               num_workers=a.num_workers, collate_fn=train_set.collate_fn,
                               persistent_workers=a.num_workers > 0, pin_memory=pin)
+    # Validation runs only every val_every epochs on a small subset: a few NON-persistent workers.  Persistent val workers
+    # at the same count as the train loader doubled the process count (each worker commits ~4 GB with the multi-dataset
+    # file lists) and drove the machine into paging on the slow drive (see RESUME.md, 2026-10-21).
+    val_workers = min(2, a.num_workers)
     val_loader = DataLoader(val_set, batch_size=cfg.method.eval_batch_size, shuffle=False,
-                            num_workers=a.num_workers, collate_fn=val_set.collate_fn,
-                            persistent_workers=a.num_workers > 0, pin_memory=pin)
+                            num_workers=val_workers, collate_fn=val_set.collate_fn,
+                            persistent_workers=False, pin_memory=pin)
 
     ckpt_cb = ModelCheckpoint(
         monitor="val/minADE6", mode="min", save_top_k=2, save_last=True,
