@@ -219,3 +219,9 @@ a few MB and the processes paged against the pagefile on drive F: (HDD; disk que
 afterwards commit fell to 83 GB and the F: queue to 2. Fix: validation loader now 2 non-persistent workers; training num_workers 10 -> 6
 (src/train_autobot.py, run/train_multi_av2ns.cmd). Resume from last.ckpt (09:20 on 2026-10-21, epoch 4, <=200 steps lost). The recipe, data and
 seed are unchanged, so Addendum L4 is unaffected; this is an engineering fix. Not a result.
+
+## MULTI-DATASET TRAINING: system hang and second resume (2026-10-21)
+Training ran at ~2.1 it/s with 6 workers to epoch 9 (step ~6426, 15:36), then the whole machine hung (Windows logged an unclean shutdown; force
+restart at ~15:58). Committed memory had risen from 85 to 118 GB, free RAM 6.8 GB just before. last.ckpt (15:07) survived; ~1 h of work lost.
+Precaution on a shared machine: training workers 6 -> 4 (val loader stays 2 non-persistent). Note for future restarts: the .cmd wrapper
+(cmd.exe) respawns python after ~2 min, so to stop the job kill the cmd.exe wrapper tree, not only python; disable the scheduled task first.
