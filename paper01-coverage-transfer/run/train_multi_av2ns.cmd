@@ -24,7 +24,7 @@ set LOG=F:\CLAUDE\AI1\paper01-coverage-transfer\results\train_%ID%.log
 set CKPTDIR=F:\CLAUDE\AI1\paper01-coverage-transfer\results\ckpts\%ID%
 if exist "%CKPTDIR%\DONE" exit /b 0
 if exist "%CKPTDIR%\FAILED" exit /b 1
-set ARGS=src\train_autobot.py --train_db "data\av2_scenarionet\train" "data\nuscenes_scenarionet\train_c00" "data\nuscenes_scenarionet\train_c01" "data\nuscenes_scenarionet\train_c02" "data\nuscenes_scenarionet\train_c03" "data\nuscenes_scenarionet\train_c04" "data\nuscenes_scenarionet\train_c05" "data\nuscenes_scenarionet\train_c06" "data\nuscenes_scenarionet\train_c07" "data\nuscenes_scenarionet\train_c08" "data\nuscenes_scenarionet\train_c09" "data\nuscenes_scenarionet\train_c10" --val_db "data\av2_splits\val\train" --exp %ID% --epochs 60 --batch 32 --accum 4 --lr 7.5e-4 --lr_sched 10 20 30 40 50 --val_every 2 --val_subset 2000 --num_workers 10 --seed 0 --device cuda --cache_root "C:\p01_cache"
+set ARGS=src\train_autobot.py --train_db "data\av2_scenarionet\train" "data\nuscenes_scenarionet\train_c00" "data\nuscenes_scenarionet\train_c01" "data\nuscenes_scenarionet\train_c02" "data\nuscenes_scenarionet\train_c03" "data\nuscenes_scenarionet\train_c04" "data\nuscenes_scenarionet\train_c05" "data\nuscenes_scenarionet\train_c06" "data\nuscenes_scenarionet\train_c07" "data\nuscenes_scenarionet\train_c08" "data\nuscenes_scenarionet\train_c09" "data\nuscenes_scenarionet\train_c10" --val_db "data\av2_splits\val\train" --exp %ID% --epochs 60 --batch 32 --accum 4 --lr 7.5e-4 --lr_sched 10 20 30 40 50 --val_every 2 --val_subset 2000 --num_workers 6 --seed 0 --device cuda --cache_root "C:\p01_cache"
 set /a ATTEMPT=0
 :RETRY
 set /a ATTEMPT+=1
