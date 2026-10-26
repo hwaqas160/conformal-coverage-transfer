@@ -3,5 +3,7 @@
  "av2_gpu_full_seed1": 0.8697240948677063,
  "ns_gpu_full": 1.3356646299362183,
  "av2_wayformer": 0.9319451451301575,
- "av2_wayformer_seed1": 0.940811812877655
+ "av2_wayformer_seed1": 0.940811812877655,
+ "multi_av2ns_av2": 0.8895573616027832,
+ "multi_av2ns_ns": 1.0944600105285645
 }

@@ -1341,3 +1341,18 @@ Gap <= 2 points and area <= 2x in 2 of 6 cells (av2_gpu_full -> nuScenes and -> 
 calibration (Addendum K): the leave-one-dataset-out radius overshoots for the easy targets (nuScenes, AV2: radius 0.27-0.51 against an oracle
 0.02-0.17, giving 1.6-3.9x areas) and undershoots for Waymo from weak-shift sources (0.08 against 0.44 for Wayformer). The estimated radius is
 only as good as how much the held-out dataset resembles the other sources, which cannot be known without target labels (Proposition 1).
+
+## Outcome log: Addendum L4 -- multi-dataset training (AB-AV2+NS-s0), 2026-10-26 -- FAILS the registered criterion, with a real improvement
+Training: 60 epochs, last checkpoint, finished 2026-10-24 08:02 (restarted several times from last.ckpt for a machine-memory problem, see
+RESUME.md; recipe, data and seed unchanged). Accuracy gate on the FINAL checkpoint (src/validate_ckpt.py): AV2 val minADE6 0.890 (gate <= 0.98),
+nuScenes val 1.094 (gate <= 1.39) -- both PASS; nuScenes accuracy is better than AB-NS-s0's 1.336 (the AV2 data helps).
+Results (results/rev1/L4_multi.json, src/analyze_L4.py; Waymo is never seen in training or calibration). Gap = 90 - coverage, points:
+| calibration | Waymo gap (95% CI) | AV2 test | nuScenes test |
+| pooled AV2+nuScenes (registered primary) | **+15.2** (14.5 to 15.9) | -2.1 | +1.5 |
+| worst-domain (reported, not the criterion) | +11.0 (10.3 to 11.7) | -4.3 | -0.7 |
+| single-dataset references (same procedure) | AB-AV2-s0 +23.4, AB-NS-s0 +18.3 | | |
+Registered criterion (pooled): Waymo gap <= 11.7 AND |in-domain gaps| <= 3 on AV2 and nuScenes. Waymo 15.2 > 11.7 -> **FAIL** (in-domain gaps pass: 2.1 and 1.5).
+The prediction in Addendum L (Waymo gap roughly 15-20, not half) was correct. Multi-dataset training cuts the Waymo gap by about a third
+(23.4 -> 15.2, relative to AB-AV2-s0) without hurting in-domain coverage, but Waymo is still under-covered by 15 points.
+Post hoc, NOT a success claim: the worst-domain threshold brings the Waymo gap to 11.0 (inside 11.7) but over-covers AV2 by 4.3 points, which breaks the
+registered in-domain condition |gap| <= 3; success is judged on the registered primary calibration only. One seed; Waymo only.
