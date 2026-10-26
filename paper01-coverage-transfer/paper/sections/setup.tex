@@ -18,7 +18,10 @@ minADE\textsubscript{6} \explAdeMin--\explAdeMax) were used to design the analys
 \paragraph{Protocol} $\alpha=\delta=0.1$. Forward: calibrate on the AV2 calibration half; test on the AV2 test half
 (same-domain control), nuScenes and Waymo. Reverse: calibrate on the nuScenes calibration scenes; test on nuScenes test
 scenes, AV2 and Waymo. Label-budget experiments draw $k$ agents or $m$ whole scenes 1000 times from a labelled pool that
-is disjoint from the evaluation pool. Intervals on multi-agent targets resample scenes.
+is disjoint from the evaluation pool. Intervals on multi-agent targets resample scenes. The source threshold is split conformal on all calibration scores: for AV2 each
+independent clip contributes one score, so its guarantee applies as stated; for nuScenes and Waymo the scores of agents in one
+scene are dependent, so the formal guarantee does not cover the source threshold itself, and we verify it empirically on a
+held-out same-domain split ($\gapSameConf$ and $\gapSameConfRev$ points) and measure every loss against that control.
 \paragraph{Registration and disclosures} Hypotheses, thresholds and success criteria were written to a version-controlled,
 timestamped log (released with the code) before the runs they govern; later analyses are dated addenda and outcomes are
 appended, never edited. Disclosed defects: a cache collision, per-agent nuScenes splits and truncated scenario

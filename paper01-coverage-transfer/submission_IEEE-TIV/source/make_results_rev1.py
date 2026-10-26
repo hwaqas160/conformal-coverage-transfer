@@ -90,6 +90,7 @@ def _wilson(p, n, z=1.96):
 def fig_traj():
     """Coverage by manoeuvre, confirmatory AV2 model: AV2 test vs nuScenes Boston vs nuScenes Singapore."""
     import numpy as np
+    ci = _j(R / "rev1/fig3_cluster_ci.json")["by_type"]    # scene-cluster bootstrap intervals (src/analyze_fig3_ci.py)
     b = _j(R / "addB/av2_gpu_full__forward.json")["B11_driving_side"]["by_type"]
     types = [t for t in ("stationary", "straight", "straight_right", "straight_left", "right_turn", "left_turn")
              if t in b and b[t].get("boston") is not None and b[t].get("singapore") is not None]
@@ -100,8 +101,9 @@ def fig_traj():
     series = [("same", "n_same", "AV2 test", "#0072B2", ""), ("boston", "n_boston", "nuSc. Boston", "#E69F00", "...."),
               ("singapore", "n_singapore", "nuSc. Singapore", "#D55E00", "////")]
     for j, (k, nk, lab, col, hatch) in enumerate(series):
-        v = np.array([b[t][k] for t in types]); n = np.array([b[t][nk] for t in types])
-        lo, hi = zip(*[_wilson(p, nn) for p, nn in zip(v, n)])
+        v = np.array([b[t][k] for t in types])
+        lo, hi = zip(*[ci[t][k]["ci"] for t in types])
+        assert all(abs(ci[t][k]["cov"] - b[t][k]) < 1e-9 for t in types), "interval file and figure data disagree"
         ax.bar(x + (j - 1) * w, v, w, color=col, edgecolor="0.15", lw=0.4, hatch=hatch, label=lab,
                yerr=[v - np.array(lo), np.array(hi) - v], error_kw={"elinewidth": 0.5, "capsize": 1.2})
     ax.axhline(1 - ALPHA, color="k", lw=0.6, ls="--")

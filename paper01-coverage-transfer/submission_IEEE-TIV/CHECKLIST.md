@@ -42,7 +42,7 @@ are outstanding, and neither is a formatting requirement.
 - [x] Reproducibility statement (code, pre-registration, experiment log)
 
 ## Length
-Regular paper suggested length: 10 pages. Current build: 10 pages including 68 references, all three biographies,
+Regular paper suggested length: 10 pages. Current build: 10 pages including 65 references, all three biographies,
 5 figures (pipeline diagram, coverage-gap bars, manoeuvre coverage, scene-level repair, audit-then-repair protocol) and 2 tables. No overlength charge.
 
 ## What's in this folder
@@ -57,3 +57,17 @@ project root, then re-copy `paper/main.pdf` and `paper/source/*` into this folde
 ## Not included here (do this on the TIV Author Portal at submission time)
 - ZIP compression of the requested items (the portal asks for a ZIP of PDF + source)
 - The format self-check checkboxes above, ticked on the portal's own form
+
+
+## Status as of 2026-10-26 (final audit; sources: ieee-itss.org/pub/t-iv/ and /author/, IEEE AI-content guidelines)
+- COMPLIANT: IEEEtran journal template, 10 pages (limit for regular papers; +6 allowed at submission), abstract 248 words (150-250),
+  4 keywords, short biographies for all three authors at the end, ASCII-only author information, conflict-of-interest statement,
+  institutional e-mails (all three confirmed active by the corresponding author), single-blind review (no anonymisation needed).
+- AI-use disclosure: Acknowledgment names the system, the sections and the level of use (IEEE policy). Corresponding author must confirm it is accurate.
+- Author photos: requested with the FINAL files after acceptance, not at initial submission (one is already embedded; harmless).
+- Not required by T-IV: cover letter (only a response letter for resubmissions), dates on the manuscript.
+- References: all arXiv ids and DOIs verified against arxiv.org / Crossref; 5 conference papers checked against proceedings pages
+  (paper/refs_status.md, results/rev1/refs_check.json).
+- Open before submission: (1) archive the final code as a new Zenodo version (needs a token; the cited concept DOI should resolve to
+  the version that matches the paper); (2) name or confirm-unnamed the two employers in the author footnote; (3) tick the format
+  self-check boxes in the TIV Author Portal and enter ORCID/corresponding author there.

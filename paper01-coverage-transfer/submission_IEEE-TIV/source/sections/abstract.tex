@@ -7,7 +7,7 @@ architectures whose accuracy is within 15 percent of published values; the third
 Reweighting by an estimated covariate-shift likelihood ratio makes the loss worse, and we show that no label-free method
 can repair an unrestricted shift, although the drift of the forecaster's own predicted scale tracks the loss. The loss
 concentrates in turns, most of all in left-hand traffic. Measured input
-differences between the datasets explain about a quarter of it for one architecture and, with caveats, all of it for
+differences between the datasets reproduce about a quarter of it for one architecture and, with caveats, all of it for
 the other. Labelled target data can repair it, but labels arrive one scene at a time, and a guarantee that treats agents
 as independent can fail when scenes contain many agents. A scene-level Learn-then-Test rule with a betting test restores
 the guarantee at every labelling budget we tested, and returns a region within twice the oracle size from about 150 to

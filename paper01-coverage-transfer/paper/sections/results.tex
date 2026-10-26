@@ -46,14 +46,14 @@ AV2 to nuScenes, against \dropStraightConf\ points for straight driving (Fig.~\r
 Singapore, where traffic drives on the left: the right-turn drop there exceeds the drop in Boston by
 \sgExtraRightConf\ points. What AV2-trained forecasters miss is the wide, across-traffic turn of left-hand traffic.
 For AutoBot, injecting one measured input difference at a time into AV2 test inputs reproduces only part of the gap
-(Table~\ref{tab:inject}): a 2\,Hz history explains \injHzConf\%, lane dropout \injMapConf\%, and both together about
+(Table~\ref{tab:inject}): a 2\,Hz history reproduces \injHzConf\%, lane dropout \injMapConf\%, and both together about
 a quarter. Excess annotation noise and map-point density were measured and found absent.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{generated/fig_traj_conf.pdf}
 \caption{Coverage by manoeuvre for the confirmatory AV2 model ($\alpha=0.1$, dashed = nominal). nuScenes is split
-by city; Singapore drives on the left. lane ch.\ R/L: lane change to the right/left. Error bars: agent-level Wilson 95\% intervals.}
+by city; Singapore drives on the left. lane ch.\ R/L: lane change to the right/left. Error bars: 95\% scene-cluster bootstrap intervals (whole scenes resampled).}
 \label{fig:traj}
 \end{figure}
 
@@ -112,8 +112,8 @@ The largest per-dataset threshold would give \lFourWd\ points on Waymo but over-
 We report three label budgets: to \emph{detect} the failure, to \emph{certify} a repaired threshold, and for that
 threshold to be \emph{useful}. The second does not imply the third.
 
-\emph{Audit (detect).} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
-with probability \auditPowerConfMin\ on every confirmatory run (Table~\ref{tab:models}). On a shift-free split it rejects in
+\emph{Audit (detect).} With $k=1000$ labelled target agents (above the $\approx\auditBudgetK$ that Eq.~\eqref{eq:budget} requires for a 3.4-point shortfall,
+close to the smallest gap in Table~\ref{tab:models}) the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap with probability \auditPowerConfMin\ on every confirmatory run (Table~\ref{tab:models}). On a shift-free split it rejects in
 \auditFaAllMin--\auditFaAllMax\% of label draws, because it tests the realised source threshold, which under-covers its own
 test split by up to \auditSameGapMax\ points when its calibration draw is unlucky; a deployment that only wants to flag shifts
 should test $1-\alpha-\epsilon$ for a small margin $\epsilon$.
@@ -175,16 +175,15 @@ AV2$\to$nuScenes (area \recAreaWfNs$\times$) and $m=\recMWfWm$ for AV2$\to$Waymo
 
 The input-level explanation does not replicate in size. Injecting the 2\,Hz history costs Wayformer \wfInjHz\ points
 (\wfInjHzFrac\% of its nuScenes gap), and with lane dropout \wfInjBoth\ points (\wfInjBothFrac\%), against about a quarter
-for AutoBot. Wayformer reads velocity, acceleration and heading channels that AutoBot ignores; for an injected
-trajectory we reconstruct them by finite difference, which gives a piecewise-constant velocity that real 2\,Hz sensing
-would not have and may overstate the effect. Lane dropout, which needs no reconstruction, still accounts for \wfInjMapFrac\%.
+for AutoBot. Wayformer reads velocity, acceleration and heading channels that AutoBot ignores and that we reconstruct by finite
+difference for an injected trajectory, which may overstate the effect; lane dropout, which needs no reconstruction, still gives
+\wfInjMapFrac\%.
 
-Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's confirmatory
-\gapRawConf\ points, while its AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$). This breaks the
-``more accurate model, larger gap'' pattern (Sec.~\ref{sec:confirm}): Wayformer is about as accurate as AutoBot's
-confirmatory model, yet its nuScenes gap is far smaller. A second, unregistered difference: on the \emph{same} nuScenes
-target, agent-level certify-or-recalibrate was almost useless for AutoBot (\agentCorNsForty\% valid at $m=40$,
-\agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer (\agentCorWfForty\% at $m=40$,
-\agentCorWfThreeHundred\% at $m=300$), on identical scenes. The difference tracks the size of the miscalibration: the source threshold misses
-\rSrcAutobot\% of AutoBot's evaluation agents against \rSrcWayformer\% of Wayformer's, so scene clustering has more room
-to hurt a method that was already more wrong. Scene size alone does not predict agent-level failure.
+Magnitude does not replicate. Wayformer's AV2$\to$nuScenes gap is under half of AutoBot's \gapRawConf\ points, while its
+AV2$\to$Waymo gap ($+\wmGapWf$) is close to AutoBot's ($+\wmGapAvW$), so the ``more accurate model, larger gap'' pattern
+(Sec.~\ref{sec:confirm}) breaks: Wayformer is about as accurate yet has a far smaller nuScenes gap. A second, unregistered
+difference: on the \emph{same} nuScenes target, agent-level certify-or-recalibrate was almost useless for AutoBot
+(\agentCorNsForty\% valid at $m=40$, \agentCorNsThreeHundred\% at $m=300$) but mostly valid for Wayformer
+(\agentCorWfForty\%, \agentCorWfThreeHundred\%) on identical scenes. It tracks the size of the miscalibration: the source
+threshold misses \rSrcAutobot\% of AutoBot's evaluation agents against \rSrcWayformer\% of Wayformer's, so scene clustering has
+more room to hurt a method that was already more wrong. Scene size alone does not predict agent-level failure.

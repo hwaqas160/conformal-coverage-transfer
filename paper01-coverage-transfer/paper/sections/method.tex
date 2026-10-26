@@ -60,7 +60,7 @@ $H_{q}:R(q)>\alpha$ from the $m$ per-scene losses, test candidates from the larg
 Hoeffding--Bentkus \cite{bates2021rcps}, and a betting $p$-value \cite{waudbysmith2024betting}: with predictable, variance-adaptive bets
 $\lambda_i\in[0,\tfrac{1}{2(1-\alpha)}]$ the capital $K=\prod_i\big(1+\lambda_i(\alpha-L_i)\big)$ stays non-negative for $L_i\in[0,1]$ and is a
 supermartingale under $\mathbb E L\ge\alpha$, so $p=\min(1,1/\max_tK_t)$ is valid by Ville's inequality. The cap matters: any bet above
-$1/(1-\alpha)$ lets a single fully missed scene drive the capital negative, which voids the argument.
+$1/(1-\alpha)$ lets a single fully missed scene drive the capital negative, which voids the argument; a regression test in the released code (\texttt{test\_betting\_validity}) checks that the capital never goes negative, that validity holds exactly at the boundary null, and that the old cap is detected.
 \begin{proposition}[Scene-level guarantee]\label{prop:scene}
 If the $m$ labelled scenes are exchangeable draws from the target scene population, and each $p$-value is valid for its null, the returned
 threshold satisfies $\Pr[R(\hat q)\le\alpha]\ge 1-\delta$.
@@ -70,6 +70,10 @@ $R$ is non-increasing, so along the descending grid the false nulls ($R(q_i)\le\
 The procedure returns a threshold with $R>\alpha$ only if it rejects $H_{q_{i_0}}$ (fixed-sequence testing stops at the first non-rejection), which has probability $\le\delta/2$
 because the grid does not depend on the labels; the certification branch fails with probability $\le\delta/2$. A union bound gives $\delta$.
 \end{proof}
+\begin{remark}
+Proposition~\ref{prop:scene} bounds the scene-averaged miscoverage $R$, not the agent-weighted miss rate, which can differ when scenes
+have unequal agent counts; the latter is reported only descriptively (Sec.~VI).
+\end{remark}
 
 \subsection{Online baseline}
 Adaptive conformal inference (ACI) \cite{gibbs2021adaptive} updates the working level $\alpha_{t+1}=\alpha_t+\gamma(\alpha-\mathrm{err}_t)$ after every revealed label, keeping the source

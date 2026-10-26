@@ -1,0 +1,403 @@
+{
+ "arxiv": [
+  {
+   "key": "rahaman2026shift",
+   "id": "2602.12616",
+   "bib_title": "When Environments Shift: Safe Planning with Generative Priors and Robust Conformal Prediction",
+   "arxiv_title": "When Environments Shift: Safe Planning with Generative Priors and Robust Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "tumu2026adaptnc",
+   "id": "2602.01629",
+   "bib_title": "AdaptNC : Adaptive Nonconformity Scores for Conformal Prediction under Distribution Shift",
+   "arxiv_title": "AdaptNC: Adaptive Nonconformity Scores for Conformal Prediction under Distribution Shift",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "shu2025scenario",
+   "id": "2512.05682",
+   "bib_title": "Scenario-aware Uncertainty Quantification for Trajectory Prediction with Statistical Guarantees",
+   "arxiv_title": "Scenario-aware Uncertainty Quantification for Trajectory Prediction with Statistical Guarantees",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "binny2025moved",
+   "id": "2511.11567",
+   "bib_title": "Who Moved My Distribution? C onformal Prediction for Interactive Multi-Agent Systems",
+   "arxiv_title": "Who Moved My Distribution? Conformal Prediction for Interactive Multi-Agent Systems",
+   "overlap": 0.9,
+   "status": "OK"
+  },
+  {
+   "key": "lee2023hierarchical",
+   "id": "2306.06342",
+   "bib_title": "Distribution-Free Inference with Hierarchical Data",
+   "arxiv_title": "Distribution-free inference with hierarchical data",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "doula2025safepath",
+   "id": "2505.09427",
+   "bib_title": "SafePath : Conformal Prediction for Safe LLM -Based Autonomous Navigation",
+   "arxiv_title": "SafePath: Conformal Prediction for Safe LLM-Based Autonomous Navigation",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "chen2024v2i",
+   "id": "2408.00374",
+   "bib_title": "Conformal Trajectory Prediction with Multi-View Data Integration in Cooperative Driving",
+   "arxiv_title": "Conformal Trajectory Prediction with Multi-View Data Integration in Cooperative Driving",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "mei2024perceive",
+   "id": "2403.08185",
+   "bib_title": "Perceive With Confidence: Statistical Safety Assurances for Navigation with Learning-Based Perception",
+   "arxiv_title": "Perceive With Confidence: Statistical Safety Assurances for Navigation with Learning-Based Perception",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "pouria2026gaussian",
+   "id": "2603.10407",
+   "bib_title": "Rethinking G aussian Trajectory Predictors: Calibrated Uncertainty for Safe Planning",
+   "arxiv_title": "Rethinking Gaussian Trajectory Predictors: Calibrated Uncertainty for Safe Planning",
+   "overlap": 0.89,
+   "status": "OK"
+  },
+  {
+   "key": "feldman2025robotsafety",
+   "id": "2501.04823",
+   "bib_title": "Learning Robot Safety from Sparse Human Feedback using Conformal Prediction",
+   "arxiv_title": "Learning Robot Safety from Sparse Human Feedback using Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "mirzaeedodangeh2025interactive",
+   "id": "2511.10586",
+   "bib_title": "Safe Planning in Interactive Environments via Iterative Policy Updates and Adversarially Robust Conformal Prediction",
+   "arxiv_title": "Safe Planning in Interactive Environments via Iterative Policy Updates and Adversarially Robust Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "lindemann2024formal",
+   "id": "2409.00536",
+   "bib_title": "Formal Verification and Control with Conformal Prediction",
+   "arxiv_title": "Formal Verification and Control with Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "abdelmadjid2025survey",
+   "id": "2503.03262",
+   "bib_title": "Trajectory Prediction for Autonomous Driving: Progress, Limitations, and Future Directions",
+   "arxiv_title": "Trajectory Prediction for Autonomous Driving: Progress, Limitations, and Future Directions",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "zhou2026modeseq",
+   "id": "2605.24037",
+   "bib_title": "Mode-as-Sequence: Translating Multimodal Motion Prediction into Unified Sequential Mode Modeling",
+   "arxiv_title": "Mode-as-Sequence: Translating Multimodal Motion Prediction into Unified Sequential Mode Modeling",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "demmler2025dataset",
+   "id": "2507.05098",
+   "bib_title": "Beyond Features: How Dataset Design Influences Multi-Agent Trajectory Prediction Performance",
+   "arxiv_title": "Beyond Features: How Dataset Design Influences Multi-Agent Trajectory Prediction Performance",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "aolaritei2025levy",
+   "id": "2502.14105",
+   "bib_title": "Conformal Prediction under L \\'e vy-- P rokhorov Distribution Shifts: Robustness to Local and Global Perturbations",
+   "arxiv_title": "Conformal Prediction under Levy-Prokhorov Distribution Shifts: Robustness to Local and Global Perturbations",
+   "overlap": 0.91,
+   "status": "OK"
+  },
+  {
+   "key": "xu2025wasserstein",
+   "id": "2501.13430",
+   "bib_title": "Wasserstein-Regularized Conformal Prediction under General Distribution Shift",
+   "arxiv_title": "Wasserstein-regularized Conformal Prediction under General Distribution Shift",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "liu2026certify",
+   "id": "2608.10893",
+   "bib_title": "Certify or Refuse: A Cross-Model Map for Selective Risk Control with Coverage Floors under Covariate Shift",
+   "arxiv_title": "Certify or Refuse: A Cross-Model Map for Selective Risk Control with Coverage Floors under Covariate Shift",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "alvarez2024pvalue",
+   "id": "2405.08975",
+   "bib_title": "A Distribution-Free Valid $p$-Value for Finite Samples of Bounded Random Variables",
+   "arxiv_title": "A distribution-free valid p-value for finite samples of bounded random variables",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "nguyen2024tradeoffs",
+   "id": "2403.19605",
+   "bib_title": "Data-Adaptive Tradeoffs among Multiple Risks in Distribution-Free Prediction",
+   "arxiv_title": "Data-Adaptive Tradeoffs among Multiple Risks in Distribution-Free Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "einbinder2024semisupervised",
+   "id": "2412.11174",
+   "bib_title": "Semi-Supervised Risk Control via Prediction-Powered Inference",
+   "arxiv_title": "Semi-Supervised Risk Control via Prediction-Powered Inference",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "joshi2026riskcontrolled",
+   "id": "2605.06479",
+   "bib_title": "Risk-Controlled Post-Processing of Decision Policies",
+   "arxiv_title": "Risk-Controlled Post-Processing of Decision Policies",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "mortier2025hierarchicalclass",
+   "id": "2501.19038",
+   "bib_title": "Conformal Prediction in Hierarchical Classification with Constrained Representation Complexity",
+   "arxiv_title": "Conformal Prediction in Hierarchical Classification with Constrained Representation Complexity",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "principato2024hierarchicaldata",
+   "id": "2411.13479",
+   "bib_title": "Conformal Prediction for Hierarchical Data",
+   "arxiv_title": "Conformal Prediction for Hierarchical Data",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "bhattacharyya2024groupweighted",
+   "id": "2401.17452",
+   "bib_title": "Group-Weighted Conformal Prediction",
+   "arxiv_title": "Group-Weighted Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "mallick2026generalizedhcp",
+   "id": "2608.15500",
+   "bib_title": "Generalized Hierarchical Conformal Prediction",
+   "arxiv_title": "Generalized Hierarchical Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "gauthier2025evalues",
+   "id": "2503.13050",
+   "bib_title": "$E$-Values Expand the Scope of Conformal Prediction",
+   "arxiv_title": "E-Values Expand the Scope of Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "vovk2025randomness",
+   "id": "2501.11689",
+   "bib_title": "Randomness, Exchangeability, and Conformal Prediction",
+   "arxiv_title": "Randomness, exchangeability, and conformal prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "liu2026portfolio",
+   "id": "2602.03168",
+   "bib_title": "Online Conformal Prediction via Universal Portfolio Algorithms",
+   "arxiv_title": "Online Conformal Prediction via Universal Portfolio Algorithms",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "liang2026optimalregret",
+   "id": "2602.16537",
+   "bib_title": "Optimal Training-Conditional Regret for Online Conformal Prediction",
+   "arxiv_title": "Optimal training-conditional regret for online conformal prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "min2026unifiedtheory",
+   "id": "2605.11602",
+   "bib_title": "A Unified Theory of Conditional Coverage in Conformal Prediction with Applications",
+   "arxiv_title": "A Unified Theory of Conditional Coverage in Conformal Prediction with Applications",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "zhou2026cpassessment",
+   "id": "2603.27189",
+   "bib_title": "Conformal Prediction Assessment: A Framework for Conditional Coverage Evaluation and Selection",
+   "arxiv_title": "Conformal Prediction Assessment: A Framework for Conditional Coverage Evaluation and Selection",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "braun2025diagnostics",
+   "id": "2512.11779",
+   "bib_title": "Conditional Coverage Diagnostics for Conformal Prediction",
+   "arxiv_title": "Conditional Coverage Diagnostics for Conformal Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "bairaktari2025kandinsky",
+   "id": "2502.17264",
+   "bib_title": "K andinsky Conformal Prediction: Beyond Class- and Covariate-Conditional Coverage",
+   "arxiv_title": "Kandinsky Conformal Prediction: Beyond Class- and Covariate-Conditional Coverage",
+   "overlap": 0.89,
+   "status": "OK"
+  },
+  {
+   "key": "zhong2026fairness",
+   "id": "2608.04254",
+   "bib_title": "When Is a Conformal Guarantee Fair? Auditing Silent Subgroup Under-Coverage in A lzheimer's Disease Longitudinal Prediction",
+   "arxiv_title": "When Is a Conformal Guarantee Fair? Auditing Silent Subgroup Under-Coverage in Alzheimer's Disease Longitudinal Prediction",
+   "overlap": 0.92,
+   "status": "OK"
+  },
+  {
+   "key": "luo2025conditionalrisk",
+   "id": "2504.07611",
+   "bib_title": "Conditional Conformal Risk Adaptation",
+   "arxiv_title": "Conditional Conformal Risk Adaptation",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "manchingal2025uncertaintyaware",
+   "id": "2510.22680",
+   "bib_title": "Uncertainty-Aware Autonomous Vehicles: Predicting the Road Ahead",
+   "arxiv_title": "Uncertainty-Aware Autonomous Vehicles: Predicting the Road Ahead",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "wang2025collaborative",
+   "id": "2504.12696",
+   "bib_title": "Collaborative Perception Datasets for Autonomous Driving: A Review",
+   "arxiv_title": "Collaborative Perception Datasets for Autonomous Driving: A Review",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "qiu2026crosssensor",
+   "id": "2606.11573",
+   "bib_title": "Understanding Cross-Sensor Feature Variations for Generalizable 3D Perception",
+   "arxiv_title": "Understanding Cross-Sensor Feature Variations for Generalizable 3D Perception",
+   "overlap": 1.0,
+   "status": "OK"
+  }
+ ],
+ "doi": [
+  {
+   "key": "feng2024unitraj",
+   "doi": "10.1007/978-3-031-73254-6_7",
+   "bib_title": "UniTraj : A Unified Framework for Scalable Vehicle Trajectory Prediction",
+   "crossref_title": "UniTraj: A Unified Framework for\u00a0Scalable Vehicle Trajectory Prediction",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "angelopoulos2025ltt",
+   "doi": "10.1214/24-AOAS1998",
+   "bib_title": "Learn Then Test: Calibrating Predictive Algorithms to Achieve Risk Control",
+   "crossref_title": "Learn then test: Calibrating predictive algorithms to achieve risk control",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "waudbysmith2024betting",
+   "doi": "10.1093/jrsssb/qkad009",
+   "bib_title": "Estimating Means of Bounded Random Variables by Betting",
+   "crossref_title": "Estimating means of bounded random variables by betting",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "bates2021rcps",
+   "doi": "10.1145/3478535",
+   "bib_title": "Distribution-Free, Risk-Controlling Prediction Sets",
+   "crossref_title": "Distribution-free, Risk-controlling Prediction Sets",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "clopper1934confidence",
+   "doi": "10.1093/biomet/26.4.404",
+   "bib_title": "The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial",
+   "crossref_title": "THE USE OF CONFIDENCE OR FIDUCIAL LIMITS ILLUSTRATED IN THE CASE OF THE BINOMIAL",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "dunn2023hierarchical",
+   "doi": "10.1080/01621459.2022.2060112",
+   "bib_title": "Distribution-Free Prediction Sets for Two-Layer Hierarchical Models",
+   "crossref_title": "Distribution-Free Prediction Sets for Two-Layer Hierarchical Models",
+   "overlap": 1.0,
+   "status": "OK"
+  },
+  {
+   "key": "cauchois2024robust",
+   "doi": "10.1080/01621459.2023.2298037",
+   "bib_title": "Robust Validation: Confident Predictions Even When Distributions Shift",
+   "crossref_title": "Robust Validation: Confident Predictions Even When Distributions Shift",
+   "overlap": 1.0,
+   "status": "OK"
+  }
+ ],
+ "no_identifier": [
+  "vovk2005algorithmic",
+  "angelopoulos2023gentle",
+  "tibshirani2019covariate",
+  "barber2023beyond",
+  "gibbs2021adaptive",
+  "angelopoulos2023pid",
+  "lei2018distribution",
+  "ovadia2019can",
+  "huang2025cuqds",
+  "sun2024copula",
+  "girgis2022autobots",
+  "wilson2021argoverse2",
+  "caesar2020nuscenes",
+  "li2023scenarionet",
+  "lindemann2023safe",
+  "vovk2012conditional",
+  "bian2023training",
+  "ettinger2021waymo",
+  "yao2025crowdnav",
+  "binny2026stable",
+  "song2025unimotion",
+  "correia2025nonexchangeable",
+  "prinster2025watch",
+  "jun2026retrospective",
+  "wu2025visuallocalization",
+  "kong2025largead",
+  "nayakanti2023wayformer"
+ ]
+}

@@ -21,7 +21,7 @@ try {
 }
 
 Write-Output "== 3/3 status =="
-$undefined = $log | Select-String -Pattern "Undefined control|Citation.*undefined|Reference.*undefined"
+$undefined = $log | Select-String -Pattern "Undefined control|Citation.*undefined|Reference.*undefined|^! |Missing \$ inserted|Overfull .hbox \([0-9]{2,}"
 if ($undefined) { Write-Output "COMPILE PROBLEMS:"; $undefined | ForEach-Object { Write-Output "  $_" } }
 else { Write-Output "compiled clean, no undefined refs/citations" }
 

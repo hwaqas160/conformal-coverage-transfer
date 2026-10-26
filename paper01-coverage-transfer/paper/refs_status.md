@@ -118,3 +118,12 @@ details against the camera-ready at proofing time if the paper is still cited th
 |---|---|---|
 | nayakanti2023wayformer | V 2026-10-07 | Read directly from the primary source's own bibliography while verifying feng2024unitraj's Table 15 (arXiv:2403.15098, PDF p.17, ref [35]): title/authors/venue/pages/year transcribed from that page, not from memory. |
 - cauchois2024robust: verified 2026-10-19 (search result: arXiv:2008.04267; JASA 119(548):3033-3044, DOI 10.1080/01621459.2023.2298037; authors Cauchois, Gupta, Ali, Duchi).
+
+## Full reference audit (2026-10-26, src/verify_refs.py + web checks)
+- 39 of 39 arXiv identifiers resolve on arxiv.org to the title in refs.bib (word overlap >= 0.7). 7 of 7 DOIs resolve on Crossref to the same title.
+- 22 of the 27 entries without identifier match on Crossref by title (year differences are reprint/online-first dates, not errors).
+- The remaining 5 are conference papers not indexed by Crossref and were checked against the publisher/proceedings pages:
+  Ovadia et al., NeurIPS 2019 (papers.nips.cc); Sun & Yu, ICLR 2024 (iclr.cc; the proceedings title says "Prediction", arXiv says "Forecasting");
+  Wilson et al., Argoverse 2, NeurIPS 2021 Datasets and Benchmarks (neurips.cc); Yao et al., CoRL 2025, PMLR 305 (proceedings.mlr.press);
+  Prinster et al., WATCH, ICML 2025, PMLR 267 (proceedings.mlr.press). All consistent with refs.bib.
+- Machine-readable result: results/rev1/refs_check.json.
