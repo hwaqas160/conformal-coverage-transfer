@@ -47,36 +47,31 @@ region, against a nominal 10\%, and the shortfall is concentrated in turns: \mis
 Singapore and \missRightBos\% in Boston, against \missStraightBos\% of straight-driving agents in Boston. The tube is
 \qSrcAvNs\,m wide where \qOracleAvNs\,m is needed; scene-level repair restores \recQAvNs\,m.
 
-\paragraph{Mechanism} Two observations narrow the cause. For AutoBot the measured input differences explain about a
-quarter of the gap, and the loss concentrates in turns under left-hand traffic, which AV2 does not contain; for that
-model both point to a change in the conditional behaviour of road users rather than in the scenes themselves,
-consistent with Proposition~\ref{prop:ident}. This is an interpretation, not a measurement. The turn pattern
-replicates on Wayformer, but the input-level explanation does not: its injected input differences reproduce the whole,
-smaller gap (Sec.~\ref{sec:wf}), so how much of the loss is protocol and how much is behaviour depends on the model.
-Across AutoBot training budgets the more accurate model lost more coverage, but a second training seed already breaks
-this pattern, and so does Wayformer, with accuracy comparable to the confirmatory AutoBot model but under half its
-nuScenes gap. Accuracy is therefore not a general predictor of gap size, only a pattern across training budgets of one
-architecture.
+\paragraph{Mechanism} For AutoBot the measured input differences explain about a quarter of the gap, and the loss concentrates in
+turns under left-hand traffic, which AV2 does not contain; we read this as a change in the conditional behaviour of road
+users rather than in the scenes (an interpretation, consistent with Proposition~\ref{prop:ident}). The turn pattern replicates
+on Wayformer but the input-level explanation does not: its injected differences reproduce the whole, smaller gap
+(Sec.~\ref{sec:wf}), so how much of the loss is protocol and how much behaviour depends on the model. The accuracy--gap
+association across AutoBot training budgets breaks between seeds and across architectures, so accuracy is not a general
+predictor of the gap.
 
-\paragraph{Limitations} (i) Two architectures, one trained in both directions; Wayformer confirms the direction,
-reweighting, turn and repair findings but was only trained forward, so its reverse direction is untested, and its
-injection result rests on reconstructed kinematics. (ii) For AutoBot the measured input differences leave most of the
-gap unexplained, and unmeasured causes cannot be ruled out. (iii) Coverage is marginal over agents or scenes, not
-conditional on a scenario; the manoeuvre breakdown is a diagnostic, not a guarantee. (iv) Proposition~\ref{prop:ident}
-covers scale shifts only. (v) The repair budget is measured on three datasets and may differ on others; the registered
-evaluation design (disjoint pools, exact evaluation) should be reused rather than the numbers. (vi) Seeds: a second
-training seed of the confirmatory AutoBot model gave an AV2$\to$nuScenes loss of \seedGapOne\ points (95\% interval
-\seedCiLo--\seedCiHi) against \seedGapZero\ (\seedZeroCiLo--\seedZeroCiHi) for the first, meeting our registered
-criterion (same sign, within a factor of two); the intervals overlap, but seed-to-seed variation is as large as the
-sampling uncertainty of a single run. A second Wayformer seed (accuracy \wfSeedAde) gave \wfSeedGapOne\ points on
-nuScenes against \wfSeedGapZero\ and \wfSeedWmOne\ against \wfSeedWmZero\ on Waymo, so its smaller nuScenes gap is not a
-seed artefact. The reverse direction and the injection and recalibration analyses were not re-seeded.
+\paragraph{Limitations} (i) Two architectures; Wayformer was only trained forward and its injection result rests on
+reconstructed kinematics. (ii) For AutoBot the measured input differences leave most of the gap unexplained. (iii) Coverage is
+marginal over agents or scenes, not conditional on a scenario; the manoeuvre breakdown is a diagnostic. (iv)
+Proposition~\ref{prop:ident} covers scale shifts only. (v) The repair budget is measured on three datasets and may differ on
+others; reuse the registered design, not the numbers. (vi) Seeds: a second AutoBot seed gave an AV2$\to$nuScenes loss of
+\seedGapOne\ points (95\% interval \seedCiLo--\seedCiHi) against \seedGapZero\ (\seedZeroCiLo--\seedZeroCiHi), meeting our
+registered criterion (same sign, within a factor of two); seed-to-seed variation is as large as one run's sampling
+uncertainty. A second Wayformer seed (accuracy \wfSeedAde) gave \wfSeedGapOne\ points on nuScenes against \wfSeedGapZero\ and
+\wfSeedWmOne\ against \wfSeedWmZero\ on Waymo, so its smaller nuScenes gap is not a seed artefact. The reverse direction,
+the injections, recalibration and the multi-dataset model were not re-seeded.
 
 \section{Conclusion}
 A conformal guarantee for trajectory prediction does not transfer across driving datasets. On three datasets, two
 architectures and six model--target transfers, a forecaster calibrated at 90\% covered between \covTgtMin\ and
 \covTgtMax\% of target futures, every time under-covering, never over. Reweighting does not repair the loss and no
-label-free method can in general, though the drift of the forecaster's predicted scale warns of it. More accurate AutoBot models lost more coverage across training budgets, but not
+label-free method can in general, though the drift of the forecaster's predicted scale warns of it, and training on
+two datasets cuts the loss on a third by about a third without removing it. More accurate AutoBot models lost more coverage across training budgets, but not
 between seeds or across architectures, so accuracy is not a general predictor of how badly the guarantee fails.
 Labelled target data can repair it: a scene-level Learn-then-Test rule with a correctly capped betting $p$-value
 restores the guarantee at every budget we tested, on both architectures, and gives a usable region from about

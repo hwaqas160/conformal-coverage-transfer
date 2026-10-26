@@ -86,23 +86,27 @@ out-of-domain cases under-cover, by \scGapMin\ to \scGapMax\ points. No score is
 AutoBot's AV2$\to$Waymo loss from \scRegWmAb\ to \scNormWmAb\ points but raises its AV2$\to$nuScenes loss from \scRegNsAb\
 to \scNormNsAb.
 
-Two further label-free constructions, registered before running, also fail. \emph{Worst-domain calibration} (the largest
-threshold over the other labelled datasets) meets its bar (gap $\le2$ points at $\le2\times$ the oracle area) in only
-\abAok\ of six held-out cells: it over-covers the easier targets by up to \abEasyOverMax\ points and under-covers Waymo,
-the hardest dataset, by \abWmGapMin--\abWmGapMax\ points. \emph{Manoeuvre-conditional calibration}, with groups from history
-only, closes a median of \abBRedMed\% of the gap (bar met in \abBok\ of six). A restricted shift class helps only if the
-target belongs to it (Proposition~\ref{prop:ident}). Robust conformal prediction over an $f$-divergence ball
-\cite{cauchois2024robust}, with its radius estimated leave-one-dataset-out, behaves the same way: it meets the bar in
-\robOk\ of six cells, over-covering the easier targets by up to \robOverMax\ points and under-covering Waymo by up to
-\robUnderMax.
+Further label-free constructions, registered before running, also fail. \emph{Worst-domain calibration} (the largest threshold
+over the other labelled datasets) meets its bar (gap $\le2$ points at $\le2\times$ the oracle area) in only \abAok\ of six
+held-out cells, over-covering easier targets by up to \abEasyOverMax\ points and under-covering Waymo, the hardest dataset, by
+\abWmGapMin--\abWmGapMax. \emph{Manoeuvre-conditional calibration}, with groups from history only, closes a median of \abBRedMed\%
+of the gap (bar met in \abBok\ of six). Robust conformal prediction \cite{cauchois2024robust} with a leave-one-dataset-out
+radius meets the bar in \robOk\ of six, over-covering by up to \robOverMax\ points and under-covering Waymo by up to \robUnderMax.
+A restricted shift class helps only if the target belongs to it (Proposition~\ref{prop:ident}).
 
-One label-free signal does track the loss. The drift of the forecaster's own predicted scale (the log ratio $S$ of its median
+One label-free signal does track the loss: the drift of the forecaster's own predicted scale (log ratio $S$ of its median
 predicted Laplace scale on the target to that on the source calibration split) correlates with the coverage gap at Spearman
 $\rho=\monRho$ over \monN\ model--target pairs ($\monRhoShift$ over the \monNShift\ shifted ones), and the Kolmogorov--Smirnov
-distance of the two scale distributions at $\monKS$, against $\le\monitorRhoMax$ for the domain classifier. Read this with care:
-the pairs are not independent (shared models and targets); within nuScenes alone the KS distance ranks the models at
-$\rho=\monWithinKS$ (post hoc); and it is blind to the nuScenes$\to$AV2 shift, which loses \monBlindGap\ points while the
-KS distance (\monBlindKS) stays within the same-domain range (up to \monSameKSMax). It is a warning signal, not a guarantee.
+distance of the two scale distributions at $\monKS$, against $\le\monitorRhoMax$ for the domain classifier. The pairs are not
+independent (shared models and targets), within nuScenes alone the KS distance ranks the models at $\rho=\monWithinKS$ (post
+hoc), and it is blind to the nuScenes$\to$AV2 shift, which loses \monBlindGap\ points while the KS distance (\monBlindKS) stays
+within the same-domain range (up to \monSameKSMax). It is a warning signal, not a guarantee.
+
+Training on more data helps but does not close the gap. \textbf{AB-AV2+NS-s0}, trained on AV2 and nuScenes and calibrated on both,
+loses \lFourWm\ points (interval \lFourWmLo--\lFourWmHi) on Waymo, which it never saw, against \lFourRefAv\ for AB-AV2-s0
+($-\lFourCut$\%) and \lFourRefNs\ for AB-NS-s0, with in-domain gaps of \lFourAv\ and \lFourNs\ points; it misses our registered
+bar of \lFourBar\ points. Its nuScenes accuracy improves (\lFourAdeNs\ against \minADESixConfRev) and AV2 accuracy is \lFourAdeAv.
+The largest per-dataset threshold would give \lFourWd\ points on Waymo but over-covers AV2 by \lFourWdAv, failing the in-domain condition.
 
 \subsection{Q4: How many labels to audit and to repair?}\label{sec:repair-scene}
 We report three label budgets: to \emph{detect} the failure, to \emph{certify} a repaired threshold, and for that

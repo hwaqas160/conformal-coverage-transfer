@@ -48,6 +48,22 @@ def macros_L() -> str:
         put("monAucKS", f"{g['auc_flag_gap_gt3_all_pairs']['KS']:.2f}")
         put("monMAE", f"{g['loo_model_linear_MAE_pts']:.1f}")
 
+    p = R / "L4_multi.json"
+    if p.exists():
+        m4 = _j(p)
+        pool, wd = m4["multi"]["pooled"], m4["multi"]["worst_domain"]
+        ref = m4["single_dataset_references_waymo"]
+        fin = _j(R / "final_minade.json")
+        put("lFourWm", f"{pool['waymo']['gap_pts']:.1f}")
+        put("lFourWmLo", f"{100 * (0.9 - pool['waymo']['ci'][1]):.1f}")
+        put("lFourWmHi", f"{100 * (0.9 - pool['waymo']['ci'][0]):.1f}")
+        put("lFourRefAv", f"{ref['AB-AV2-s0']['gap_pts']:.1f}"); put("lFourRefNs", f"{ref['AB-NS-s0']['gap_pts']:.1f}")
+        put("lFourAv", f"{abs(pool['av2_in_domain']['gap_pts']):.1f}"); put("lFourNs", f"{abs(pool['ns_in_domain']['gap_pts']):.1f}")
+        put("lFourWd", f"{wd['waymo']['gap_pts']:.1f}"); put("lFourWdAv", f"{abs(wd['av2_in_domain']['gap_pts']):.1f}")
+        put("lFourAdeAv", f"{fin['multi_av2ns_av2']:.3f}"); put("lFourAdeNs", f"{fin['multi_av2ns_ns']:.3f}")
+        put("lFourCut", f"{100 * (1 - pool['waymo']['gap_pts'] / ref['AB-AV2-s0']['gap_pts']):.0f}")
+        put("lFourBar", f"{m4['criteria']['waymo_bar_pts']:.1f}")
+
     p = R / "L3_robust.json"
     if p.exists():
         r3 = _j(p)
