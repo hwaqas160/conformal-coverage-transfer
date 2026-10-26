@@ -31,7 +31,7 @@ label-free, dataset-to-dataset case that Fig.~\ref{fig:pipeline} illustrates.
 \node[box, right=of q] (tgt) {target data\\(new dataset)};
 \coordinate (mid) at ($(src.west)!0.5!(tgt.east)$);
 \node[audSty, below=8.5mm of mid, anchor=north] (aud) {$k$ labelled agents:\\binomial audit\\detects the gap};
-\node[noneSty, left=2mm of aud] (none) {no labels:\\coverage $<1-\alpha$,\\silently (Q1--Q3)};
+\node[noneSty, left=2mm of aud] (none) {no labels:\\coverage $<1-\alpha$,\\not measurable (Q1--Q3)};
 \node[repSty, right=2mm of aud] (rep) {$m$ labelled scenes:\\scene-level LTT,\\certified $\hat q$ (Q4)};
 \draw[arr, okBlue!70!black] (src) -- (cp); \draw[arr] (cp) -- (q); \draw[arr, okBlue!70!black] (q) -- (tgt);
 \coordinate (j) at ($(aud.north)+(0,2.4mm)$);
@@ -41,7 +41,7 @@ label-free, dataset-to-dataset case that Fig.~\ref{fig:pipeline} illustrates.
 \draw[arr] (rep.north |- j) -- (rep.north);
 \end{tikzpicture}
 \caption{The transfer problem and the paper's questions. A threshold calibrated on one dataset is deployed on another.
-Without labels the coverage loss is invisible; $k$ labelled agents detect it; $m$ labelled scenes repair it.}
+Without labels the coverage loss cannot be measured; $k$ labelled agents detect it; $m$ labelled scenes repair it.}
 \label{fig:pipeline}
 \end{figure}
 

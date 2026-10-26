@@ -114,10 +114,9 @@ threshold to be \emph{useful}. The second does not imply the third.
 
 \emph{Audit (detect).} With $k=1000$ labelled target agents the exact binomial audit (Sec.~\ref{sec:audit}) detects the gap
 with probability \auditPowerConfMin\ on every confirmatory run (Table~\ref{tab:models}). On a shift-free split it rejects in
-\auditFaAllMin--\auditFaAllMax\% of label draws. This is not excess Type-I error: the audit tests the realised source
-threshold, which itself under-covers its own test split by up to \auditSameGapMax\ points when its calibration draw is
-unlucky, and the rejection rate tracks that shortfall. A deployment that only wants to flag shifts should test
-$1-\alpha-\epsilon$ for a small margin $\epsilon$.
+\auditFaAllMin--\auditFaAllMax\% of label draws, because it tests the realised source threshold, which under-covers its own
+test split by up to \auditSameGapMax\ points when its calibration draw is unlucky; a deployment that only wants to flag shifts
+should test $1-\alpha-\epsilon$ for a small margin $\epsilon$.
 
 \emph{Repair with exchangeable labels (certify).} When $k=1000$ agents are labelled at random, certify-or-recalibrate
 (Sec.~\ref{sec:cor}) covers $\ge90\%$ of held-out agents in \corCORMin--\corCORMax\% of label draws, against
@@ -137,8 +136,7 @@ source threshold misses \rSrcNsWm\% of evaluation agents. Agent-level guarantees
 source threshold is badly wrong (Sec.~\ref{sec:wf}).
 
 \emph{Useful.} Validity is not usefulness. With $m\le40$ scenes the scene-level rule abstains in every draw, correctly reporting that
-it cannot certify any finite threshold rather than returning an unsupported one. The abstention rate falls with $m$
-but is not negligible close to the recommended budget: on AV2$\to$nuScenes it is \infAtEightyAvNs\% at $m=80$ and still
+it cannot certify any finite threshold rather than returning an unsupported one. On AV2$\to$nuScenes it abstains in \infAtEightyAvNs\% of draws at $m=80$ and still
 \infAtHundredAvNs\% at $m=100$. It returns a usable region (at most twice the oracle area, abstaining in
 $\le5\%$ of draws) from $m=\recMAvNs$ scenes for AV2$\to$nuScenes, AV2$\to$Waymo and nuScenes$\to$Waymo, and from
 $m=\recMNsAv$ for nuScenes$\to$AV2, whose single-agent scenes carry less information each. At that budget the repaired
@@ -147,8 +145,7 @@ than Hoeffding--Bentkus at large $m$ (\betAreaNsTwoHundred$\times$ vs.\ \hbAreaN
 $m=200$ on AV2$\to$nuScenes). In dataset terms, \recMAvNs\ scenes is more than the \nsNScenes\ scenes of the entire nuScenes
 validation split, so on that target the repair draws on training-split labels, which assumes nuScenes training and
 validation scenes are exchangeable. A deployment that can label fewer scenes should expect the rule to abstain, not to
-return a smaller guaranteed region. Stopping early does not remove this cost: with the betting capital reused at every
-step the same guarantee holds at any stopping time, and stopping once the threshold is stable cuts the median budget to
+return a smaller guaranteed region. Stopping early (the same guarantee holds at any stopping time) cuts the median budget, once the threshold is stable, to
 \lOneStopMin--\lOneStopMax\ scenes (\lOneFracMin--\lOneFracMax\% of the fixed budget, validity at least \lOneValidMin), but the
 regions are then \lOneAreaMin--\lOneAreaMax$\times$ the oracle area, above our $2\times$ bar.
 
