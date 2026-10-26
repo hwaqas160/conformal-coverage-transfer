@@ -64,7 +64,8 @@ project root, then re-copy `paper/main.pdf` and `paper/source/*` into this folde
   4 keywords, short biographies for all three authors at the end, ASCII-only author information, conflict-of-interest statement,
   institutional e-mails (all three confirmed active by the corresponding author), single-blind review (no anonymisation needed).
 - AI-use disclosure: Acknowledgment names the system, the sections and the level of use (IEEE policy). Corresponding author must confirm it is accurate.
-- Author photos: requested with the FINAL files after acceptance, not at initial submission (one is already embedded; harmless).
+- Biographies: REQUIRED at initial submission for regular papers (T-IV author page: "Include a short biography for all authors at the end of the paper (only for Regular and Survey papers)"); all three are included, text only.
+- Author photos: requested only with the FINAL files after acceptance (T-IV page: "Bio-sketches (in IEEE format) and high-resolutions photos of each of the authors"), so none are embedded in the initial manuscript. Hassan's photo stays in source/author_photos/ for the final-files stage; the commented IEEEbiography line in main.tex re-enables it.
 - Not required by T-IV: cover letter (only a response letter for resubmissions), dates on the manuscript.
 - References: all arXiv ids and DOIs verified against arxiv.org / Crossref; 5 conference papers checked against proceedings pages
   (paper/refs_status.md, results/rev1/refs_check.json).
