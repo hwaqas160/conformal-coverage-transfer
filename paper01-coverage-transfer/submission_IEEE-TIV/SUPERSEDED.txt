@@ -1,0 +1,2 @@
+This folder is an earlier working copy. The current initial-submission package is ../T-IV_initial_submission_package/
+(manuscript PDF, source zip, completed checklist, README and AUDIT_REPORT). Upload the files from that folder.

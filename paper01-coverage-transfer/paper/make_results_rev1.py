@@ -29,7 +29,9 @@ PAIRS_WF = [("wayformer_to_nuscenes", r"Wayf.$\to$nuSc."), ("wayformer_to_waymo"
 MACRO_TAG = {"av2_to_nuscenes": "AvNs", "av2_to_waymo": "AvWm", "ns_to_av2": "NsAv", "ns_to_waymo": "NsWm",
             "wayformer_to_nuscenes": "WfNs", "wayformer_to_waymo": "WfWm"}
 
-plt.rcParams.update({"font.size": 7.5, "axes.labelsize": 7.5, "legend.fontsize": 6.5, "xtick.labelsize": 7,
+plt.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42,   # embedded TrueType, not Type 3 (IEEE PDF checks)
+                     "font.family": "sans-serif", "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+                     "font.size": 7.5, "axes.labelsize": 7.5, "legend.fontsize": 6.5, "xtick.labelsize": 7,
                      "ytick.labelsize": 7, "axes.linewidth": 0.6, "lines.linewidth": 1.1})
 
 
