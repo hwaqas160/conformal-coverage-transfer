@@ -12,7 +12,7 @@ The T-IV page states that the checklist "must be included with both new submissi
 | No non-English characters in the author's information | **Done** | Author names, affiliations and e-mails are ASCII only (checked in main.tex). |
 | Detailed response letter (resubmission only) | Not applicable | New submission. |
 | Highlighted revised manuscript (resubmission only) | Not applicable | New submission. |
-| Use the IEEE Template Selector to access the TIV template | **Done** | `\documentclass[lettersize,journal]{IEEEtran}`, unmodified. |
+| Use the IEEE Template Selector to access the TIV template | **Done** | IEEEtran document class with the journal option (lettersize), unmodified. |
 | Font type and size | **Done** | Template defaults (Times, 10 pt); all 30 fonts in the PDF are embedded, none Type 3. |
 | Double-column layout, standard line and paragraph spacing | **Done** | Template defaults; no spacing overrides. |
 | Title and subtitle format | **Done** | Title case; no subtitle. |
