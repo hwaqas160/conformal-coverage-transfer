@@ -5,7 +5,7 @@ committed files; a fresh clone regenerates every generated number and table iden
 (10 pages, no LaTeX errors, text identical to the manuscript PDF).
 
 ## A. Executive verdict: **READY AFTER MINOR FIXES**
-The manuscript meets every T-IV initial-submission requirement that I could verify. Three items remain that only the authors can settle
+The manuscript meets every T-IV initial-submission requirement that I could verify. Two items remain that only the authors can settle
 (section E); none requires new experiments or rewriting. One item could not be verified from the portal (section B, row 24).
 
 ## Sources (fetched 2026-10-26/27)
@@ -23,10 +23,10 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 | 3 | Abstract 150-250 words, one paragraph, no abbreviations, footnotes, references, equations | S1, S2 | PASS | 248 words; none of the excluded items |
 | 4 | Three or four keywords | S1, S2 | PASS | Four index terms |
 | 5 | Author list under title without e-mail or affiliations | S1 | PASS | Names only under the title; affiliations and e-mails in the first-page footnote, as in the IEEE template |
-| 6 | Institutional e-mail of all co-authors | S1 | PASS | NUST, NUST and Kinnaird addresses; corresponding author confirmed all are working and in use |
+| 6 | Institutional e-mail of all co-authors | S1 | PASS | Both addresses are NUST; the corresponding author confirmed both are working and in use |
 | 7 | No non-English characters in author information | S1 | PASS | ASCII only |
-| 8 | Conflict-of-interest disclosure | S1 | PASS (authors must confirm) | Section "Conflict of Interest" |
-| 9 | Short biographies for all authors, at the end (regular papers) | S1, S2 | PASS | Three text-only biographies |
+| 8 | Conflict-of-interest disclosure | S1 | PASS (authors confirmed: no conflict) | Section "Conflict of Interest" |
+| 9 | Short biographies for all authors, at the end (regular papers) | S1, S2 | PASS | Two text-only biographies (supplied by the authors) |
 | 10 | Author photographs | S1 (final files only) | NOT APPLICABLE now | Requested with final files; removed from the initial manuscript |
 | 11 | Dates on the first page | S1, S2 | PASS | T-IV states no requirement; none printed |
 | 12 | Cover letter | S1 | NOT APPLICABLE | Only a response letter is required, and only for resubmissions |
@@ -41,12 +41,12 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 | 21 | Reference identifiers correct | n/a (integrity) | PASS | 39/39 arXiv ids and 7/7 DOIs match; 22 more matched on Crossref; 5 conference papers checked on proceedings pages (`paper/refs_status.md`) |
 | 22 | No placeholders, comments, tracked changes, broken links | n/a | PASS | 0 `\todo`, 0 "[pending]"; PDF title, author and keyword metadata set |
 | 23 | Cross-references and numbers consistent | n/a | PASS | No undefined references; all numbers generated from result files; fresh-clone rebuild identical; abstract and conclusion ranges match the results |
-| 24 | Portal-side fields (ORCID for co-authors, funding, contributions, cover-letter field) | S5 | NEEDS CONFIRMATION | Portal content not readable here; the T-IV pages do not mention ORCID, funding or contribution statements. Only the corresponding author's ORCID (0009-0003-4461-8005) is in the manuscript |
+| 24 | Portal-side fields (ORCID for the co-author, funding, contributions, cover-letter field) | S5 | NEEDS CONFIRMATION | Portal content not readable here; the T-IV pages do not mention ORCID, funding or contribution statements. Only the corresponding author's ORCID (0009-0003-4461-8005) is in the manuscript |
 | 25 | Code archive consistent with the manuscript | n/a (integrity) | **ACTION** | Manuscript cites Zenodo concept DOI 10.5281/zenodo.23054412, which resolves to v2, older than the final manuscript. See D2 |
 
 ## C. Minimal-change log (this audit round)
 **Mandatory for compliance**
-1. Author photograph removed from the initial manuscript (all three biographies text-only): T-IV asks for photos with final files only. `main.tex` biography block; original line kept commented.
+1. Author photograph removed from the initial manuscript (both biographies text-only): T-IV asks for photos with final files only. `main.tex` biography block; original line kept commented.
 2. AI-use disclosure rewritten to the three elements IEEE requires (system, sections, level). `main.tex`, Acknowledgment.
 3. Figure fonts: Type 3 DejaVu replaced by embedded TrueType (Arial, DejaVu for math glyphs); text enlarged from 5-7 pt to 6.3-7.5 pt; "nominal" line moved into the Fig. 2 legend; two-line labels in Fig. 3. `paper/make_results_rev1.py` (data unchanged).
 4. PDF metadata (title, author, keywords) set via hyperref. `main.tex`.
@@ -58,6 +58,8 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 8. Results (Audit): the 750 / 1000 budgets explained. Methods: Remark 2 (scene-averaged risk versus agent-weighted miss rate) and a pointer to the betting regression test.
 9. "explain" changed to "reproduce" for the input-injection results (abstract, results, discussion): injection is an intervention, not a causal decomposition.
 10. Related Work and the Wayformer subsection condensed to stay at 10 pages. No result, number or claim was removed.
+
+**Author list (authors' instruction, 2026-10-27)**: third author (Hina Maryam) removed from the author line, footnotes and biographies; the two biographies were replaced verbatim by the text the authors supplied; running head changed to "Saleem and Saleem"; PDF author metadata updated. Note: the public Zenodo records (v1, v2) still list three creators; a new version is needed to correct them (D2).
 
 **Optional (not done)**: American "organization" in the footnotes against British spelling elsewhere; journal-name abbreviations in references.
 
@@ -76,9 +78,9 @@ the archive from the final commit, publish the new version after your go-ahead, 
 Alternative without a token: remove the archive sentence and cite GitHub only. The token is never written to any file.
 
 ## E. Items only the authors can resolve
-1. **COI:** confirm all three authors have no conflicts of interest. Current wording: "The authors declare no competing financial interests or personal relationships that could have influenced this work."
+1. **COI: confirmed by the authors, no conflict.** Wording in the manuscript: "The authors declare no competing financial interests or personal relationships that could have influenced this work."
 2. **AI-use disclosure:** confirm it is accurate (Claude drafted and revised all sections, wrote and ran the code and experiments; the authors set the research question and scope and directed the work, reviewed and take responsibility).
-3. **Affiliations:** two authors are listed with "a public-sector / private-sector organization in Pakistan"; name the employers or confirm unnamed is intended.
+3. **Affiliations:** employers stay unnamed ("a public-sector / private-sector organization in Pakistan"), consistent with the biographies the authors supplied.
 4. **Funding:** none is stated; add a statement if any support was received.
 5. **Portal:** enter author details so they match page 1; ORCIDs where the portal asks; tick the self-check boxes.
 

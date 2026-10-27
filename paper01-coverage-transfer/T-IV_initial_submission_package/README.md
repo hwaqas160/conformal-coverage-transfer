@@ -1,7 +1,7 @@
 # IEEE T-IV initial-submission package
 
 Paper: *Does the Conformal Guarantee Travel? Measuring, Auditing and Repairing Coverage Loss in Cross-Dataset Trajectory Prediction*
-Authors: Hassan Waqas Saleem (corresponding), Rahat Zeeshan Saleem, Hina Maryam. Paper type: Regular. Built 2026-10-27 from the committed
+Authors: Hassan Waqas Saleem (corresponding), Rahat Zeeshan Saleem. Paper type: Regular. Built 2026-10-27 from the committed
 repository (see AUDIT_REPORT.md for the audit and the open items).
 
 ## What to upload in the TIV Author Portal (https://ieee.atyponrex.com/journal/t-iv)
@@ -16,8 +16,8 @@ author photographs (requested with the final files), a cover letter (the T-IV pa
 a separate title page, a graphical abstract, a copyright form (transferred when final files are submitted).
 
 ## What only you can do
-1. Confirm the two declarations in the manuscript (COI and AI-use) are accurate for **all three** authors.
-2. Decide whether the two employers are named in the author footnote.
+1. Confirm the AI-use declaration in the manuscript is accurate (the conflict-of-interest declaration has been confirmed: no conflict).
+2. Employers stay unnamed ("a public-sector / private-sector organization in Pakistan"), as in the biographies you supplied; say so if that should change.
 3. Enter author details in the portal (names, institutional e-mails, ORCID where the portal asks) so they match the first page.
 4. Tick the format self-check boxes; upload the PDF.
 5. Optional but recommended: archive the final code as a new Zenodo version (the manuscript cites the concept DOI, which currently resolves to an
