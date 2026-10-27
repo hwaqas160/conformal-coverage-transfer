@@ -42,7 +42,7 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 | 22 | No placeholders, comments, tracked changes, broken links | n/a | PASS | 0 `\todo`, 0 "[pending]"; PDF title, author and keyword metadata set |
 | 23 | Cross-references and numbers consistent | n/a | PASS | No undefined references; all numbers generated from result files; fresh-clone rebuild identical; abstract and conclusion ranges match the results |
 | 24 | Portal-side fields (ORCID for the co-author, funding, contributions, cover-letter field) | S5 | NEEDS CONFIRMATION | Portal content not readable here; the T-IV pages do not mention ORCID, funding or contribution statements. Only the corresponding author's ORCID (0009-0003-4461-8005) is in the manuscript |
-| 25 | Code archive consistent with the manuscript | n/a (integrity) | **ACTION** | Manuscript cites Zenodo concept DOI 10.5281/zenodo.23054412, which resolves to v2, older than the final manuscript. See D2 |
+| 25 | Code archive consistent with the manuscript | n/a (integrity) | PASS | Zenodo v3 (10.5281/zenodo.23693027, commit 9a9cf500e7, two creators) is published; the cited concept DOI 10.5281/zenodo.23054412 resolves to it |
 
 ## C. Minimal-change log (this audit round)
 **Mandatory for compliance**
@@ -71,7 +71,7 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 | `02_source/Saleem_ConformalCoverageTransfer_TIV_source.zip` | LaTeX source, test-compiled | No (final files) |
 | `03_checklist/TIV_format_self_check_completed.md` | Evidence for the portal checklist | Checklist yes (ticked in portal) |
 
-**D2. Zenodo / GitHub (not required by T-IV; no DOI deposit is needed for submission).** The manuscript cites the code archive, so the cited record
+**D2. Zenodo / GitHub (not required by T-IV; no DOI deposit is needed for submission). STATUS 2026-10-27: v3 published (10.5281/zenodo.23693027); text below is the plan that was followed.** The manuscript cites the code archive, so the cited record
 should match the paper. Nothing has been published by this package. If you want that: (1) provide a Zenodo token; (2) I confirm the target is the
 existing record 23054412 (new version, public, CC BY 4.0, no raw third-party data, single-blind compatible since authors are named); (3) I build
 the archive from the final commit, publish the new version after your go-ahead, and update the DOI line only if the concept DOI changes.

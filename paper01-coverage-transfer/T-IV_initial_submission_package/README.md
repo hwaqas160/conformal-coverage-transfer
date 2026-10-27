@@ -20,5 +20,5 @@ a separate title page, a graphical abstract, a copyright form (transferred when 
 2. Employers stay unnamed ("a public-sector / private-sector organization in Pakistan"), as in the biographies you supplied; say so if that should change.
 3. Enter author details in the portal (names, institutional e-mails, ORCID where the portal asks) so they match the first page.
 4. Tick the format self-check boxes; upload the PDF.
-5. Optional but recommended: archive the final code as a new Zenodo version (the manuscript cites the concept DOI, which currently resolves to an
-   older version). Steps are in AUDIT_REPORT.md, section D2. Nothing has been published or uploaded by this package.
+5. Code archive: done. Zenodo v3 (10.5281/zenodo.23693027, built from commit 9a9cf500e7) is published; the manuscript's concept DOI
+   10.5281/zenodo.23054412 resolves to it. Nothing else has been uploaded or submitted by this package.

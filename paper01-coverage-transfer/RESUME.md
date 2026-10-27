@@ -225,3 +225,10 @@ Training ran at ~2.1 it/s with 6 workers to epoch 9 (step ~6426, 15:36), then th
 restart at ~15:58). Committed memory had risen from 85 to 118 GB, free RAM 6.8 GB just before. last.ckpt (15:07) survived; ~1 h of work lost.
 Precaution on a shared machine: training workers 6 -> 4 (val loader stays 2 non-persistent). Note for future restarts: the .cmd wrapper
 (cmd.exe) respawns python after ~2 min, so to stop the job kill the cmd.exe wrapper tree, not only python; disable the scheduled task first.
+
+## ZENODO v3 PUBLISHED (2026-10-27)
+New version of the code record: version DOI 10.5281/zenodo.23693027 (v3); concept DOI 10.5281/zenodo.23054412 (cited in the manuscript; resolves
+to v3). Built from git commit 9a9cf500e7 (289 files, 1.83 MB; no compiled manuscript PDF, no raw datasets). Creator list corrected to the two authors
+(Saleem, Hassan Waqas; Saleem, Rahat Zeeshan); title updated to the manuscript title. Two earlier attempts failed with HTTP 504 (Zenodo gateway
+timeouts) before anything was created; the third, resumable script (retries, state checks) completed. v1 (23054413) and v2 (23466500) remain public
+and unchangeable; they list three creators. The access token was supplied in chat, used only as a process environment variable, and is stored nowhere.
