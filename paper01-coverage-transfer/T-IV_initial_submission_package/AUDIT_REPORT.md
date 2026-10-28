@@ -41,7 +41,7 @@ The manuscript meets every T-IV initial-submission requirement that I could veri
 | 21 | Reference identifiers correct | n/a (integrity) | PASS | 39/39 arXiv ids and 7/7 DOIs match; 22 more matched on Crossref; 5 conference papers checked on proceedings pages (`paper/refs_status.md`) |
 | 22 | No placeholders, comments, tracked changes, broken links | n/a | PASS | 0 `\todo`, 0 "[pending]"; PDF title, author and keyword metadata set |
 | 23 | Cross-references and numbers consistent | n/a | PASS | No undefined references; all numbers generated from result files; fresh-clone rebuild identical; abstract and conclusion ranges match the results |
-| 24 | Portal-side fields (ORCID for the co-author, funding, contributions, cover-letter field) | S5 | NEEDS CONFIRMATION | Portal content not readable here; the T-IV pages do not mention ORCID, funding or contribution statements. Only the corresponding author's ORCID (0009-0003-4461-8005) is in the manuscript |
+| 24 | Portal-side fields (ORCID for the co-author, funding, contributions, cover-letter field) | S5 | NEEDS CONFIRMATION | Portal content not readable here; the T-IV pages do not mention ORCID, funding or contribution statements. Both authors' ORCIDs (0009-0003-4461-8005; 0009-0002-7006-386X, checksum-valid) are in the manuscript |
 | 25 | Code archive consistent with the manuscript | n/a (integrity) | PASS | Zenodo v3 (10.5281/zenodo.23693027, commit 9a9cf500e7, two creators) is published; the cited concept DOI 10.5281/zenodo.23054412 resolves to it |
 
 ## C. Minimal-change log (this audit round)
