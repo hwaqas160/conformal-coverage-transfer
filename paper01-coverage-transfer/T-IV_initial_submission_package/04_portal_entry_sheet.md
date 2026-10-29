@@ -13,8 +13,8 @@ A conformal prediction region promises to contain a road user's true future path
 Conformal prediction; trajectory prediction; distribution shift; autonomous driving
 
 **Authors (in this order)**
-1. Hassan Waqas Saleem (corresponding author); e-mail hsaleem.msee20seecs@seecs.edu.pk; ORCID 0009-0003-4461-8005; affiliation as in the manuscript footnote: a public-sector organization in Pakistan (M.S., School of Electrical Engineering and Computer Science, NUST, Islamabad)
-2. Rahat Zeeshan Saleem; e-mail rahat.mscm21nbs@student.nust.edu.pk; ORCID 0009-0002-7006-386X; affiliation as in the manuscript footnote: a private-sector organization in Pakistan (M.S., NUST Business School, NUST, Islamabad)
+1. Hassan Waqas Saleem (corresponding author); e-mail hsaleem.msee20seecs@seecs.edu.pk; ORCID 0009-0003-4461-8005; affiliation as in the manuscript footnote: School of Electrical Engineering and Computer Science, National University of Sciences and Technology (NUST), Islamabad 44000, Pakistan
+2. Rahat Zeeshan Saleem; e-mail rahat.mscm21nbs@student.nust.edu.pk; ORCID 0009-0002-7006-386X; affiliation as in the manuscript footnote: NUST Business School, National University of Sciences and Technology (NUST), Islamabad 44000, Pakistan
 
 **Conflict of interest** (as in the manuscript)
 The authors declare no competing financial interests or personal relationships that could have influenced this work.

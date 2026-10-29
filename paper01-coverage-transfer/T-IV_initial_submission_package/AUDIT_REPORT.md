@@ -80,7 +80,7 @@ Alternative without a token: remove the archive sentence and cite GitHub only. T
 ## E. Items only the authors can resolve
 1. **COI: confirmed by the authors, no conflict.** Wording in the manuscript: "The authors declare no competing financial interests or personal relationships that could have influenced this work."
 2. **AI-use disclosure (as written by the authors, with the drafting of all text added because it is a fact):** Claude assisted with code development, debugging, data analysis, experiment execution, and the drafting and editing of the manuscript text (all sections); the authors directed the research, reviewed the outputs and take full responsibility. Please confirm it is accurate.
-3. **Affiliations:** employers stay unnamed ("a public-sector / private-sector organization in Pakistan"), consistent with the biographies the authors supplied.
+3. **Affiliations:** first-page footnotes now give the NUST affiliations (SEECS; NUST Business School) and the no-funding sentence, as the authors supplied. The biographies (also author-supplied) say the authors are currently with a public-sector / private-sector organization; that wording is accepted as supplied, but the footnote affiliation and the biography employer differ, which an editor may query.
 4. **Funding: confirmed by the authors, none.** The Acknowledgment now begins "This research received no external funding."
 5. **Portal:** enter author details so they match page 1; ORCIDs where the portal asks; tick the self-check boxes.
 
