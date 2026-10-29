@@ -1,6 +1,6 @@
 """Build the T-IV portal upload folder for Paper 1 (layout follows the real portal's 'Upload Manuscript' page).
 
-Portal slots seen in the authors' screenshots (2026-10-29): Main Manuscript (required; MS Word or LaTeX, LaTeX bundled as one archive),
+Portal slots seen in the authors' screenshots (2026-10-29): Main Document - LaTeX (required; .tex/.zip/.tar.gz) AND Main Document - PDF (required),
 Conflict of Interest (required; tick 'None of the authors have a conflict' when none, no file), optional: Supplementary Material, Tracked
 Changes, Image, Previously Published, Cover letter / Comments, LaTeX Supplementary File.
 The LaTeX archive is test-compiled twice in clean folders: with BibTeX, and WITHOUT BibTeX using the shipped main.bbl."""
@@ -52,8 +52,12 @@ def main():
     compile_tree(stage, bibtex=True)
     assert (stage / "main.bbl").exists(), "bbl not produced"
     # 2. zip: sources + class + bst + main.bbl (no PDF, no aux files)
-    fresh(OUT)
-    d1 = OUT / "1_MAIN_MANUSCRIPT_required"; d1.mkdir()
+    OUT.mkdir(exist_ok=True)
+    d1 = OUT / "1_MAIN_DOCUMENT_LaTeX_required"
+    shutil.rmtree(d1, ignore_errors=True); d1.mkdir()
+    d2 = OUT / "2_MAIN_DOCUMENT_PDF_required"
+    shutil.rmtree(d2, ignore_errors=True); d2.mkdir()
+    shutil.copy2(PAPER / "main.pdf", d2 / f"{NAME}_TIV_main_manuscript.pdf")
     zp = d1 / f"{NAME}_TIV_main_manuscript_LaTeX.zip"
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for f in SRC:
