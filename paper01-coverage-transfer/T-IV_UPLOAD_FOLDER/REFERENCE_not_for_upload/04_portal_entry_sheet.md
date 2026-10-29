@@ -23,7 +23,7 @@ The authors declare no competing financial interests or personal relationships t
 This research received no external funding.
 
 **Generative-AI disclosure** (Acknowledgment in the manuscript)
-The authors used Anthropic's Claude to assist with code development, debugging, data analysis, experiment execution, and the drafting and editing of the manuscript text. The authors directed the research, reviewed the outputs, and take full responsibility for the accuracy, integrity, and content of this article. This research received no external funding.
+The authors used generative AI tools, Anthropic's Claude and OpenAI's ChatGPT, in preparing this article. Claude assisted with code development, debugging, data analysis, experiment execution, and the drafting and editing of the manuscript text (all sections); ChatGPT was used to obtain review feedback on drafts. The authors directed the research, reviewed the outputs, and take full responsibility for the accuracy, integrity, and content of this article. This research received no external funding.
 
 **Data and code availability** (as in the manuscript)
 Code, configuration files, registered hypotheses, experiment log and aggregate result files: https://github.com/hwaqas160/conformal-coverage-transfer ; archived at Zenodo, concept DOI https://doi.org/10.5281/zenodo.23054412 (version 3: https://doi.org/10.5281/zenodo.23693027). Third-party datasets (Argoverse 2, nuScenes, Waymo Open Motion) are available from their owners under their own licences.
