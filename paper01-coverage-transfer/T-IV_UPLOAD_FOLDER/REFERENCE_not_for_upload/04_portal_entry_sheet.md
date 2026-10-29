@@ -28,9 +28,8 @@ The authors used Anthropic's Claude to assist with code development, debugging, 
 **Data and code availability** (as in the manuscript)
 Code, configuration files, registered hypotheses, experiment log and aggregate result files: https://github.com/hwaqas160/conformal-coverage-transfer ; archived at Zenodo, concept DOI https://doi.org/10.5281/zenodo.23054412 (version 3: https://doi.org/10.5281/zenodo.23693027). Third-party datasets (Argoverse 2, nuScenes, Waymo Open Motion) are available from their owners under their own licences.
 
-**Files to upload**
-- Manuscript PDF: `01_manuscript/Saleem_ConformalCoverageTransfer_TIV_manuscript.pdf`
-- Optional, if the portal asks for source: `02_source/Saleem_ConformalCoverageTransfer_TIV_source.zip`
-- Format self-check: tick every box on the portal (evidence in `03_checklist/`)
-
-**Not needed at initial submission** (T-IV pages): cover letter, title page, separate figure files, author photographs, copyright form, graphical abstract.
+**Portal upload page (as shown in the authors' screenshots)**
+- Main Manuscript (required; MS Word or LaTeX, one archive): `1_MAIN_MANUSCRIPT_required/Saleem_ConformalCoverageTransfer_TIV_main_manuscript_LaTeX.zip`
+- Conflict of Interest (required): no file; tick "None of the authors have a conflict of interest to disclose"
+- Cover letter / Comments (optional): `3_COVER_LETTER_optional/Saleem_cover_letter.pdf`
+- Leave empty: Supplementary Material, Tracked Changes, Image (figures are embedded), Previously Published (both), LaTeX Supplementary File
